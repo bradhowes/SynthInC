@@ -2,20 +2,20 @@
 
 This is a simple iOS application that plays Terry Riley's ["In C"](https://en.wikipedia.org/wiki/In_C) score
 using one or more AudioUnit samplers. The score varies with each generation, but the algorithm that currently
-does it is fairly simplistic, but it does create at times some nice interplay among the voices.
+does it is fairly simplistic. At times though, It does create some nice interplay among the voices.
 
 The Swift code is fairly straightforward and it only uses stock iOS CoreAudio and AVFramework frameworks.
 
 # Dependencies
 
 * [InAppSettingsKit](https://github.com/futuretap/InAppSettingsKit) -- old but dependable framework for
-showind and editing app settings in-app.
+showing and editing app settings in-app.
 * [SwiftyUserDefaults](https://github.com/radex/SwiftyUserDefaults) -- nice Swift interface into NSUserDefaults.
 * [ASValueTrackingSlider](https://github.com/alskipp/ASValueTrackingSlider) -- great bit of code for showing
 UISlider values
 
 The first two have entries in the [Carthage](https://github.com/Carthage/Carthage) Cartfile. For the
-ASValueTrackignSlider, I just copied the necessary files unchanged.
+ASValueTrackingSlider, I just copied the necessary files, unchanged.
 
 # SoundFont Files
 
