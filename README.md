@@ -1,5 +1,7 @@
 # Synth In C
 
+![](Screen1.png) ![](Screen2.png)
+
 This is a simple iOS application that plays Terry Riley's ["In C"](https://en.wikipedia.org/wiki/In_C) score
 using one or more AudioUnit samplers. The score varies with each generation, but the algorithm that currently
 does it is fairly simplistic. At times though, It does create some nice interplay among the voices.
