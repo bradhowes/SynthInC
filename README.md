@@ -14,7 +14,7 @@ The Swift code is fairly straightforward and it only uses stock iOS CoreAudio an
 showing and editing app settings in-app.
 * [SwiftyUserDefaults](https://github.com/radex/SwiftyUserDefaults) -- nice Swift interface into NSUserDefaults.
 * [ASValueTrackingSlider](https://github.com/alskipp/ASValueTrackingSlider) -- great bit of code for showing
-UISlider values
+UISlider values (see image above)
 
 The first two have entries in the [Carthage](https://github.com/Carthage/Carthage) Cartfile. For the
 ASValueTrackingSlider, I just copied the necessary files, unchanged.
