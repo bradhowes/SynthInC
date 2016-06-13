@@ -18,7 +18,8 @@ class ViewController: UIViewController {
     }
 
     @IBOutlet weak var navigationBar: UINavigationBar!
-
+    @IBOutlet weak var myNavigationItem: UINavigationItem!
+    
     /**
      Button to show the in-app settings.
      */
@@ -27,17 +28,10 @@ class ViewController: UIViewController {
     /// Flag indicating if the settings pop-up is current shown
     var showingSettings = false
     
-    /**
-     Button to show the in-app settings.
-     */
-    var addButton: UIBarButtonItem? = nil
+    @IBOutlet weak var addButton: UIBarButtonItem!
+    @IBOutlet weak var editButton: UIBarButtonItem!
+    @IBOutlet weak var doneButton: UIBarButtonItem!
 
-    /**
-     Button to show the in-app settings.
-     */
-    var editButton: UIBarButtonItem? = nil
-    var doneButton: UIBarButtonItem? = nil
-    
     var normalRightButtons: [UIBarButtonItem] = []
     var editingRightButtons: [UIBarButtonItem] = []
 
@@ -63,7 +57,10 @@ class ViewController: UIViewController {
     /**
      The SoundGenerator instance that manages all aspects of the music generation and performance.
      */
-    var gen = AudioController()
+    lazy var gen: AudioController = {
+        let gen = AudioController()
+        return gen
+    }()
     
     /**
      The current position of the music as reported by the SoundGenerator. This is a cached value for use when the
@@ -104,6 +101,7 @@ class ViewController: UIViewController {
      */
     override func viewDidLoad() {
         super.viewDidLoad()
+
         instrumentSettings.delegate = self
         instrumentSettings.dataSource = self
         playbackPosition.minimumValue = 0.0
@@ -115,17 +113,17 @@ class ViewController: UIViewController {
         playbackPosition.setThumbImage(UIImage(named:"Slider"), forState: .Highlighted)
         playbackPosition.popUpViewColor = UIColor.init(red: 12/255.0, green: 102/255.0, blue: 223/255.0, alpha: 1.0)
         playbackPosition.dataSource = self
-        playbackPosition.showPopUpViewAnimated(false)
 
         setNeedsStatusBarAppearanceUpdate()
-        
-        addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(addInstrument))
-        editButton = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: #selector(editInstruments))
-        doneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(editInstruments))
 
-        normalRightButtons = [addButton!, editButton!]
-        editingRightButtons = [doneButton!]
-        navigationItem.setRightBarButtonItems(normalRightButtons, animated: false)
+        addButton.enabled = true
+        editButton.enabled = true
+        doneButton.enabled = true
+
+        normalRightButtons = [addButton, editButton]
+        editingRightButtons = [doneButton]
+
+        myNavigationItem.setRightBarButtonItems(normalRightButtons, animated: false)
 
         updateTitle()
     }
@@ -150,7 +148,7 @@ class ViewController: UIViewController {
     func updateTitle() {
         let count = gen.activeInstruments.count
         let plural = count == 1 ? "" : "s"
-        navigationItem.title = "\(gen.activeInstruments.count) Instrument\(plural)"
+        myNavigationItem.title = "\(gen.activeInstruments.count) Instrument\(plural)"
     }
 }
 
@@ -214,6 +212,7 @@ extension ViewController: ASValueTrackingSliderDataSource {
         playStopButton.setImage(image, forState: .Selected)
         startUpdateTimer()
         updatePlaybackInfo()
+        playbackPosition.showPopUpViewAnimated(true)
     }
     
     /**
@@ -224,6 +223,7 @@ extension ViewController: ASValueTrackingSliderDataSource {
         playStopButton.setImage(image, forState: .Normal)
         playStopButton.setImage(image, forState: .Highlighted)
         playStopButton.setImage(image, forState: .Selected)
+        playbackPosition.hidePopUpViewAnimated(true)
         endUpdateTimer()
     }
     
@@ -256,9 +256,9 @@ extension ViewController: ASValueTrackingSliderDataSource {
         }
         
         if !sliderInUse {
-            playbackPosition.value = Float(currentPosition / Double(length))
+            playbackPosition.setValue(Float(currentPosition / Double(length)), animated: false)
         }
-        
+
         // Need to protect the selection
         let savedSelection = instrumentSettings.indexPathForSelectedRow
         instrumentSettings.reloadData()
@@ -339,21 +339,6 @@ extension ViewController {
 // MARK: UITableView
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
 
-    /**
-     Enumeration for the UIView elements within our custom UITableViewCell view. NOTE: the raw integer values must the
-     `tag` fields for the UIViews.
-     
-     - PatchNameView: the UILabel that shows the name of the patch
-     - SoundFontNameView: the UILabel that shows the name of the sound font holding the patch
-     - PhraseView: the UILabel that shows the current phrase of the score that is being played
-     */
-    enum CustomCellViews: Int {
-        case PatchNameView = 100, SoundFontNameView, VolumeSlider
-        func viewOf<T>(cell: UITableViewCell) -> T? {
-            return cell.contentView.viewWithTag(self.rawValue) as? T
-        }
-    }
-
     func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
         guard let currentRow = tableView.indexPathForSelectedRow?.row else { return indexPath }
         let newRow = indexPath.row
@@ -382,6 +367,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         //
         let instrument = gen.activeInstruments[indexPath.row]
 
+        cell.instrumentIndex?.text = "\(indexPath.row + 1)"
+
         let octaveTag: String
         if instrument.octave > 0 {
             octaveTag = " (+\(instrument.octave))"
@@ -397,7 +384,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         cell.soundFontName?.text = instrument.patch.soundFont?.name
         
         let phrase = instrument.getSectionPlaying(currentPosition)
-        cell.phrase?.text = phrase >= 0 ? "\(phrase + 1)" : ""
+        cell.phrase?.text = phrase >= 0 ? "P\(phrase)" : ""
+
+        cell.volumeLevel.muted = instrument.muted
+        cell.volumeLevel.volume = instrument.volume
 
         return cell
     }
@@ -420,6 +410,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
      */
     func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
         guard let cell = tableView.cellForRowAtIndexPath(indexPath) else { return }
+        tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
         let psvc = patchSelectViewController
         psvc.editInstrument(gen.activeInstruments[indexPath.row], row: indexPath.row)
         if let popover = psvc.popoverPresentationController {
@@ -448,6 +439,10 @@ extension ViewController: PatchSelectViewControllerDelegate {
         instrumentSettings.reloadRowsAtIndexPaths([NSIndexPath(forRow: row, inSection: 0)],
                                                   withRowAnimation: .Automatic)
         instrumentSettings.selectRowAtIndexPath(savedSelection, animated: false, scrollPosition: .None)
+        
+        if reason == .Done {
+            
+        }
     }
 }
 
@@ -468,7 +463,7 @@ extension ViewController {
             addButton?.enabled = true
             if gen.activeInstruments.count == 1 {
                 tableView.setEditing(false, animated: true)
-                navigationItem.setRightBarButtonItems([addButton!], animated: true)
+                myNavigationItem.setRightBarButtonItems([addButton!], animated: true)
                 settings.enabled = true
             }
         }
@@ -498,12 +493,12 @@ extension ViewController {
         print("editInstruments")
         if instrumentSettings.editing {
             instrumentSettings.setEditing(false, animated: true)
-            navigationItem.setRightBarButtonItems(normalRightButtons, animated: true)
+            myNavigationItem.setRightBarButtonItems(normalRightButtons, animated: true)
             settings.enabled = true
         }
         else {
             instrumentSettings.setEditing(true, animated: true)
-            navigationItem.setRightBarButtonItems(editingRightButtons, animated: true)
+            myNavigationItem.setRightBarButtonItems(editingRightButtons, animated: true)
             settings.enabled = false
         }
     }
