@@ -4,6 +4,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -31,17 +32,21 @@
                                             <rect key="frame" x="0.0" y="0.0" width="553" height="53.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="100" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Patch Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iye-Lc-Ccq">
-                                                    <rect key="frame" x="8" y="8" width="98.5" height="21.5"/>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KKn-Xt-svD" customClass="VolumeBarView" customModule="SynthInC" customModuleProvider="target">
+                                                    <rect key="frame" x="27" y="27" width="468" height="4"/>
+                                                    <color key="backgroundColor" red="0.14117647058823529" green="0.0" blue="0.35294117647058826" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="4" id="402-UO-Nlk"/>
+                                                    </constraints>
+                                                </view>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="100" contentMode="left" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Patch Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iye-Lc-Ccq">
+                                                    <rect key="frame" x="27" y="8" width="468" height="22"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                    <color key="textColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="textColor" red="0.80392156862745101" green="0.80392156862745101" blue="0.80392156862745101" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="101" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X0q-KQ-dEp">
-                                                    <rect key="frame" x="8" y="29" width="114" height="16.5"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="21" id="t50-L7-sjd"/>
-                                                    </constraints>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="101" contentMode="left" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X0q-KQ-dEp">
+                                                    <rect key="frame" x="27" y="34" width="468" height="11.5"/>
                                                     <attributedString key="attributedText">
                                                         <fragment content="Sound Font Name">
                                                             <attributes>
@@ -52,35 +57,54 @@
                                                         </fragment>
                                                     </attributedString>
                                                     <nil key="highlightedColor"/>
-                                                    <variation key="default">
-                                                        <mask key="constraints">
-                                                            <exclude reference="t50-L7-sjd"/>
-                                                        </mask>
-                                                    </variation>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j0W-8v-OKO">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j0W-8v-OKO">
                                                     <rect key="frame" x="503" y="16" width="42" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.75686274509803919" green="0.75686274509803919" blue="0.75686274509803919" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="752" text="#" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tcy-3y-7Dg">
+                                                    <rect key="frame" x="8" y="16" width="11" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" red="0.80000001190000003" green="0.40000000600000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <color key="backgroundColor" red="0.18823529411764706" green="0.0" blue="0.42745098039215684" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="bottomMargin" secondItem="X0q-KQ-dEp" secondAttribute="bottom" id="6oU-G4-cYP"/>
+                                                <constraint firstItem="iye-Lc-Ccq" firstAttribute="leading" secondItem="tcy-3y-7Dg" secondAttribute="trailing" constant="8" id="8bC-6k-JHI"/>
+                                                <constraint firstItem="tcy-3y-7Dg" firstAttribute="leading" secondItem="0VU-UC-w7C" secondAttribute="leadingMargin" id="9h3-F6-H3V"/>
                                                 <constraint firstItem="j0W-8v-OKO" firstAttribute="centerY" secondItem="0VU-UC-w7C" secondAttribute="centerY" id="H7l-Y7-x2n"/>
-                                                <constraint firstItem="X0q-KQ-dEp" firstAttribute="leading" secondItem="0VU-UC-w7C" secondAttribute="leadingMargin" id="I5a-Pe-ChB"/>
+                                                <constraint firstItem="X0q-KQ-dEp" firstAttribute="leading" secondItem="tcy-3y-7Dg" secondAttribute="trailing" constant="8" id="OP6-0c-yqO"/>
+                                                <constraint firstItem="KKn-Xt-svD" firstAttribute="centerY" secondItem="0VU-UC-w7C" secondAttribute="centerY" constant="2" id="V8X-FQ-1hr"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="KKn-Xt-svD" secondAttribute="bottom" constant="15.5" id="Xpp-Vr-bGU"/>
+                                                <constraint firstItem="KKn-Xt-svD" firstAttribute="leading" secondItem="tcy-3y-7Dg" secondAttribute="trailing" constant="8" id="ZKN-UG-Ilc"/>
                                                 <constraint firstItem="iye-Lc-Ccq" firstAttribute="top" secondItem="0VU-UC-w7C" secondAttribute="topMargin" id="gbc-ag-Qly"/>
+                                                <constraint firstItem="KKn-Xt-svD" firstAttribute="top" secondItem="0VU-UC-w7C" secondAttribute="topMargin" constant="8" id="hg1-Oe-rug"/>
+                                                <constraint firstItem="X0q-KQ-dEp" firstAttribute="top" secondItem="iye-Lc-Ccq" secondAttribute="bottom" constant="4" id="inK-MJ-Svc"/>
+                                                <constraint firstItem="j0W-8v-OKO" firstAttribute="leading" secondItem="iye-Lc-Ccq" secondAttribute="trailing" constant="8" id="l2C-l3-1dr"/>
                                                 <constraint firstItem="j0W-8v-OKO" firstAttribute="trailing" secondItem="0VU-UC-w7C" secondAttribute="trailingMargin" id="lNo-Rc-6hI"/>
-                                                <constraint firstItem="iye-Lc-Ccq" firstAttribute="leading" secondItem="0VU-UC-w7C" secondAttribute="leadingMargin" id="pn6-ly-KHD"/>
+                                                <constraint firstItem="tcy-3y-7Dg" firstAttribute="centerY" secondItem="0VU-UC-w7C" secondAttribute="centerY" id="lvt-U0-FdS"/>
+                                                <constraint firstItem="j0W-8v-OKO" firstAttribute="leading" secondItem="X0q-KQ-dEp" secondAttribute="trailing" constant="8" id="oLQ-Dj-quU"/>
+                                                <constraint firstItem="j0W-8v-OKO" firstAttribute="leading" secondItem="KKn-Xt-svD" secondAttribute="trailing" constant="8" id="pL2-Lh-inE"/>
                                                 <constraint firstItem="j0W-8v-OKO" firstAttribute="centerY" secondItem="0VU-UC-w7C" secondAttribute="centerY" id="uaZ-xc-hCj"/>
                                             </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="Xpp-Vr-bGU"/>
+                                                    <exclude reference="hg1-Oe-rug"/>
+                                                </mask>
+                                            </variation>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.25098040700000002" green="0.0" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
+                                            <outlet property="instrumentIndex" destination="tcy-3y-7Dg" id="bWt-rq-ugj"/>
                                             <outlet property="patchName" destination="iye-Lc-Ccq" id="hQg-Ol-FU2"/>
                                             <outlet property="phrase" destination="j0W-8v-OKO" id="mKs-J9-jNR"/>
                                             <outlet property="soundFontName" destination="X0q-KQ-dEp" id="SAa-bT-mRU"/>
+                                            <outlet property="volumeLevel" destination="KKn-Xt-svD" id="Ry8-bi-kGO"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -97,6 +121,23 @@
                                                 <action selector="showSettings:" destination="BYZ-38-t0r" id="zmw-Jz-VM6"/>
                                             </connections>
                                         </barButtonItem>
+                                        <rightBarButtonItems>
+                                            <barButtonItem systemItem="add" id="oZc-0k-reZ">
+                                                <connections>
+                                                    <action selector="addInstrument:" destination="BYZ-38-t0r" id="fFU-Yh-6Ht"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem systemItem="edit" id="ONJ-G4-B6j">
+                                                <connections>
+                                                    <action selector="editInstruments:" destination="BYZ-38-t0r" id="Nqd-M7-Z6X"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem systemItem="done" id="XVG-wq-FB2">
+                                                <connections>
+                                                    <action selector="editInstruments:" destination="BYZ-38-t0r" id="afQ-F1-8nk"/>
+                                                </connections>
+                                            </barButtonItem>
+                                        </rightBarButtonItems>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -127,7 +168,6 @@
                                 <connections>
                                     <action selector="beginChangePlaybackPosition:" destination="BYZ-38-t0r" eventType="touchDown" id="VlC-Co-8gs"/>
                                     <action selector="changePlaybackPosition:" destination="BYZ-38-t0r" eventType="valueChanged" id="chW-9w-QRo"/>
-                                    <action selector="endChangePlaybackPosition:" destination="BYZ-38-t0r" eventType="touchCancel" id="xlI-ZZ-bum"/>
                                 </connections>
                             </slider>
                         </subviews>
@@ -157,9 +197,12 @@
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="addButton" destination="oZc-0k-reZ" id="fIk-Va-w6g"/>
+                        <outlet property="doneButton" destination="XVG-wq-FB2" id="mQn-Aj-AXz"/>
+                        <outlet property="editButton" destination="ONJ-G4-B6j" id="dG8-Td-4Fr"/>
                         <outlet property="instrumentSettings" destination="ZuC-My-xaN" id="dYf-EI-HFc"/>
-                        <outlet property="navigationBar" destination="GzW-Hj-0ye" id="lyb-Je-tAn"/>
-                        <outlet property="navigationItem" destination="jFW-Vm-awP" id="Tui-SI-Bko"/>
+                        <outlet property="myNavigationItem" destination="jFW-Vm-awP" id="yCo-6E-lwy"/>
+                        <outlet property="navigationBar" destination="GzW-Hj-0ye" id="9Ez-Ux-kA2"/>
                         <outlet property="playStopButton" destination="bA9-7E-ERa" id="I29-Ek-ru0"/>
                         <outlet property="playbackPosition" destination="Iwr-Dz-gq2" id="HGJ-3V-zQG"/>
                         <outlet property="regenerateButton" destination="Fdb-2l-g6I" id="XYi-Sj-L1Y"/>
@@ -168,7 +211,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-346" y="-1834"/>
+            <point key="canvasLocation" x="-1509" y="-2064"/>
         </scene>
     </scenes>
     <resources>

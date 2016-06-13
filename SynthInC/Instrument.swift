@@ -9,8 +9,7 @@
 import Foundation
 import AVFoundation
 
-let kSoloInstrumentNotificationKey = "SoloInstrument"
-let kTrackDurationIndex = phrases.count
+internal let kSoloInstrumentNotificationKey = "SoloInstrument"
 
 final class Instrument: NSObject {
     let audioController: AudioController
@@ -19,40 +18,19 @@ final class Instrument: NSObject {
     private(set) var samplerNode: AUNode = 0
     private(set) var samplerUnit: AudioUnit = nil
 
-    // Entries below here are restorable
+    // -- Entries below here are restorable --
 
     private(set) var sectionStarts: [MusicTimeStamp] = []
 
-    var trackDuration: MusicTimeStamp {
-        precondition(sectionStarts.count == phrases.count + 1)
-        return sectionStarts[kTrackDurationIndex]
-    }
+    var trackDuration: MusicTimeStamp { return sectionStarts[phrases.count] }
+    var patch: Patch { didSet { applyPatch() } }
+    var octave: Int = 0 { didSet { applyOctave() } }
 
-    var patch: Patch {
-        didSet {
-            precondition(patch.soundFont != nil)
-            applyPatch()
-        }
-    }
-
-    var octave: Int = 0 {
-        didSet { applyOctave() }
-    }
-
-    private var soloSavedVolume: Float = 0.0
-    var volume: Float = 1.0 {
-        didSet { applyVolume() }
-    }
-    
-    var pan: Float = 0.0 {
-        didSet { applyPan() }
-    }
-    
-    private var registeredForSolo = false
-
-    var enabled: Bool = false {
-        didSet { applyEnabled() }
-    }
+    var volume: Float = 0.75 { didSet { applyVolume() } }
+    var pan: Float = 0.0 { didSet { applyPan() } }
+    var enabled: Bool = false { didSet { applyEnabled() } }
+    var muted: Bool = false { didSet { applyEnabled() } }
+    private var savedMuted: Bool = false
 
     /**
      Initialize new instance.
@@ -65,20 +43,18 @@ final class Instrument: NSObject {
         self.index = index
         self.patch = SoundFont.randomPatch()
         super.init()
+        registerForSoloNotifications()
     }
     
     /**
      Remove ourselves as an NSNotificationCenter observer since we are dying
      */
     deinit {
-        if registeredForSolo {
-            NSNotificationCenter.defaultCenter().removeObserver(self)
-            registeredForSolo = false
-        }
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     private func applyPatch() {
-        if samplerUnit == nil { return }
+        guard samplerUnit != nil else { return }
 
         // Fetch the sound data from the sound font
         // FIXME: move to a SoundFont cache
@@ -89,59 +65,58 @@ final class Instrument: NSObject {
                                            bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
                                            bankLSB: UInt8(kAUSampler_DefaultBankLSB),
                                            presetID: UInt8(patch.patch))
-        
+
         // Attempt to have the sampler use the sound font data
         //
-        CheckError("AudioUnitSetProperty", AudioUnitSetProperty(samplerUnit,
-            AudioUnitPropertyID(kAUSamplerProperty_LoadInstrument), AudioUnitScope(kAudioUnitScope_Global), 0,
-            &data, UInt32(sizeofValue(data))))
+        if CheckError("AudioUnitSetProperty(patch)", AudioUnitSetProperty(samplerUnit,
+            kAUSamplerProperty_LoadInstrument, kAudioUnitScope_Global, 0, &data, UInt32(sizeofValue(data)))) {
+
+            // Try a "safe" patch
+            //
+            self.patch = RolandNicePiano.patches[0]
+            return
+        }
+
+        let gain = patch.soundFont!.dbGain
+        if CheckError("AudioUnitSetProperty(gain)", AudioUnitSetParameter(samplerUnit, kAUSamplerParam_Gain,
+            kAudioUnitScope_Global, 0, gain, 0)) {
+            print("** failed to set gain")
+        }
     }
 
     private func applyOctave() {
-        if samplerUnit == nil { return }
+        guard samplerUnit != nil else { return }
+        print("-- \(index) octave: \(octave)")
         let result: Float = Float(min(2, max(octave, -2))) * 12.0
         CheckError("AudioUnitSetParameter(Tuning)", AudioUnitSetParameter(samplerUnit,
             kAUSamplerParam_CoarseTuning, kAudioUnitScope_Global, 0, result, 0))
     }
 
     private func applyVolume() {
-        if samplerUnit == nil { return }
+        guard samplerUnit != nil else { return }
+        print("-- \(index) volume: \(volume)")
         CheckError("AudioUnitSetParameter(Volume)", AudioUnitSetParameter(audioController.mixerUnit,
             kMultiChannelMixerParam_Volume, kAudioUnitScope_Input, UInt32(index), volume, 0))
     }
 
     private func applyPan() {
-        if samplerUnit == nil { return }
+        guard samplerUnit != nil else { return }
+        print("-- \(index) pan: \(pan)")
         CheckError("AudioUnitSetParameter(Pan)", AudioUnitSetParameter(audioController.mixerUnit,
             kMultiChannelMixerParam_Pan, kAudioUnitScope_Input, UInt32(index), pan, 0))
     }
 
     private func applyEnabled() {
-        if samplerUnit == nil { return }
-        let result: Float = enabled ? 1.0 : 0.0
+        guard samplerUnit != nil else { return }
+        print("-- \(index) enabled: \(enabled) muted: \(muted)")
+        let result: Float = (enabled && !muted) ? 1.0 : 0.0
         CheckError("AudioUnitSetParameter(Enable)", AudioUnitSetParameter(audioController.mixerUnit,
             kMultiChannelMixerParam_Enable, kAudioUnitScope_Input, UInt32(index), result, 0))
-        if enabled {
-            registerForSoloNotifications()
-        }
-        else {
-            unregisterForSoloNotifications()
-        }
     }
 
     private func registerForSoloNotifications() {
-        if enabled && !registeredForSolo {
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(solo(_:)),
-                                                             name: kSoloInstrumentNotificationKey, object: nil)
-            registeredForSolo = true
-        }
-    }
-    
-    private func unregisterForSoloNotifications() {
-        if registeredForSolo {
-            NSNotificationCenter.defaultCenter().removeObserver(self)
-            registeredForSolo = false
-        }
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(solo(_:)),
+                                                         name: kSoloInstrumentNotificationKey, object: nil)
     }
     
     /**
@@ -153,27 +128,21 @@ final class Instrument: NSObject {
      */
     func solo(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
+        guard enabled else { return }
         if let instrument = userInfo["instrument"] as? Instrument {
             if self == instrument {
-                
-                // For the solo instrument, we do not want to overwrite any volume changes that may happen while it is
-                // in solo mode.
-                //
-                soloSavedVolume = 0.0
+                print("-- solo instrument \(index)")
+                savedMuted = muted
+                muted = false
             }
-            else if volume > 0.0 {
-                soloSavedVolume = volume
-                volume = 0.0
+            else {
+                print("-- not solo instrument - muting \(index)")
+                savedMuted = muted
+                muted = true
             }
         }
         else {
-            
-            // If zero, this instrument was the one being soloed OR it had a normal volume of zereo. In either case
-            // we don't need to do a change.
-            //
-            if soloSavedVolume != 0.0 {
-                volume = soloSavedVolume
-            }
+            muted = savedMuted
         }
     }
     
@@ -187,8 +156,14 @@ final class Instrument: NSObject {
     func getSectionPlaying(clock: MusicTimeStamp) -> Int {
         return sectionStarts.reduce(0) { (count, start) -> Int in count + (start > clock ? 0 : 1) }
     }
-    
+
+    /**
+     Create a sampler AudioUnit to generate sounds for this instrument.
+     
+     - returns: true if successful
+     */
     func createSampler() -> Bool {
+        print("-- creating sampler \(index)")
         samplerNode = 0
         var desc = AudioComponentDescription(
             componentType: OSType(kAudioUnitType_MusicDevice),
@@ -201,10 +176,16 @@ final class Instrument: NSObject {
         
         return true
     }
-    
+
+    /**
+     Connect the sampler to the app's multichannel mixer.
+     
+     - returns: true if successful
+     */
     func wireSampler() -> Bool {
         precondition(samplerNode != 0 && audioController.mixerNode != 0)
-        
+        print("-- wiring sampler \(index)")
+
         // Get the AudioUnit associated with each sampler. We will need this later when we set the soundfont
         //
         samplerUnit = nil
@@ -226,22 +207,36 @@ final class Instrument: NSObject {
             return false
         }
         
+        enabled = false
+
         return true
     }
 
+    /**
+     Set default parameter values for an active instrument.
+     */
     func setActiveDefaults() {
         enabled = true
+        muted = false
         octave = 0
         volume = 0.75
         pan = RandomUniform.sharedInstance.uniform(-1.0, upper: 1.0)
         patch = SoundFont.randomPatch()
     }
 
+    /**
+     Save the current instrument's configuration.
+     */
     func saveSetup() {
         let data = getSetup()
         audioController.saveSetup(self, data: data)
     }
 
+    /**
+     Obtain the instrument's configuration settings in an NSData object
+     
+     - returns: NSData containing archived configuration values
+     */
     func getSetup() -> NSData {
         let data = NSMutableData()
         let encoder = NSKeyedArchiver(forWritingWithMutableData: data)
@@ -251,16 +246,23 @@ final class Instrument: NSObject {
         
         let tmp: NSArray = sectionStarts.map { NSNumber.init(double: $0) }
         encoder.encodeObject(tmp, forKey: "sectionStarts")
-        
+
         encoder.encodeInteger(octave, forKey: "octave")
         encoder.encodeFloat(volume, forKey: "volume")
         encoder.encodeFloat(pan, forKey: "pan")
-        encoder.encodeBool(enabled, forKey: "enabled")
+        encoder.encodeBool(muted, forKey: "muted")
         encoder.finishEncoding()
         
         return data
     }
 
+    /**
+     Restore instrument's configuration settings using values found in an NSData object
+     
+     - parameter data: archived configuration data
+     
+     - returns: true if successful
+     */
     func restoreSetup(data: NSData) -> Bool {
         precondition(samplerUnit != nil)
 
@@ -280,12 +282,20 @@ final class Instrument: NSObject {
         octave = decoder.decodeIntegerForKey("octave")
         volume = decoder.decodeFloatForKey("volume")
         pan = decoder.decodeFloatForKey("pan")
-        enabled = decoder.decodeBoolForKey("enabled")
+        muted = decoder.decodeBoolForKey("muted")
 
         return true
     }
 
+    /**
+     Create a new MusicTrack object for a MusicSequence and generate an "In C" performance.
+     
+     - parameter musicSequence: the MusicSequence object to add to
+     
+     - returns: 2-tuple containing the new MusicTrack and the duration of the new track. If error, returns (nil, -1)
+     */
     func createMusicTrack(musicSequence: MusicSequence) -> (MusicTrack, MusicTimeStamp) {
+        print("-- creating music track for instrument \(index)")
 
         var trackCount: UInt32 = 0
         if CheckError("MusicSequenceGetTrackCount", MusicSequenceGetTrackCount(musicSequence, &trackCount)) {
@@ -315,8 +325,13 @@ final class Instrument: NSObject {
         return (track, beatClock)
     }
 
+    /**
+     Assign a MusicTrack to the instrument. A MusicTrack will drive the sampler, causing it to generate audio based 
+     
+     - parameter musicTrack: the MusicTrack to link to. May be nil.
+     */
     func assignToMusicTrack(musicTrack: MusicTrack) {
-        print("\(index) -> \(musicTrack)")
+        print("-- assigning instrument \(index) to track \(musicTrack)")
         CheckError("MusicTrackSetDestNode", MusicTrackSetDestNode(musicTrack, samplerNode))
         if musicTrack != nil {
             applyOctave()

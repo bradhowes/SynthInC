@@ -42,7 +42,7 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     @IBOutlet weak var soloSwitch: UISwitch!
     @IBOutlet weak var octaveChange: UIStepper!
     @IBOutlet weak var octaveLabel: UILabel!
-    @IBOutlet weak var instrumentTitle: UILabel!
+    @IBOutlet weak var mutedSwitch: UISwitch!
 
     weak var delegate: PatchSelectViewControllerDelegate?
     var instrument: Instrument?
@@ -51,6 +51,7 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     var originalOctave = 0
     var originalVolume: Float = 1.0
     var originalPan: Float = 0.0
+    var originalMuted: Bool = false
     var soundFontIndex = 0
     var patchIndex = 0
 
@@ -106,6 +107,7 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
      - parameter row: the row index in the instruments table view in the main view
      */
     func editInstrument(instrument: Instrument, row: Int) {
+        print("editing instrument \(row)")
         self.instrument = instrument
         self.instrumentRow = row
         
@@ -115,6 +117,9 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         originalOctave = instrument.octave
         originalPan = instrument.pan
         originalVolume = instrument.volume
+        originalMuted = instrument.muted
+        print("originalMuted: \(originalMuted)")
+
         soundFontIndex = SoundFont.indexForName(originalPatch!.soundFont!.name)
         patchIndex = originalPatch!.soundFont!.findPatchIndex(originalPatch!.name)!
     }
@@ -127,19 +132,20 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     override func viewWillAppear(animated: Bool) {
         precondition(originalPatch != nil && instrument != nil)
 
-        instrumentTitle.text = "Instrument \(instrumentRow + 1)"
-
         picker.selectRow(soundFontIndex, inComponent: 0, animated: false)
         picker.reloadComponent(1)
         picker.selectRow(patchIndex, inComponent: 1, animated: false)
 
         octaveChange.value = Double(originalOctave)
-        octaveLabel.text = "Octave \(originalOctave)"
+        octaveLabel.text = "Oct \(originalOctave)"
 
         volumeSlider.value = originalVolume * 100.0
         panSlider.value = originalPan
 
         soloSwitch.on = false
+        mutedSwitch.on = originalMuted
+        print("originalMuted: \(originalMuted)")
+
         super.viewWillAppear(animated)
     }
 
@@ -151,6 +157,7 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         instrument.patch = originalPatch!
         instrument.volume = originalVolume
         instrument.octave = originalOctave
+        instrument.muted = originalMuted
         self.instrument = nil
     }
 
@@ -179,8 +186,8 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         return component == 0 ? SoundFont.keys.count : SoundFont.getByIndex(soundFontIndex).patches.count
     }
     
-    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int,
-                    forComponent component: Int) -> NSAttributedString? {
+    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int)
+        -> NSAttributedString? {
         var text: String
         if component == 0 {
             text = SoundFont.keys[row]
@@ -219,6 +226,19 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         instrument?.patch = patch
     }
 
+    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int,
+                    reusingView view: UIView?) -> UIView {
+        var theView: UILabel? = view as? UILabel
+        if theView == nil {
+            theView = UILabel()
+            theView?.font = UIFont(name: "Helvetica", size: 16.0)
+            theView?.textAlignment = .Left
+        }
+
+        theView?.attributedText = self.pickerView(pickerView, attributedTitleForRow: row, forComponent: component)
+
+        return theView!
+    }
     /**
      Obtain the number of components in the picker.
      
@@ -231,25 +251,19 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     }
 
     @IBAction func donePressed(sender: UIButton) {
-        if let instrument = self.instrument {
-            if instrument.pan != originalPan ||
-                instrument.volume != originalVolume ||
-                instrument.patch != originalPatch {
-                instrument.saveSetup()
-            }
-            self.instrument = nil
-        }
+        guard let instrument = self.instrument else { return }
+        instrument.saveSetup()
+        self.instrument = nil
         delegate?.patchSelectDismissed(instrumentRow, reason: .Done)
     }
 
     @IBAction func cancelPressed(sender: UIButton) {
-        precondition(originalPatch != nil)
         restoreInstrument()
         delegate?.patchSelectDismissed(instrumentRow, reason: .Cancel)
     }
 
     @IBAction func changeOctave(sender: UIStepper) {
-        octaveLabel.text = "Octave \(Int(sender.value))"
+        octaveLabel.text = "Oct \(Int(sender.value))"
         instrument?.octave = Int(sender.value)
     }
 
@@ -272,8 +286,14 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     }
 
     func stopSolo() {
+        if !soloSwitch.on { return }
         let userInfo: [NSObject:AnyObject] = [:]
         NSNotificationCenter.defaultCenter().postNotificationName(kSoloInstrumentNotificationKey, object: self,
                                                                   userInfo: userInfo)
+    }
+
+    @IBAction func muteInstrument(sender: UISwitch) {
+        instrument?.muted = sender.on
+        print("new muted: \(instrument?.muted)")
     }
 }

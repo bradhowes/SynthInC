@@ -16,6 +16,7 @@ class SoundFont: NSObject {
      SoundFont code.
      */
     static let library: [String:SoundFont] = [
+    // -INSERT_HERE-
         FreeFont.name: FreeFont.register(),
         GeneralUser.name: GeneralUser.register(),
         RolandPiano.name: RolandPiano.register(),

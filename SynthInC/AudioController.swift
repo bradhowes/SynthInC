@@ -495,7 +495,7 @@ extension AudioController {
 
         let instrument = instruments[activeInstruments.count]
         instrument.setActiveDefaults()
-        
+
         let (musicTrack, beatClock) = instrument.createMusicTrack(musicSequence)
         if musicTrack == nil {
             instrument.enabled = false
