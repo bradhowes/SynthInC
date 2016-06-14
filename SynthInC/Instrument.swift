@@ -30,6 +30,8 @@ final class Instrument: NSObject {
     var pan: Float = 0.0 { didSet { applyPan() } }
     var enabled: Bool = false { didSet { applyEnabled() } }
     var muted: Bool = false { didSet { applyEnabled() } }
+    var solo: Bool = false
+
     private var savedMuted: Bool = false
 
     /**
@@ -132,6 +134,7 @@ final class Instrument: NSObject {
         if let instrument = userInfo["instrument"] as? Instrument {
             if self == instrument {
                 print("-- solo instrument \(index)")
+                solo = true
                 savedMuted = muted
                 muted = false
             }
@@ -139,10 +142,13 @@ final class Instrument: NSObject {
                 print("-- not solo instrument - muting \(index)")
                 savedMuted = muted
                 muted = true
+                solo = false
             }
         }
         else {
+            print("-- restoring \(index) \(savedMuted)")
             muted = savedMuted
+            solo = false
         }
     }
     

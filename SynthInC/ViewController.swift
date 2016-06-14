@@ -150,6 +150,10 @@ class ViewController: UIViewController {
         let plural = count == 1 ? "" : "s"
         myNavigationItem.title = "\(gen.activeInstruments.count) Instrument\(plural)"
     }
+    
+    override func showDetailViewController(vc: UIViewController, sender: AnyObject?) {
+        super.showDetailViewController(vc, sender: sender)
+    }
 }
 
 // MARK: Settings
@@ -388,6 +392,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 
         cell.volumeLevel.muted = instrument.muted
         cell.volumeLevel.volume = instrument.volume
+        cell.volumeLevel.pan = instrument.pan
 
         return cell
     }

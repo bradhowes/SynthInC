@@ -39,10 +39,10 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var panSlider: ASValueTrackingSlider!
     @IBOutlet weak var volumeSlider: ASValueTrackingSlider!
-    @IBOutlet weak var soloSwitch: UISwitch!
     @IBOutlet weak var octaveChange: UIStepper!
     @IBOutlet weak var octaveLabel: UILabel!
-    @IBOutlet weak var mutedSwitch: UISwitch!
+    @IBOutlet weak var soloButton: UIButton!
+    @IBOutlet weak var muteButton: UIButton!
 
     weak var delegate: PatchSelectViewControllerDelegate?
     var instrument: Instrument?
@@ -52,8 +52,17 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     var originalVolume: Float = 1.0
     var originalPan: Float = 0.0
     var originalMuted: Bool = false
+    var currentMuted: Bool = false
     var soundFontIndex = 0
     var patchIndex = 0
+
+    func updateSoloImage(value: Bool) {
+        soloButton.setImage(UIImage(named: value ? "Solo On" : "Solo Off"), forState: .Normal)
+    }
+
+    func updateMuteImage(value: Bool) {
+        muteButton.setImage(UIImage(named: value ? "Mute On" : "Mute Off"), forState: .Normal)
+    }
 
     /**
      Create new instance and its associated view from the PatchSelectView nib.
@@ -89,6 +98,9 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         panSlider.setThumbImage(thumb, forState: .Selected)
         panSlider.setThumbImage(thumb, forState: .Highlighted)
         panSlider.popUpViewColor = UIColor.init(red: 12/255.0, green: 102/255.0, blue: 223/255.0, alpha: 1.0)
+        
+        muteButton.setImage(UIImage(named: "Mute On"), forState: .Highlighted)
+        soloButton.setImage(UIImage(named: "Solo On"), forState: .Highlighted)
     }
 
     /**
@@ -142,9 +154,8 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         volumeSlider.value = originalVolume * 100.0
         panSlider.value = originalPan
 
-        soloSwitch.on = false
-        mutedSwitch.on = originalMuted
-        print("originalMuted: \(originalMuted)")
+        updateSoloImage(false)
+        updateMuteImage(originalMuted)
 
         super.viewWillAppear(animated)
     }
@@ -168,8 +179,10 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
      - parameter animated: true if the view will disappear in animated fashion
      */
     override func viewWillDisappear(animated: Bool) {
-        stopSolo()
-        restoreInstrument()
+        if let _ = instrument {
+            stopSolo()
+            restoreInstrument()
+        }
         super.viewWillDisappear(animated)
     }
 
@@ -226,19 +239,20 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         instrument?.patch = patch
     }
 
-    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int,
-                    reusingView view: UIView?) -> UIView {
-        var theView: UILabel? = view as? UILabel
-        if theView == nil {
-            theView = UILabel()
-            theView?.font = UIFont(name: "Helvetica", size: 16.0)
-            theView?.textAlignment = .Left
-        }
+//    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int,
+//                    reusingView view: UIView?) -> UIView {
+//        var theView: UILabel? = view as? UILabel
+//        if theView == nil {
+//            theView = UILabel()
+//            theView?.font = UIFont(name: "Helvetica", size: 16.0)
+//            theView?.textAlignment = .Left
+//        }
+//
+//        theView?.attributedText = self.pickerView(pickerView, attributedTitleForRow: row, forComponent: component)
+//
+//        return theView!
+//    }
 
-        theView?.attributedText = self.pickerView(pickerView, attributedTitleForRow: row, forComponent: component)
-
-        return theView!
-    }
     /**
      Obtain the number of components in the picker.
      
@@ -252,13 +266,16 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
 
     @IBAction func donePressed(sender: UIButton) {
         guard let instrument = self.instrument else { return }
+        stopSolo()
         instrument.saveSetup()
         self.instrument = nil
         delegate?.patchSelectDismissed(instrumentRow, reason: .Done)
     }
 
     @IBAction func cancelPressed(sender: UIButton) {
+        guard let _ = self.instrument else { return }
         restoreInstrument()
+        self.instrument = nil
         delegate?.patchSelectDismissed(instrumentRow, reason: .Cancel)
     }
 
@@ -275,25 +292,36 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         instrument?.pan = sender.value
     }
     
-    @IBAction func soloInstrument(sender: UISwitch) {
-        precondition(instrument != nil)
+    @IBAction func soloInstrument(sender: UIButton) {
+        guard let instrument = instrument else { return }
         var userInfo: [NSObject:AnyObject] = [:]
-        if sender.on {
-            userInfo["instrument"] = instrument!
+        if !instrument.solo {
+            currentMuted = instrument.muted
+            userInfo["instrument"] = instrument
+            updateSoloImage(true)
+            updateMuteImage(false)
+        }
+        else {
+            updateSoloImage(false)
+            updateMuteImage(currentMuted)
         }
         NSNotificationCenter.defaultCenter().postNotificationName(kSoloInstrumentNotificationKey, object: self,
                                                                   userInfo: userInfo)
     }
 
     func stopSolo() {
-        if !soloSwitch.on { return }
-        let userInfo: [NSObject:AnyObject] = [:]
-        NSNotificationCenter.defaultCenter().postNotificationName(kSoloInstrumentNotificationKey, object: self,
-                                                                  userInfo: userInfo)
+        guard let instrument = instrument else { return }
+        if instrument.solo {
+            let userInfo: [NSObject:AnyObject] = [:]
+            NSNotificationCenter.defaultCenter().postNotificationName(kSoloInstrumentNotificationKey, object: self,
+                                                                      userInfo: userInfo)
+        }
     }
 
-    @IBAction func muteInstrument(sender: UISwitch) {
-        instrument?.muted = sender.on
-        print("new muted: \(instrument?.muted)")
+    @IBAction func muteInstrument(sender: UIButton) {
+        guard let instrument = instrument else { return }
+        instrument.muted = !instrument.muted
+        updateMuteImage(instrument.muted)
+        currentMuted = instrument.muted
     }
 }

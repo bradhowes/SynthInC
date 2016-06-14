@@ -7,10 +7,10 @@
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Instruments-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="SynthInC" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Instruments" id="BYZ-38-t0r" customClass="ViewController" customModule="SynthInC" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -32,11 +32,12 @@
                                             <rect key="frame" x="0.0" y="0.0" width="553" height="53.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KKn-Xt-svD" customClass="VolumeBarView" customModule="SynthInC" customModuleProvider="target">
+                                                <view contentMode="scaleToFill" horizontalHuggingPriority="252" horizontalCompressionResistancePriority="749" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KKn-Xt-svD" customClass="VolumeBarView" customModule="SynthInC" customModuleProvider="target">
                                                     <rect key="frame" x="27" y="27" width="468" height="4"/>
-                                                    <color key="backgroundColor" red="0.14117647058823529" green="0.0" blue="0.35294117647058826" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="4" id="402-UO-Nlk"/>
+                                                        <constraint firstAttribute="width" relation="lessThanOrEqual" priority="750" constant="300" id="msD-Of-MVX"/>
                                                     </constraints>
                                                 </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="100" contentMode="left" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Patch Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iye-Lc-Ccq">
@@ -80,7 +81,7 @@
                                                 <constraint firstItem="X0q-KQ-dEp" firstAttribute="leading" secondItem="tcy-3y-7Dg" secondAttribute="trailing" constant="8" id="OP6-0c-yqO"/>
                                                 <constraint firstItem="KKn-Xt-svD" firstAttribute="centerY" secondItem="0VU-UC-w7C" secondAttribute="centerY" constant="2" id="V8X-FQ-1hr"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="KKn-Xt-svD" secondAttribute="bottom" constant="15.5" id="Xpp-Vr-bGU"/>
-                                                <constraint firstItem="KKn-Xt-svD" firstAttribute="leading" secondItem="tcy-3y-7Dg" secondAttribute="trailing" constant="8" id="ZKN-UG-Ilc"/>
+                                                <constraint firstItem="KKn-Xt-svD" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="tcy-3y-7Dg" secondAttribute="trailing" priority="250" constant="8" id="ZKN-UG-Ilc"/>
                                                 <constraint firstItem="iye-Lc-Ccq" firstAttribute="top" secondItem="0VU-UC-w7C" secondAttribute="topMargin" id="gbc-ag-Qly"/>
                                                 <constraint firstItem="KKn-Xt-svD" firstAttribute="top" secondItem="0VU-UC-w7C" secondAttribute="topMargin" constant="8" id="hg1-Oe-rug"/>
                                                 <constraint firstItem="X0q-KQ-dEp" firstAttribute="top" secondItem="iye-Lc-Ccq" secondAttribute="bottom" constant="4" id="inK-MJ-Svc"/>
@@ -211,7 +212,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1509" y="-2064"/>
+            <point key="canvasLocation" x="-1451" y="-2083"/>
         </scene>
     </scenes>
     <resources>
