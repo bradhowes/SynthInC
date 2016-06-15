@@ -28,3 +28,6 @@ is a simple Bash script to this: `FluidR3\_GM.sh`. Just run like so:
 ```
 % ./FluidR3_GM.sh
 ```
+
+There is also a basic Python script called `catalog.py` which will generate a SoundFont catalog in Swift. There is
+no integration with Xcode so you have to add the files yourself, but it may be handy nonetheless.

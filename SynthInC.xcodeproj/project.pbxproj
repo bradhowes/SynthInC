@@ -90,6 +90,8 @@
 		BD435E0C1D087844000ECC3C /* FreeFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FreeFont.swift; path = SoundFonts/FreeFont.swift; sourceTree = SOURCE_ROOT; };
 		BD435E0D1D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "GeneralUser GS MuseScore v1.442.swift"; path = "SoundFonts/GeneralUser GS MuseScore v1.442.swift"; sourceTree = SOURCE_ROOT; };
 		BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RolandNicePiano.swift; path = SoundFonts/RolandNicePiano.swift; sourceTree = SOURCE_ROOT; };
+		BD4957281D11A311000324ED /* catalog.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = catalog.py; path = SoundFonts/catalog.py; sourceTree = "<group>"; };
+		BD49572A1D11A325000324ED /* FluidR3_GM.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = FluidR3_GM.sh; path = SoundFonts/FluidR3_GM.sh; sourceTree = "<group>"; };
 		BD8433DE1D024BC800BD835C /* InstrumentsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentsTableViewCell.swift; sourceTree = "<group>"; };
 		BDB6C5A11CFD6C550095E9CA /* PatchSelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatchSelectViewController.swift; sourceTree = "<group>"; };
 		BDEC150E1CFDB6C300A99BD8 /* PatchSelectView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PatchSelectView.xib; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				B06746D819BF58F700DCF4E3 /* Source */,
 				BDD8B4B91D0039C200CC8698 /* Resources */,
 				B06746EB19BF58F700DCF4E3 /* Tests */,
+				BD4957271D11A2E9000324ED /* Extras */,
 				BD1BD0371CF778BE00C804A4 /* Frameworks */,
 				B06746D719BF58F700DCF4E3 /* Products */,
 			);
@@ -244,6 +247,15 @@
 				BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */,
 			);
 			name = "Sound Fonts";
+			sourceTree = "<group>";
+		};
+		BD4957271D11A2E9000324ED /* Extras */ = {
+			isa = PBXGroup;
+			children = (
+				BD49572A1D11A325000324ED /* FluidR3_GM.sh */,
+				BD4957281D11A311000324ED /* catalog.py */,
+			);
+			name = Extras;
 			sourceTree = "<group>";
 		};
 		BDD8B4B91D0039C200CC8698 /* Resources */ = {
