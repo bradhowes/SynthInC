@@ -16,12 +16,16 @@ class VolumeBarView: UIView {
 
     override func drawRect(rect: CGRect) {
         guard let cgc = UIGraphicsGetCurrentContext() else { return }
-        
+        //        CGContextSetFillColorWithColor(cgc, backgroundColor?.CGColor)
+
+        CGContextSetRGBFillColor(cgc, 1.0, 1.0, 1.0, 0.20)
+        CGContextFillRect(cgc, bounds)
+
         if muted {
-            CGContextSetRGBFillColor(cgc, 0.8, 0, 0, 0.90)
+            CGContextSetRGBFillColor(cgc, 0.8, 0, 0, 0.80)
         }
         else {
-            CGContextSetRGBFillColor(cgc, 0.2, 0.8, 0.2, 0.90)
+            CGContextSetRGBFillColor(cgc, 0.2, 0.8, 0.2, 0.80)
         }
 
         let w = bounds.width

@@ -17,9 +17,6 @@ class ViewController: UIViewController {
         case Add = 0, Edit, Done
     }
 
-    @IBOutlet weak var navigationBar: UINavigationBar!
-    @IBOutlet weak var myNavigationItem: UINavigationItem!
-    
     /**
      Button to show the in-app settings.
      */
@@ -123,7 +120,7 @@ class ViewController: UIViewController {
         normalRightButtons = [addButton, editButton]
         editingRightButtons = [doneButton]
 
-        myNavigationItem.setRightBarButtonItems(normalRightButtons, animated: false)
+        navigationItem.setRightBarButtonItems(normalRightButtons, animated: false)
 
         updateTitle()
     }
@@ -148,7 +145,7 @@ class ViewController: UIViewController {
     func updateTitle() {
         let count = gen.activeInstruments.count
         let plural = count == 1 ? "" : "s"
-        myNavigationItem.title = "\(gen.activeInstruments.count) Instrument\(plural)"
+        navigationItem.title = "\(gen.activeInstruments.count) Instrument\(plural)"
     }
     
     override func showDetailViewController(vc: UIViewController, sender: AnyObject?) {
@@ -468,7 +465,7 @@ extension ViewController {
             addButton?.enabled = true
             if gen.activeInstruments.count == 1 {
                 tableView.setEditing(false, animated: true)
-                myNavigationItem.setRightBarButtonItems([addButton!], animated: true)
+                navigationItem.setRightBarButtonItems([addButton!], animated: true)
                 settings.enabled = true
             }
         }
@@ -498,12 +495,12 @@ extension ViewController {
         print("editInstruments")
         if instrumentSettings.editing {
             instrumentSettings.setEditing(false, animated: true)
-            myNavigationItem.setRightBarButtonItems(normalRightButtons, animated: true)
+            navigationItem.setRightBarButtonItems(normalRightButtons, animated: true)
             settings.enabled = true
         }
         else {
             instrumentSettings.setEditing(true, animated: true)
-            myNavigationItem.setRightBarButtonItems(editingRightButtons, animated: true)
+            navigationItem.setRightBarButtonItems(editingRightButtons, animated: true)
             settings.enabled = false
         }
     }

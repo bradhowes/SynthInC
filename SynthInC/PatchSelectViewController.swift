@@ -64,6 +64,12 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         muteButton.setImage(UIImage(named: value ? "Mute On" : "Mute Off"), forState: .Normal)
     }
 
+    func updateOctaveText() {
+        guard let instrument = instrument else { return }
+        let value = Int(instrument.octave)
+        octaveLabel.text = value != 0 ? "\(value > 0 ? "+" : "")\(Int(value))" : ""
+    }
+    
     /**
      Create new instance and its associated view from the PatchSelectView nib.
      */
@@ -77,7 +83,7 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     override func viewDidLoad() {
         picker.delegate = self
         picker.dataSource = self
-        UIPickerView.appearance().backgroundColor = UIColor.blackColor()
+        // UIPickerView.appearance().backgroundColor = UIColor.blackColor()
 
         octaveChange.minimumValue = -2.0
         octaveChange.maximumValue =  2.0
@@ -149,8 +155,8 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         picker.selectRow(patchIndex, inComponent: 1, animated: false)
 
         octaveChange.value = Double(originalOctave)
-        octaveLabel.text = "Oct \(originalOctave)"
-
+        updateOctaveText()
+        
         volumeSlider.value = originalVolume * 100.0
         panSlider.value = originalPan
 
@@ -263,7 +269,7 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 2
     }
-
+    
     @IBAction func donePressed(sender: UIButton) {
         guard let instrument = self.instrument else { return }
         stopSolo()
@@ -280,8 +286,8 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     }
 
     @IBAction func changeOctave(sender: UIStepper) {
-        octaveLabel.text = "Oct \(Int(sender.value))"
         instrument?.octave = Int(sender.value)
+        updateOctaveText()
     }
 
     @IBAction func changeVolume(sender: UISlider) {
