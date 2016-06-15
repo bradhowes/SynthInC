@@ -156,6 +156,8 @@ extension AudioController {
             return false
         }
 
+        // Try to start the graph
+        //
         if isRunning == false {
             print("-- starting AUGraph")
             if CheckError("AUGraphStart", AUGraphStart(graph)) {
@@ -302,7 +304,6 @@ extension AudioController {
         // Generate MusicTrack objects for each instrument. Remember the longest track duration
         //
         musicTrackMap = [:]
-        
         activeInstruments.forEach {
             let (musicTrack, beatClock) = $0.createMusicTrack(musicSequence)
             if musicTrack != nil {
@@ -545,6 +546,12 @@ extension AudioController {
         return true
     }
     
+    /**
+     Move an instrument from one position to another in activeInstruments array.
+     
+     - parameter fromPos: original postion
+     - parameter toPos: new position
+     */
     func reorderInstrument(fromPos fromPos: Int, toPos: Int) {
         print("reorder: \(fromPos)  \(toPos)")
         activeInstruments.insert(activeInstruments.removeAtIndex(fromPos), atIndex: toPos)

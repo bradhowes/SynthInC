@@ -86,44 +86,55 @@ final class Instrument: NSObject {
         }
     }
 
+    /**
+     Apply the current octave setting to the sampler AudioUnit
+     */
     private func applyOctave() {
         guard samplerUnit != nil else { return }
-        print("-- \(index) octave: \(octave)")
         let result: Float = Float(min(2, max(octave, -2))) * 12.0
         CheckError("AudioUnitSetParameter(Tuning)", AudioUnitSetParameter(samplerUnit,
             kAUSamplerParam_CoarseTuning, kAudioUnitScope_Global, 0, result, 0))
     }
 
+    /**
+     Apply the current volume setting to the mixer AudioUnit
+     */
     private func applyVolume() {
         guard samplerUnit != nil else { return }
-        print("-- \(index) volume: \(volume)")
         CheckError("AudioUnitSetParameter(Volume)", AudioUnitSetParameter(audioController.mixerUnit,
             kMultiChannelMixerParam_Volume, kAudioUnitScope_Input, UInt32(index), volume, 0))
     }
 
+    /**
+     Apply the current pan setting to the mixer AudioUnit
+     */
     private func applyPan() {
         guard samplerUnit != nil else { return }
-        print("-- \(index) pan: \(pan)")
         CheckError("AudioUnitSetParameter(Pan)", AudioUnitSetParameter(audioController.mixerUnit,
             kMultiChannelMixerParam_Pan, kAudioUnitScope_Input, UInt32(index), pan, 0))
     }
 
+    /**
+     Apply the enabled setting to the mixer AudioUnit
+     */
     private func applyEnabled() {
         guard samplerUnit != nil else { return }
-        print("-- \(index) enabled: \(enabled) muted: \(muted)")
         let result: Float = (enabled && !muted) ? 1.0 : 0.0
         CheckError("AudioUnitSetParameter(Enable)", AudioUnitSetParameter(audioController.mixerUnit,
             kMultiChannelMixerParam_Enable, kAudioUnitScope_Input, UInt32(index), result, 0))
     }
 
+    /**
+     Receive solo change notifications.
+     */
     private func registerForSoloNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(solo(_:)),
                                                          name: kSoloInstrumentNotificationKey, object: nil)
     }
-    
+
     /**
-     Update our sound volume temporarily in response to a `solo` request. If the requesting object is ourselves, then
-     max our own volume. Otherwise, mute requesting objects.
+     Update our mute state temporarily in response to a `solo` request. If the requesting object is ourselves, then
+     make sure we are enabled. Otherwise, disable.
      
      - parameter notification: holds a `userInfo` map which should also contain the `Instrument` asking for solo
      treatment
@@ -151,7 +162,7 @@ final class Instrument: NSObject {
             solo = false
         }
     }
-    
+
     /**
      Get the phrase/section being played by the Instrument
      
