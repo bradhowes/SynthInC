@@ -154,11 +154,16 @@ extension ViewController: IASKSettingsDelegate, UIPopoverPresentationControllerD
         showingSettings = false
     }
 
+    /**
+     Notification from popover controller that the popover has been dismissed.
+     
+     - parameter popoverPresentationController: the controller
+     */
     func popoverPresentationControllerDidDismissPopover(popoverPresentationController: UIPopoverPresentationController) {
         normalRightButtons.forEach { $0.enabled = true }
         showingSettings = false
     }
-    
+
     /**
      Show the in-app settings view.
      - parameter sender: the button that invoked this method
@@ -327,6 +332,14 @@ extension ViewController {
 // MARK: UITableView
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
 
+    /**
+     Support deselection of a row. If a row is already selected, deselect the row.
+     
+     - parameter tableView: the instruments view
+     - parameter indexPath: the index of the row that will be selected
+     
+     - returns: indexPath if row should be selected, nil otherwise
+     */
     func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
         guard let currentRow = tableView.indexPathForSelectedRow?.row else { return indexPath }
         let newRow = indexPath.row
@@ -336,7 +349,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         }
         return indexPath
     }
-    
+
     /**
      Obtain a UITableViewCell to use for an instrument, and fill it in with the instrument's values.
      - parameter tableView: the UITableView to work with
@@ -399,47 +412,86 @@ extension ViewController: PatchSelectViewControllerDelegate {
 // MARK: Cell Editing
 extension ViewController {
 
+    /**
+     Notification from table view that editing is complete.
+     
+     - parameter tableView: the table view
+     - parameter commitEditingStyle: the editing style that is coming to an end
+     - parameter indexPath: the index of the row being edited
+     */
     func tableView(tableView: UITableView, commitEditingStyle: UITableViewCellEditingStyle, forRowAtIndexPath
         indexPath: NSIndexPath) {
-        if commitEditingStyle == .Delete {
-            gen.removeInstrument(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-            addButton?.enabled = true
-            if gen.activeInstruments.count == 1 {
-                tableView.setEditing(false, animated: true)
-                navigationItem.setRightBarButtonItems([addButton!], animated: true)
-                settings.enabled = true
-            }
+        guard commitEditingStyle == .Delete else { return }
+        
+        // Remove the instrument from the model, then tell table view to remove the corresponding view
+        //
+        gen.removeInstrument(indexPath.row)
+        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        
+        // We can definitely add a new instrument now
+        addButton?.enabled = true
+        if gen.activeInstruments.count == 1 {
+            
+            // We cannot do any more deletions
+            //
+            tableView.setEditing(false, animated: true)
+            navigationItem.setRightBarButtonItems([addButton!], animated: true)
+            settings.enabled = true
         }
     }
 
+    /**
+     Handle row movement by the user.
+     
+     - parameter tableView: the table view
+     - parameter sourceIndexPath: the original location of the instrument
+     - parameter destinationIndexPath: the new location of the instrument
+     */
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath,
                    toIndexPath destinationIndexPath: NSIndexPath) {
         gen.reorderInstrument(fromPos: sourceIndexPath.row, toPos: destinationIndexPath.row)
-        (tableView.cellForRowAtIndexPath(sourceIndexPath) as! InstrumentsTableViewCell).updateInstrumentIndex(destinationIndexPath.row + 1)
-        (tableView.cellForRowAtIndexPath(destinationIndexPath) as! InstrumentsTableViewCell).updateInstrumentIndex(sourceIndexPath.row + 1)
+
+        // Swap source and destination index values
+        //
+        let cellFrom = tableView.cellForRowAtIndexPath(sourceIndexPath) as! InstrumentsTableViewCell
+        let cellTo = tableView.cellForRowAtIndexPath(destinationIndexPath) as! InstrumentsTableViewCell
+        cellFrom.updateInstrumentIndex(destinationIndexPath.row + 1)
+        cellTo.updateInstrumentIndex(sourceIndexPath.row + 1)
     }
 
+    /**
+     Add an instrument. If there is a selected row, insert the new instrument before it. Otherwise, append to the end
+     of the list.
+     
+     - parameter sender: the button
+     */
     @IBAction func addInstrument(sender: UIBarButtonItem) {
-        print("addInstrument")
-        let indexPath = instrumentSettings.indexPathForSelectedRow ?? NSIndexPath(forRow: gen.activeInstruments.count,
-                                                                                  inSection: 0)
-        if gen.addInstrument(indexPath.row) {
-            instrumentSettings.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-            instrumentSettings.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
-            instrumentSettings.scrollToRowAtIndexPath(indexPath, atScrollPosition: .None, animated: true)
-            
-            if gen.activeInstruments.count == gen.maxSamplerCount {
-                addButton?.enabled = false
-            }
-            else if gen.activeInstruments.count == 2 {
-                editButton?.enabled = true
-            }
+        let indexPath = instrumentSettings.indexPathForSelectedRow ??
+            NSIndexPath(forRow: gen.activeInstruments.count, inSection: 0)
+        guard gen.addInstrument(indexPath.row) else { return }
+        
+        // Add a view for the new instrument, select it, and scroll view to make it visible
+        //
+        instrumentSettings.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        instrumentSettings.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+        instrumentSettings.scrollToRowAtIndexPath(indexPath, atScrollPosition: .None, animated: true)
+
+        // Update buttons based on active instrument count
+        //
+        if gen.activeInstruments.count == gen.maxSamplerCount {
+            addButton?.enabled = false
+        }
+        else if gen.activeInstruments.count == 2 {
+            editButton?.enabled = true
         }
     }
 
+    /**
+     Toggle edit state of the instruments view.
+     
+     - parameter sender: the button
+     */
     @IBAction func editInstruments(sender: UIBarButtonItem) {
-        print("editInstruments")
         if instrumentSettings.editing {
             instrumentSettings.setEditing(false, animated: true)
             navigationItem.setRightBarButtonItems(normalRightButtons, animated: true)

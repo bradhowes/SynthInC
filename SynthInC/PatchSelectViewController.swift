@@ -32,7 +32,7 @@ protocol PatchSelectViewControllerDelegate : NSObjectProtocol {
 }
 
 /// View controller for the instrument editing view.
-class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+final class PatchSelectViewController: UIViewController {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var picker: UIPickerView!
@@ -57,20 +57,6 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     var soundFontIndex = 0
     var patchIndex = 0
 
-    func updateSoloImage(value: Bool) {
-        soloButton.setImage(UIImage(named: value ? "Solo On" : "Solo Off"), forState: .Normal)
-    }
-
-    func updateMuteImage(value: Bool) {
-        muteButton.setImage(UIImage(named: value ? "Mute On" : "Mute Off"), forState: .Normal)
-    }
-
-    func updateOctaveText() {
-        guard let instrument = instrument else { return }
-        let value = Int(instrument.octave)
-        octaveLabel.text = value != 0 ? "\(value > 0 ? "+" : "")\(Int(value))" : ""
-    }
-    
     /**
      Create new instance and its associated view from the PatchSelectView nib.
      */
@@ -118,7 +104,93 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .LightContent
     }
+}
+
+// MARK: - View Management
+extension PatchSelectViewController {
+
+    /**
+     Stop any solo activity due to the dismissal of the editor.
+     */
+    private func stopSolo() {
+        guard let instrument = instrument else { return }
+        if instrument.solo {
+            let userInfo: [NSObject:AnyObject] = [:]
+            NSNotificationCenter.defaultCenter().postNotificationName(kSoloInstrumentNotificationKey, object: self,
+                                                                      userInfo: userInfo)
+        }
+    }
+
+    /**
+     Update view with current Instrument settings just before view is shown to user.
+     
+     - parameter animated: true if the view is being animated while it is shown
+     */
+    override func viewWillAppear(animated: Bool) {
+        precondition(originalPatch != nil && instrument != nil)
+        
+        picker.selectRow(soundFontIndex, inComponent: 0, animated: false)
+        picker.reloadComponent(1)
+        picker.selectRow(patchIndex, inComponent: 1, animated: false)
+        
+        octaveChange.value = Double(originalOctave)
+        updateOctaveText()
+        
+        volumeSlider.value = originalVolume * 100.0
+        panSlider.value = originalPan
+        
+        updateSoloImage(false)
+        updateMuteImage(originalMuted)
+        
+        titleLabel.text = "Instrument \(instrumentRow + 1)"
+        
+        super.viewWillAppear(animated)
+    }
     
+    /**
+     Notification that the view is being dismissed. Stop any solo activity, and if restore the original Instrument
+     settings if not accepted by the user.
+     
+     - parameter animated: true if the view will disappear in animated fashion
+     */
+    override func viewWillDisappear(animated: Bool) {
+        if let _ = instrument {
+            stopSolo()
+            restoreInstrument()
+        }
+        super.viewWillDisappear(animated)
+    }
+    /**
+     Update solo button based on given value.
+     
+     - parameter value: the boolean value to use
+     */
+    private func updateSoloImage(value: Bool) {
+        soloButton.setImage(UIImage(named: value ? "Solo On" : "Solo Off"), forState: .Normal)
+    }
+    
+    /**
+     Update mute button based on given value.
+     
+     - parameter value: the boolean value to use
+     */
+    private func updateMuteImage(value: Bool) {
+        muteButton.setImage(UIImage(named: value ? "Mute On" : "Mute Off"), forState: .Normal)
+    }
+    
+    /**
+     Update the octave label with the current value setting.
+     */
+    private func updateOctaveText() {
+        guard let instrument = instrument else { return }
+        let value = Int(instrument.octave)
+        octaveLabel.text = value != 0 ? "\(value > 0 ? "+" : "")\(Int(value))" : ""
+    }
+}
+
+// MARK: - Instrument Editing
+extension PatchSelectViewController {
+
     /**
      Set the instrument that will be edited.
      
@@ -144,35 +216,9 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     }
 
     /**
-     Update view with current Instrument settings just before view is shown to user.
-
-     - parameter animated: true if the view is being animated while it is shown
-     */
-    override func viewWillAppear(animated: Bool) {
-        precondition(originalPatch != nil && instrument != nil)
-
-        picker.selectRow(soundFontIndex, inComponent: 0, animated: false)
-        picker.reloadComponent(1)
-        picker.selectRow(patchIndex, inComponent: 1, animated: false)
-
-        octaveChange.value = Double(originalOctave)
-        updateOctaveText()
-        
-        volumeSlider.value = originalVolume * 100.0
-        panSlider.value = originalPan
-
-        updateSoloImage(false)
-        updateMuteImage(originalMuted)
-        
-        titleLabel.text = "Instrument \(instrumentRow + 1)"
-
-        super.viewWillAppear(animated)
-    }
-
-    /**
      Restore the Instrument instance settings to original values.
      */
-    func restoreInstrument() {
+    private func restoreInstrument() {
         guard let instrument = self.instrument else { return }
         instrument.patch = originalPatch!
         instrument.volume = originalVolume
@@ -180,20 +226,10 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         instrument.muted = originalMuted
         self.instrument = nil
     }
+}
 
-    /**
-     Notification that the view is being dismissed. Stop any solo activity, and if restore the original Instrument
-     settings if not accepted by the user.
-     
-     - parameter animated: true if the view will disappear in animated fashion
-     */
-    override func viewWillDisappear(animated: Bool) {
-        if let _ = instrument {
-            stopSolo()
-            restoreInstrument()
-        }
-        super.viewWillDisappear(animated)
-    }
+// MARK: - UIPickerView Support
+extension PatchSelectViewController: UIPickerViewDelegate, UIPickerViewDataSource {
 
     /**
      Provide patch picker view with number of elements in a component. The first component is the sound font list, and
@@ -208,6 +244,16 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         return component == 0 ? SoundFont.keys.count : SoundFont.getByIndex(soundFontIndex).patches.count
     }
     
+    /**
+     Provide patch picker with the item text to show. The first component is the sound font list, and the second is the
+     list of patches availabe in the selected sound font.
+     
+     - parameter pickerView: the view asking for data
+     - parameter row: the row of the item to return
+     - parameter component: the component of the item to return
+     
+     - returns: text of the item
+     */
     func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int)
         -> NSAttributedString? {
         var text: String
@@ -248,20 +294,6 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         instrument?.patch = patch
     }
 
-//    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int,
-//                    reusingView view: UIView?) -> UIView {
-//        var theView: UILabel? = view as? UILabel
-//        if theView == nil {
-//            theView = UILabel()
-//            theView?.font = UIFont(name: "Helvetica", size: 16.0)
-//            theView?.textAlignment = .Left
-//        }
-//
-//        theView?.attributedText = self.pickerView(pickerView, attributedTitleForRow: row, forComponent: component)
-//
-//        return theView!
-//    }
-
     /**
      Obtain the number of components in the picker.
      
@@ -272,7 +304,16 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 2
     }
+}
+
+// MARK: - Control Activity
+extension PatchSelectViewController {
+
+    /**
+     Handle "Done" button activity. Save the instrument's configuration and announce the dismissal.
     
+     - parameter sender: the button
+     */
     @IBAction func donePressed(sender: UIButton) {
         guard let instrument = self.instrument else { return }
         stopSolo()
@@ -281,6 +322,11 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         delegate?.patchSelectDismissed(instrumentRow, reason: .Done)
     }
 
+    /**
+     Handle "Cancel" button activity. Restore the instrument's configuration and announce the dismissal.
+     
+     - parameter sender: the button
+     */
     @IBAction func cancelPressed(sender: UIButton) {
         guard let _ = self.instrument else { return }
         restoreInstrument()
@@ -288,29 +334,55 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
         delegate?.patchSelectDismissed(instrumentRow, reason: .Cancel)
     }
 
+    /**
+     Handle changes to the instrument octave shift value.
+     
+     - parameter sender: the stepper with the current octave shift value
+     */
     @IBAction func changeOctave(sender: UIStepper) {
         instrument?.octave = Int(sender.value)
         updateOctaveText()
     }
 
+    /**
+     Handle volume changes. Update the instrument's volume setting.
+     
+     - parameter sender: the volume slider
+     */
     @IBAction func changeVolume(sender: UISlider) {
         instrument?.volume = sender.value / 100.0
     }
 
+    /**
+     Handle pan changes. Update the instrument's pan setting.
+     
+     - parameter sender: the pan slider
+     */
     @IBAction func changePan(sender: UISlider) {
         instrument?.pan = sender.value
     }
-    
+
+    /**
+     Handle "Solo" button toggle
+     
+     - parameter sender: the button
+     */
     @IBAction func soloInstrument(sender: UIButton) {
         guard let instrument = instrument else { return }
         var userInfo: [NSObject:AnyObject] = [:]
         if !instrument.solo {
+
+            // Make this instrument the only one playing
+            //
             currentMuted = instrument.muted
             userInfo["instrument"] = instrument
             updateSoloImage(true)
             updateMuteImage(false)
         }
         else {
+            
+            // Disable solo setting, restoring the other instruments
+            //
             updateSoloImage(false)
             updateMuteImage(currentMuted)
         }
@@ -318,15 +390,11 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
                                                                   userInfo: userInfo)
     }
 
-    func stopSolo() {
-        guard let instrument = instrument else { return }
-        if instrument.solo {
-            let userInfo: [NSObject:AnyObject] = [:]
-            NSNotificationCenter.defaultCenter().postNotificationName(kSoloInstrumentNotificationKey, object: self,
-                                                                      userInfo: userInfo)
-        }
-    }
+    /**
+     Handle the "Mute" button toggle. Update the instrument's mute setting.
 
+     - parameter sender: the button
+     */
     @IBAction func muteInstrument(sender: UIButton) {
         guard let instrument = instrument else { return }
         instrument.muted = !instrument.muted
