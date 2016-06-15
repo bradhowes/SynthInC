@@ -117,12 +117,10 @@ class ViewController: UIViewController {
         editButton.enabled = true
         doneButton.enabled = true
 
-        normalRightButtons = [addButton, editButton]
+        normalRightButtons = [editButton]
         editingRightButtons = [doneButton]
 
         navigationItem.setRightBarButtonItems(normalRightButtons, animated: false)
-
-        updateTitle()
     }
 
     /**
@@ -140,16 +138,6 @@ class ViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         print("*** memory pressure ***")
         super.didReceiveMemoryWarning()
-    }
-    
-    func updateTitle() {
-        let count = gen.activeInstruments.count
-        let plural = count == 1 ? "" : "s"
-        navigationItem.title = "\(gen.activeInstruments.count) Instrument\(plural)"
-    }
-    
-    override func showDetailViewController(vc: UIViewController, sender: AnyObject?) {
-        super.showDetailViewController(vc, sender: sender)
     }
 }
 
@@ -255,15 +243,14 @@ extension ViewController: ASValueTrackingSliderDataSource {
             gen.setPlaybackPosition(0.0)
             currentPosition = 0.0
         }
-        
+
         if !sliderInUse {
             playbackPosition.setValue(Float(currentPosition / Double(length)), animated: false)
         }
 
-        // Need to protect the selection
-        let savedSelection = instrumentSettings.indexPathForSelectedRow
-        instrumentSettings.reloadData()
-        instrumentSettings.selectRowAtIndexPath(savedSelection, animated: false, scrollPosition: .None)
+        instrumentSettings.visibleCells.forEach {
+            ($0 as! InstrumentsTableViewCell).updatePhrase(currentPosition)
+        }
     }
     
     /**
@@ -350,10 +337,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         return indexPath
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        print(indexPath.row)
-    }
-
     /**
      Obtain a UITableViewCell to use for an instrument, and fill it in with the instrument's values.
      - parameter tableView: the UITableView to work with
@@ -363,34 +346,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "InstrumentCell" // !!! This must match prototype in Main.storyboard !!!
         let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! InstrumentsTableViewCell
-
-        // Row shows the patch name the instrument is using, and the current sequence it is playing
-        //
-        let instrument = gen.activeInstruments[indexPath.row]
-
+        cell.instrument = gen.activeInstruments[indexPath.row]
         cell.instrumentIndex?.text = "\(indexPath.row + 1)"
-
-        let octaveTag: String
-        if instrument.octave > 0 {
-            octaveTag = " (+\(instrument.octave))"
-        }
-        else if instrument.octave < 0 {
-            octaveTag = " (\(instrument.octave))"
-        }
-        else {
-            octaveTag = ""
-        }
-
-        cell.patchName?.text = instrument.patch.name + octaveTag
-        cell.soundFontName?.text = instrument.patch.soundFont?.name
-        
-        let phrase = instrument.getSectionPlaying(currentPosition)
-        cell.phrase?.text = phrase >= 0 ? "P\(phrase)" : ""
-
-        cell.volumeLevel.muted = instrument.muted
-        cell.volumeLevel.volume = instrument.volume
-        cell.volumeLevel.pan = instrument.pan
-
+        cell.update(currentPosition)
+        cell.showsReorderControl = true
         return cell
     }
 
@@ -412,7 +371,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
      */
     func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
         guard let cell = tableView.cellForRowAtIndexPath(indexPath) else { return }
-        tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
         let psvc = patchSelectViewController
         psvc.editInstrument(gen.activeInstruments[indexPath.row], row: indexPath.row)
         if let popover = psvc.popoverPresentationController {
@@ -420,9 +378,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             popover.sourceRect = cell.bounds
             presentViewController(psvc, animated: true, completion: nil)
         }
-    }
-    
-    func tableView(tableView: UITableView, didEndEditingRowAtIndexPath indexPath: NSIndexPath) {
     }
 }
 
@@ -435,33 +390,20 @@ extension ViewController: PatchSelectViewControllerDelegate {
      */
     func patchSelectDismissed(row: Int, reason: PatchSelectDismissedReason) {
         self.dismissViewControllerAnimated(true, completion: nil)
-        
-        // Need to protect the selection
-        let savedSelection = instrumentSettings.indexPathForSelectedRow
-        instrumentSettings.reloadRowsAtIndexPaths([NSIndexPath(forRow: row, inSection: 0)],
-                                                  withRowAnimation: .Automatic)
-        instrumentSettings.selectRowAtIndexPath(savedSelection, animated: false, scrollPosition: .None)
-        
-        if reason == .Done {
-            
-        }
+        let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+            as! InstrumentsTableViewCell
+        cell.update(currentPosition)
     }
 }
 
 // MARK: Cell Editing
 extension ViewController {
 
-    func tableView(tableView: UITableView, commitEditingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, commitEditingStyle: UITableViewCellEditingStyle, forRowAtIndexPath
+        indexPath: NSIndexPath) {
         if commitEditingStyle == .Delete {
-            
-            instrumentSettings.beginUpdates()
             gen.removeInstrument(indexPath.row)
-            instrumentSettings.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-            instrumentSettings.endUpdates()
-
-            updateTitle()
-            updatePlaybackInfo()
-
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
             addButton?.enabled = true
             if gen.activeInstruments.count == 1 {
                 tableView.setEditing(false, animated: true)
@@ -471,15 +413,22 @@ extension ViewController {
         }
     }
 
+    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath,
+                   toIndexPath destinationIndexPath: NSIndexPath) {
+        gen.reorderInstrument(fromPos: sourceIndexPath.row, toPos: destinationIndexPath.row)
+        (tableView.cellForRowAtIndexPath(sourceIndexPath) as! InstrumentsTableViewCell).updateInstrumentIndex(destinationIndexPath.row + 1)
+        (tableView.cellForRowAtIndexPath(destinationIndexPath) as! InstrumentsTableViewCell).updateInstrumentIndex(sourceIndexPath.row + 1)
+    }
+
     @IBAction func addInstrument(sender: UIBarButtonItem) {
         print("addInstrument")
-        instrumentSettings.beginUpdates()
-        let selection = instrumentSettings.indexPathForSelectedRow ?? NSIndexPath(forRow: gen.activeInstruments.count,
+        let indexPath = instrumentSettings.indexPathForSelectedRow ?? NSIndexPath(forRow: gen.activeInstruments.count,
                                                                                   inSection: 0)
-        if gen.addInstrument(selection.row) {
-            instrumentSettings.insertRowsAtIndexPaths([selection], withRowAnimation: .Automatic)
-            updateTitle()
-            updatePlaybackInfo()
+        if gen.addInstrument(indexPath.row) {
+            instrumentSettings.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            instrumentSettings.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+            instrumentSettings.scrollToRowAtIndexPath(indexPath, atScrollPosition: .None, animated: true)
+            
             if gen.activeInstruments.count == gen.maxSamplerCount {
                 addButton?.enabled = false
             }
@@ -487,8 +436,6 @@ extension ViewController {
                 editButton?.enabled = true
             }
         }
-
-        instrumentSettings.endUpdates()
     }
 
     @IBAction func editInstruments(sender: UIBarButtonItem) {

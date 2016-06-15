@@ -46,25 +46,28 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Patch Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nw9-dp-fiA">
-                                                    <rect key="frame" x="24" y="8" width="495" height="21"/>
+                                                    <rect key="frame" x="24" y="8" width="477" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.80392156859999997" green="0.80392156859999997" blue="0.80392156859999997" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sound Font" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uV7-sw-OhY">
-                                                    <rect key="frame" x="24" y="36" width="495" height="14.5"/>
+                                                    <rect key="frame" x="24" y="36" width="477" height="14.5"/>
                                                     <fontDescription key="fontDescription" type="italicSystem" pointSize="12"/>
                                                     <color key="textColor" red="0.80392156859999997" green="0.80392156859999997" blue="0.80392156859999997" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="P1" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mQc-5K-wVO">
-                                                    <rect key="frame" x="527" y="20" width="18" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="p.99" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mQc-5K-wVO">
+                                                    <rect key="frame" x="509" y="20" width="36" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="36" id="VHa-xz-sK7"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="0.80392156859999997" green="0.80392156859999997" blue="0.80392156859999997" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view contentMode="scaleToFill" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="IcU-C0-gdn" customClass="VolumeBarView" customModule="SynthInC" customModuleProvider="target">
-                                                    <rect key="frame" x="219" y="29" width="300" height="2"/>
+                                                    <rect key="frame" x="201" y="29" width="300" height="2"/>
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.20080236486486486" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="2" id="lK0-z3-bXR"/>
@@ -143,20 +146,22 @@
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" title="Instruments" id="dsY-tg-cvX">
-                        <barButtonItem key="leftBarButtonItem" image="Settings" id="YBi-dF-gkR">
-                            <connections>
-                                <action selector="showSettings:" destination="BYZ-38-t0r" id="SEl-fG-4bL"/>
-                            </connections>
-                        </barButtonItem>
-                        <rightBarButtonItems>
-                            <barButtonItem systemItem="done" id="cMw-8U-fdr">
+                        <leftBarButtonItems>
+                            <barButtonItem image="Settings" id="YBi-dF-gkR">
                                 <connections>
-                                    <action selector="editInstruments:" destination="BYZ-38-t0r" id="T68-Pm-4Yx"/>
+                                    <action selector="showSettings:" destination="BYZ-38-t0r" id="SEl-fG-4bL"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem systemItem="add" id="r7v-2R-U3y">
                                 <connections>
                                     <action selector="addInstrument:" destination="BYZ-38-t0r" id="YOr-wB-XHz"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="done" id="cMw-8U-fdr">
+                                <connections>
+                                    <action selector="editInstruments:" destination="BYZ-38-t0r" id="T68-Pm-4Yx"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem systemItem="edit" id="UTh-W2-3sD">
@@ -179,7 +184,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-582" y="-2166"/>
+            <point key="canvasLocation" x="-857" y="-2335"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="GCF-7X-ERs">

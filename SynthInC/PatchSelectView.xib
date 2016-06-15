@@ -15,6 +15,7 @@
                 <outlet property="panSlider" destination="TZw-BH-aiS" id="pTQ-h3-FyJ"/>
                 <outlet property="picker" destination="77c-qc-V4w" id="oMQ-Ce-f4X"/>
                 <outlet property="soloButton" destination="5PA-V1-KkJ" id="zUK-oW-fcB"/>
+                <outlet property="titleLabel" destination="3MK-R9-rvh" id="JuJ-7X-Tz3"/>
                 <outlet property="view" destination="iN0-l3-epB" id="fgb-Fb-vFe"/>
                 <outlet property="volumeSlider" destination="i9Z-zj-8Fo" id="AQd-hJ-waz"/>
             </connections>
@@ -26,7 +27,7 @@
             <subviews>
                 <pickerView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="77c-qc-V4w">
                     <rect key="frame" x="0.0" y="63" width="600" height="404"/>
-                    <color key="backgroundColor" red="0.18823529410000001" green="0.0" blue="0.42745098040000001" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" red="0.23122828710000001" green="0.0" blue="0.52027373919999997" alpha="1" colorSpace="calibratedRGB"/>
                 </pickerView>
                 <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rQq-wZ-eUa">
                     <rect key="frame" x="0.0" y="63" width="600" height="404"/>
@@ -130,8 +131,14 @@
                         <action selector="changeVolume:" destination="-1" eventType="valueChanged" id="3P3-QP-ilp"/>
                     </connections>
                 </slider>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Instrument 1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3MK-R9-rvh">
+                    <rect key="frame" x="249" y="29" width="103" height="21"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
-            <color key="backgroundColor" red="0.18823529410000001" green="0.0" blue="0.42745098040000001" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.23122828712003954" green="0.0" blue="0.52027373923054077" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="TcG-F6-Oht" secondAttribute="trailing" constant="20" id="4q3-kN-gbO"/>
                 <constraint firstItem="9Xx-Ej-aNu" firstAttribute="leading" secondItem="URw-Ma-fhH" secondAttribute="trailing" constant="8" id="5bT-yO-jds"/>
@@ -183,6 +190,8 @@
                 <constraint firstItem="TZw-BH-aiS" firstAttribute="leading" secondItem="2G4-BU-dh1" secondAttribute="trailing" constant="8" id="saj-sG-tpf"/>
                 <constraint firstItem="TZw-BH-aiS" firstAttribute="top" secondItem="URw-Ma-fhH" secondAttribute="bottom" constant="8" id="vtn-5i-paH"/>
                 <constraint firstItem="TZw-BH-aiS" firstAttribute="top" secondItem="5PA-V1-KkJ" secondAttribute="bottom" constant="5" id="w8L-3R-mRI"/>
+                <constraint firstItem="3MK-R9-rvh" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="wmR-VJ-O4O"/>
+                <constraint firstItem="3MK-R9-rvh" firstAttribute="centerY" secondItem="BXm-CL-xZ7" secondAttribute="centerY" id="wyl-VE-Yyp"/>
                 <constraint firstItem="TcG-F6-Oht" firstAttribute="top" secondItem="rQq-wZ-eUa" secondAttribute="bottom" constant="5" id="xEL-mg-Lke"/>
                 <constraint firstItem="i9Z-zj-8Fo" firstAttribute="leading" secondItem="TZw-BH-aiS" secondAttribute="leading" id="xlI-oV-fYx"/>
                 <constraint firstItem="77c-qc-V4w" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="zDh-UB-hyl"/>

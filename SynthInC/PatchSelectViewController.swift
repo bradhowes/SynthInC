@@ -34,6 +34,7 @@ protocol PatchSelectViewControllerDelegate : NSObjectProtocol {
 /// View controller for the instrument editing view.
 class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var picker: UIPickerView!
     @IBOutlet weak var doneButton: UIButton!
     @IBOutlet weak var cancelButton: UIButton!
@@ -83,7 +84,6 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
     override func viewDidLoad() {
         picker.delegate = self
         picker.dataSource = self
-        // UIPickerView.appearance().backgroundColor = UIColor.blackColor()
 
         octaveChange.minimumValue = -2.0
         octaveChange.maximumValue =  2.0
@@ -92,6 +92,7 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
 
         volumeSlider.minimumValue = 0.0
         volumeSlider.maximumValue = 100.0
+
         let thumb = UIImage(named: "Slider")
         volumeSlider.setThumbImage(thumb, forState: .Normal)
         volumeSlider.setThumbImage(thumb, forState: .Selected)
@@ -162,6 +163,8 @@ class PatchSelectViewController: UIViewController, UIPickerViewDelegate, UIPicke
 
         updateSoloImage(false)
         updateMuteImage(originalMuted)
+        
+        titleLabel.text = "Instrument \(instrumentRow + 1)"
 
         super.viewWillAppear(animated)
     }

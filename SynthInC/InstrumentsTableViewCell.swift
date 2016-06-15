@@ -5,9 +5,12 @@
 // Copyright © 2016 Brad Howes. All rights reserved.
 
 import UIKit
+import AVFoundation
 
 /// Simple derivation of UITableViewCell for the instruments view.
 class InstrumentsTableViewCell: UITableViewCell {
+
+    weak var instrument: Instrument!
 
     @IBOutlet weak var instrumentIndex: UILabel!
     @IBOutlet weak var patchName: UILabel!
@@ -20,13 +23,45 @@ class InstrumentsTableViewCell: UITableViewCell {
      */
     override func awakeFromNib() {
         super.awakeFromNib()
-
+        backgroundColor = UIColor(colorLiteralRed:(48/255.0), green:0.0, blue:(109/255.0), alpha:1)
+        
         // Set up a custom selection color
         let selectionColor = UIView()
         selectionColor.backgroundColor = UIColor(colorLiteralRed:1.0, green:1.0, blue:1.0, alpha:0.2)
         selectedBackgroundView = selectionColor
+    }
+    
+    /**
+     Update the view components.
+     
+     - parameter currentPosition: the playback position of the active MusicPlayer
+     */
+    func update(currentPosition: MusicTimeStamp) {
+        let value = Int(instrument.octave)
+        let octaveTag = value != 0 ? " (\(value > 0 ? "+" : "")\(Int(value)))" : ""
 
-        // !!! Need this here or else the accessory view does not use the same background color
-        backgroundColor = UIColor(colorLiteralRed:(48/255.0), green:0.0, blue:(109/255.0), alpha:1)
+        patchName?.text = instrument.patch.name + octaveTag
+        soundFontName?.text = instrument.patch.soundFont?.name
+        volumeLevel.muted = instrument.muted
+        volumeLevel.volume = instrument.volume
+        volumeLevel.pan = instrument.pan
+
+        updatePhrase(currentPosition)
+
+        volumeLevel.setNeedsDisplay()
+    }
+
+    /**
+     Update the phrase label that shows the current score phrase being played by an Instrument.
+     
+     - parameter currentPosition: the playback position of the active MusicPlayer
+     */
+    func updatePhrase(currentPosition: MusicTimeStamp) {
+        let phraseIndex = instrument.getSectionPlaying(currentPosition)
+        phrase?.text = phraseIndex >= 0 ? "p.\(phraseIndex)" : ""
+    }
+    
+    func updateInstrumentIndex(index: Int) {
+        instrumentIndex.text = "\(index)"
     }
 }

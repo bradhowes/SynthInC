@@ -495,6 +495,10 @@ extension AudioController {
 
         let instrument = instruments[activeInstruments.count]
         instrument.setActiveDefaults()
+        
+        if pos < activeInstruments.count {
+            instrument.patch = activeInstruments[pos].patch
+        }
 
         let (musicTrack, beatClock) = instrument.createMusicTrack(musicSequence)
         if musicTrack == nil {
@@ -539,6 +543,12 @@ extension AudioController {
         saveMusicSequence()
 
         return true
+    }
+    
+    func reorderInstrument(fromPos fromPos: Int, toPos: Int) {
+        print("reorder: \(fromPos)  \(toPos)")
+        activeInstruments.insert(activeInstruments.removeAtIndex(fromPos), atIndex: toPos)
+        saveSetup()
     }
 }
 
