@@ -36,8 +36,7 @@
 		BD435E111D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0D1D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift */; };
 		BD435E121D087844000ECC3C /* RolandNicePiano.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */; };
 		BD8433DF1D024BC800BD835C /* InstrumentsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8433DE1D024BC800BD835C /* InstrumentsTableViewCell.swift */; };
-		BDB6C5A21CFD6C550095E9CA /* PatchSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB6C5A11CFD6C550095E9CA /* PatchSelectViewController.swift */; };
-		BDEC150F1CFDB6C300A99BD8 /* PatchSelectView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BDEC150E1CFDB6C300A99BD8 /* PatchSelectView.xib */; };
+		BDB6C5A21CFD6C550095E9CA /* InstrumentEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,8 +92,7 @@
 		BD4957281D11A311000324ED /* catalog.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = catalog.py; path = SoundFonts/catalog.py; sourceTree = "<group>"; };
 		BD49572A1D11A325000324ED /* FluidR3_GM.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = FluidR3_GM.sh; path = SoundFonts/FluidR3_GM.sh; sourceTree = "<group>"; };
 		BD8433DE1D024BC800BD835C /* InstrumentsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentsTableViewCell.swift; sourceTree = "<group>"; };
-		BDB6C5A11CFD6C550095E9CA /* PatchSelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatchSelectViewController.swift; sourceTree = "<group>"; };
-		BDEC150E1CFDB6C300A99BD8 /* PatchSelectView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PatchSelectView.xib; sourceTree = "<group>"; };
+		BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentEditorViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,8 +119,8 @@
 			isa = PBXGroup;
 			children = (
 				B06746FE19BF673300DCF4E3 /* README.md */,
-				B06746D819BF58F700DCF4E3 /* Source */,
 				BDD8B4B91D0039C200CC8698 /* Resources */,
+				B06746D819BF58F700DCF4E3 /* Source */,
 				B06746EB19BF58F700DCF4E3 /* Tests */,
 				BD4957271D11A2E9000324ED /* Extras */,
 				BD1BD0371CF778BE00C804A4 /* Frameworks */,
@@ -144,9 +142,10 @@
 			children = (
 				B06746DB19BF58F700DCF4E3 /* AppDelegate.swift */,
 				BDD8B4BA1D0039F700CC8698 /* Layouts */,
-				BD4957261D1135A1000324ED /* Sound Fonts */,
+				BDAEC4211D11CE7C00201498 /* Views */,
+				BD0757451D05FE8300595332 /* Controllers */,
 				BD0757431D05FE2B00595332 /* Audio */,
-				BD0757451D05FE8300595332 /* VIews */,
+				BD4957261D1135A1000324ED /* Sound Fonts */,
 				BD0757441D05FE6400595332 /* Utility */,
 				B06746D919BF58F700DCF4E3 /* Supporting Files */,
 				BD0757371D05815800595332 /* Vendor */,
@@ -215,15 +214,13 @@
 			name = Utility;
 			sourceTree = "<group>";
 		};
-		BD0757451D05FE8300595332 /* VIews */ = {
+		BD0757451D05FE8300595332 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				BD0BBA2F1D0E2C42006F7F6A /* ViewController.swift */,
-				BD8433DE1D024BC800BD835C /* InstrumentsTableViewCell.swift */,
-				BDB6C5A11CFD6C550095E9CA /* PatchSelectViewController.swift */,
-				BD0BBA311D0E3A68006F7F6A /* VolumeBarView.swift */,
+				BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */,
 			);
-			name = VIews;
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 		BD1BD0371CF778BE00C804A4 /* Frameworks */ = {
@@ -258,6 +255,15 @@
 			name = Extras;
 			sourceTree = "<group>";
 		};
+		BDAEC4211D11CE7C00201498 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BD8433DE1D024BC800BD835C /* InstrumentsTableViewCell.swift */,
+				BD0BBA311D0E3A68006F7F6A /* VolumeBarView.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		BDD8B4B91D0039C200CC8698 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -275,7 +281,6 @@
 			isa = PBXGroup;
 			children = (
 				B06746DF19BF58F700DCF4E3 /* Main.storyboard */,
-				BDEC150E1CFDB6C300A99BD8 /* PatchSelectView.xib */,
 				B01161BE1B149C2A005A90F7 /* Launch Screen.xib */,
 			);
 			name = Layouts;
@@ -372,7 +377,6 @@
 			files = (
 				BD1F147D1CF5CDA400E6B85F /* RolandNicePiano.sf2 in Resources */,
 				BD1F14731CF4E98000E6B85F /* GeneralUser GS MuseScore v1.442.sf2 in Resources */,
-				BDEC150F1CFDB6C300A99BD8 /* PatchSelectView.xib in Resources */,
 				BD1F147C1CF5CDA400E6B85F /* FreeFont.sf2 in Resources */,
 				BD1F147B1CF5CDA400E6B85F /* FluidR3_GM.sf2 in Resources */,
 				B01161BF1B149C2A005A90F7 /* Launch Screen.xib in Resources */,
@@ -416,7 +420,7 @@
 			files = (
 				BD435E121D087844000ECC3C /* RolandNicePiano.swift in Sources */,
 				BD0BBA301D0E2C42006F7F6A /* ViewController.swift in Sources */,
-				BDB6C5A21CFD6C550095E9CA /* PatchSelectViewController.swift in Sources */,
+				BDB6C5A21CFD6C550095E9CA /* InstrumentEditorViewController.swift in Sources */,
 				BD1F14831CF5D27200E6B85F /* RandomGenerators.swift in Sources */,
 				BD435E101D087844000ECC3C /* FreeFont.swift in Sources */,
 				BD8433DF1D024BC800BD835C /* InstrumentsTableViewCell.swift in Sources */,

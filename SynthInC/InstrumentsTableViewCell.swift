@@ -36,18 +36,27 @@ class InstrumentsTableViewCell: UITableViewCell {
      
      - parameter currentPosition: the playback position of the active MusicPlayer
      */
-    func update(currentPosition: MusicTimeStamp) {
+    func updateAll(currentPosition: MusicTimeStamp) {
+        updateTitle()
+        updateSoundFontName()
+        updateVolume()
+        updatePhrase(currentPosition)
+    }
+
+    func updateTitle() {
         let value = Int(instrument.octave)
         let octaveTag = value != 0 ? " (\(value > 0 ? "+" : "")\(Int(value)))" : ""
-
         patchName?.text = instrument.patch.name + octaveTag
+    }
+
+    func updateSoundFontName() {
         soundFontName?.text = instrument.patch.soundFont?.name
+    }
+
+    func updateVolume() {
         volumeLevel.muted = instrument.muted
         volumeLevel.volume = instrument.volume
         volumeLevel.pan = instrument.pan
-
-        updatePhrase(currentPosition)
-
         volumeLevel.setNeedsDisplay()
     }
 

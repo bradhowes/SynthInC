@@ -13,14 +13,14 @@ import UIKit
  - Done: user pressed the Done button
  - Cancel: user pressed the Cancel button
  */
-enum PatchSelectDismissedReason {
+enum InstrumentEditorDismissedReason {
     case Done, Cancel
 }
 
 /**
- @brief Delegate protocol for the PatchSelectViewController.
+ @brief Delegate protocol for the InstrumentEditorViewController.
  */
-protocol PatchSelectViewControllerDelegate : NSObjectProtocol {
+protocol InstrumentEditorViewControllerDelegate : NSObjectProtocol {
 
     /**
      Notify the delegate when the patch select view is dismissed.
@@ -28,16 +28,21 @@ protocol PatchSelectViewControllerDelegate : NSObjectProtocol {
      - parameter row: the UITableView row associated with the edit
      - parameter reason: the `PatchSelectDismissedReason` value
      */
-    func patchSelectDismissed(row: Int, reason: PatchSelectDismissedReason)
+    func instrumentEditorDismissed(row: Int, reason: InstrumentEditorDismissedReason)
+    func instrumentEditorPatchChanged(row: Int)
+    func instrumentEditorVolumeChanged(row: Int)
+    func instrumentEditorPanChanged(row: Int)
+    func instrumentEditorMuteChanged(row: Int)
+    func instrumentEditorOctaveChanged(row: Int)
+    func instrumentEditorSoloChanged(row: Int, soloing: Bool)
 }
 
 /// View controller for the instrument editing view.
-final class PatchSelectViewController: UIViewController {
-    
-    @IBOutlet weak var titleLabel: UILabel!
+final class InstrumentEditorViewController: UIViewController {
+
+    @IBOutlet weak var doneButton: UIBarButtonItem!
+    @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var picker: UIPickerView!
-    @IBOutlet weak var doneButton: UIButton!
-    @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var panSlider: ASValueTrackingSlider!
     @IBOutlet weak var volumeSlider: ASValueTrackingSlider!
     @IBOutlet weak var octaveChange: UIStepper!
@@ -45,7 +50,7 @@ final class PatchSelectViewController: UIViewController {
     @IBOutlet weak var soloButton: UIButton!
     @IBOutlet weak var muteButton: UIButton!
 
-    weak var delegate: PatchSelectViewControllerDelegate?
+    weak var delegate: InstrumentEditorViewControllerDelegate?
     var instrument: Instrument?
     var instrumentRow: Int = -1
     var originalPatch: Patch?
@@ -107,19 +112,7 @@ final class PatchSelectViewController: UIViewController {
 }
 
 // MARK: - View Management
-extension PatchSelectViewController {
-
-    /**
-     Stop any solo activity due to the dismissal of the editor.
-     */
-    private func stopSolo() {
-        guard let instrument = instrument else { return }
-        if instrument.solo {
-            let userInfo: [NSObject:AnyObject] = [:]
-            NSNotificationCenter.defaultCenter().postNotificationName(kSoloInstrumentNotificationKey, object: self,
-                                                                      userInfo: userInfo)
-        }
-    }
+extension InstrumentEditorViewController {
 
     /**
      Update view with current Instrument settings just before view is shown to user.
@@ -141,9 +134,9 @@ extension PatchSelectViewController {
         
         updateSoloImage(false)
         updateMuteImage(originalMuted)
-        
-        titleLabel.text = "Instrument \(instrumentRow + 1)"
-        
+
+        title = "Instrument \(instrumentRow + 1)"
+
         super.viewWillAppear(animated)
     }
     
@@ -155,11 +148,13 @@ extension PatchSelectViewController {
      */
     override func viewWillDisappear(animated: Bool) {
         if let _ = instrument {
-            stopSolo()
             restoreInstrument()
+            self.instrument = nil
+            delegate?.instrumentEditorDismissed(instrumentRow, reason: .Cancel)
         }
         super.viewWillDisappear(animated)
     }
+
     /**
      Update solo button based on given value.
      
@@ -189,7 +184,7 @@ extension PatchSelectViewController {
 }
 
 // MARK: - Instrument Editing
-extension PatchSelectViewController {
+extension InstrumentEditorViewController {
 
     /**
      Set the instrument that will be edited.
@@ -229,7 +224,7 @@ extension PatchSelectViewController {
 }
 
 // MARK: - UIPickerView Support
-extension PatchSelectViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+extension InstrumentEditorViewController: UIPickerViewDelegate, UIPickerViewDataSource {
 
     /**
      Provide patch picker view with number of elements in a component. The first component is the sound font list, and
@@ -292,6 +287,8 @@ extension PatchSelectViewController: UIPickerViewDelegate, UIPickerViewDataSourc
         precondition(patchIndex >= 0 && patchIndex < soundFont.patches.count)
         let patch = soundFont.patches[patchIndex]
         instrument?.patch = patch
+
+        delegate?.instrumentEditorPatchChanged(instrumentRow)
     }
 
     /**
@@ -307,19 +304,18 @@ extension PatchSelectViewController: UIPickerViewDelegate, UIPickerViewDataSourc
 }
 
 // MARK: - Control Activity
-extension PatchSelectViewController {
+extension InstrumentEditorViewController {
 
     /**
      Handle "Done" button activity. Save the instrument's configuration and announce the dismissal.
     
      - parameter sender: the button
      */
-    @IBAction func donePressed(sender: UIButton) {
+    @IBAction func donePressed(sender: UIBarButtonItem) {
         guard let instrument = self.instrument else { return }
-        stopSolo()
         instrument.saveSetup()
         self.instrument = nil
-        delegate?.patchSelectDismissed(instrumentRow, reason: .Done)
+        delegate?.instrumentEditorDismissed(instrumentRow, reason: .Done)
     }
 
     /**
@@ -327,11 +323,11 @@ extension PatchSelectViewController {
      
      - parameter sender: the button
      */
-    @IBAction func cancelPressed(sender: UIButton) {
+    @IBAction func cancelPressed(sender: UIBarButtonItem) {
         guard let _ = self.instrument else { return }
         restoreInstrument()
         self.instrument = nil
-        delegate?.patchSelectDismissed(instrumentRow, reason: .Cancel)
+        delegate?.instrumentEditorDismissed(instrumentRow, reason: .Cancel)
     }
 
     /**
@@ -342,6 +338,7 @@ extension PatchSelectViewController {
     @IBAction func changeOctave(sender: UIStepper) {
         instrument?.octave = Int(sender.value)
         updateOctaveText()
+        delegate?.instrumentEditorOctaveChanged(instrumentRow)
     }
 
     /**
@@ -351,6 +348,7 @@ extension PatchSelectViewController {
      */
     @IBAction func changeVolume(sender: UISlider) {
         instrument?.volume = sender.value / 100.0
+        delegate?.instrumentEditorVolumeChanged(instrumentRow)
     }
 
     /**
@@ -360,6 +358,7 @@ extension PatchSelectViewController {
      */
     @IBAction func changePan(sender: UISlider) {
         instrument?.pan = sender.value
+        delegate?.instrumentEditorPanChanged(instrumentRow)
     }
 
     /**
@@ -369,25 +368,14 @@ extension PatchSelectViewController {
      */
     @IBAction func soloInstrument(sender: UIButton) {
         guard let instrument = instrument else { return }
-        var userInfo: [NSObject:AnyObject] = [:]
         if !instrument.solo {
-
-            // Make this instrument the only one playing
-            //
-            currentMuted = instrument.muted
-            userInfo["instrument"] = instrument
             updateSoloImage(true)
-            updateMuteImage(false)
+            delegate?.instrumentEditorSoloChanged(instrumentRow, soloing: true)
         }
         else {
-            
-            // Disable solo setting, restoring the other instruments
-            //
             updateSoloImage(false)
-            updateMuteImage(currentMuted)
+            delegate?.instrumentEditorSoloChanged(instrumentRow, soloing: false)
         }
-        NSNotificationCenter.defaultCenter().postNotificationName(kSoloInstrumentNotificationKey, object: self,
-                                                                  userInfo: userInfo)
     }
 
     /**
@@ -400,5 +388,6 @@ extension PatchSelectViewController {
         instrument.muted = !instrument.muted
         updateMuteImage(instrument.muted)
         currentMuted = instrument.muted
+        delegate?.instrumentEditorMuteChanged(instrumentRow)
     }
 }

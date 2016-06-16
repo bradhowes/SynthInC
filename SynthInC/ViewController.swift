@@ -17,11 +17,6 @@ class ViewController: UIViewController {
         case Add = 0, Edit, Done
     }
 
-    /**
-     Button to show the in-app settings.
-     */
-    @IBOutlet weak var settings: UIBarButtonItem!
-    
     /// Flag indicating if the settings pop-up is current shown
     var showingSettings = false
     
@@ -37,7 +32,6 @@ class ViewController: UIViewController {
      @IBOutlet weak var regenerateButton: UIButton!
      */
     @IBOutlet var instrumentSettings: UITableView!
-
     @IBOutlet weak var regenerateButton: UIButton!
 
     /**
@@ -74,24 +68,7 @@ class ViewController: UIViewController {
     /// Indication that the user is manipulating the playback slider.
     var sliderInUse = false
 
-    /**
-     On-demand IASKAppSettingsViewController instance.
-     */
-    lazy var settingsViewController: IASKAppSettingsViewController = {
-        let settingsViewController = IASKAppSettingsViewController()
-        settingsViewController.delegate = self
-        return settingsViewController
-    }()
-
-    /**
-     On-demand PatchSelectViewController instance.
-     */
-    lazy var patchSelectViewController: PatchSelectViewController = {
-        let patchSelectViewController = PatchSelectViewController()
-        patchSelectViewController.delegate = self
-        patchSelectViewController.modalPresentationStyle = .Popover
-        return patchSelectViewController
-    }()
+    var editingRow: Int = -1
 
     /**
      Initialize and configure view after loading.
@@ -159,37 +136,10 @@ extension ViewController: IASKSettingsDelegate, UIPopoverPresentationControllerD
      
      - parameter popoverPresentationController: the controller
      */
-    func popoverPresentationControllerDidDismissPopover(popoverPresentationController: UIPopoverPresentationController) {
+    func popoverPresentationControllerDidDismissPopover(popoverPresentationController:
+        UIPopoverPresentationController) {
         normalRightButtons.forEach { $0.enabled = true }
         showingSettings = false
-    }
-
-    /**
-     Show the in-app settings view.
-     - parameter sender: the button that invoked this method
-     */
-    @IBAction func showSettings(sender: UIBarButtonItem) {
-        let idiom: UIUserInterfaceIdiom = UIDevice.currentDevice().userInterfaceIdiom
-
-        if showingSettings {
-            self.dismissViewControllerAnimated(false, completion: nil)
-        }
-
-        if idiom == .Pad {
-            settingsViewController.modalPresentationStyle = .Popover;
-            settingsViewController.popoverPresentationController?.barButtonItem = settings
-            settingsViewController.popoverPresentationController?.delegate = self
-            presentViewController(settingsViewController, animated:true, completion:nil)
-        }
-        else {
-            settingsViewController.showDoneButton = true
-            let aNavController = UINavigationController(rootViewController: settingsViewController)
-            aNavController.modalPresentationStyle = .PageSheet;
-            presentViewController(aNavController, animated:true, completion:nil)
-        }
-
-        normalRightButtons.forEach { $0.enabled = false }
-        showingSettings = true
     }
 }
 
@@ -253,11 +203,15 @@ extension ViewController: ASValueTrackingSliderDataSource {
             playbackPosition.setValue(Float(currentPosition / Double(length)), animated: false)
         }
 
+        updatePhrases()
+    }
+    
+    func updatePhrases() {
         instrumentSettings.visibleCells.forEach {
             ($0 as! InstrumentsTableViewCell).updatePhrase(currentPosition)
         }
     }
-    
+
     /**
      Delegate callback from playbackPosition slider to format the popup value text.
      
@@ -361,7 +315,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! InstrumentsTableViewCell
         cell.instrument = gen.activeInstruments[indexPath.row]
         cell.instrumentIndex?.text = "\(indexPath.row + 1)"
-        cell.update(currentPosition)
+        cell.updateAll(currentPosition)
         cell.showsReorderControl = true
         return cell
     }
@@ -376,40 +330,96 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         return gen.activeInstruments.count
     }
 
-    /**
-     Provide instruments table view with a cell containing the appropriate row data
-     
-     - parameter tableView: the table view to work with
-     - parameter indexPath: the row being requested
-     */
-    func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
-        guard let cell = tableView.cellForRowAtIndexPath(indexPath) else { return }
-        let psvc = patchSelectViewController
-        psvc.editInstrument(gen.activeInstruments[indexPath.row], row: indexPath.row)
-        if let popover = psvc.popoverPresentationController {
-            popover.sourceView = cell
-            popover.sourceRect = cell.bounds
-            presentViewController(psvc, animated: true, completion: nil)
+    func soloChanged(notification: NSNotification) {
+        instrumentSettings.visibleCells.forEach {
+            ($0 as! InstrumentsTableViewCell).updateVolume()
+        }
+    }
+
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "showDetail" {
+            
+            //
+            // !!! YUCK !!!
+            //
+            guard let cell = sender as? InstrumentsTableViewCell else { return }
+            guard let nc = segue.destinationViewController as? UINavigationController else { return }
+            guard let vc = nc.topViewController as? InstrumentEditorViewController else { return }
+            guard let indexPath = instrumentSettings.indexPathForCell(cell) else { return }
+            guard (indexPath.row >= 0 && indexPath.row < gen.activeInstruments.count) else { return }
+            vc.delegate = self
+            vc.editInstrument(gen.activeInstruments[indexPath.row], row: indexPath.row)
+            if let ppc = nc.popoverPresentationController {
+                ppc.barButtonItem = nil // !!! Muy importante !!!
+
+                // Position popover "arrow" to point near where the accessory item would be. NOTE: this only works right
+                // for left-to-right languages. Sigh.
+                //
+                let frame = cell.contentView.frame
+                let newFrame = CGRectMake(frame.origin.x + frame.width, frame.origin.y, 30, frame.height)
+                ppc.sourceRect = newFrame
+                ppc.sourceView = cell.contentView
+            }
+        }
+        else {
+            super.prepareForSegue(segue, sender: sender)
         }
     }
 }
 
 // MARK: Instrument configuration
-extension ViewController: PatchSelectViewControllerDelegate {
+extension ViewController: InstrumentEditorViewControllerDelegate {
 
     /**
      `PatchSelectViewControllerDelegate` method invoked when the patch picker is no longer showing. Update the 
      instrument's row in case values changed.
      */
-    func patchSelectDismissed(row: Int, reason: PatchSelectDismissedReason) {
+    func instrumentEditorDismissed(row: Int, reason: InstrumentEditorDismissedReason) {
         self.dismissViewControllerAnimated(true, completion: nil)
         let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
             as! InstrumentsTableViewCell
-        cell.update(currentPosition)
+        cell.updateAll(currentPosition)
+    }
+    
+    func instrumentEditorPatchChanged(row: Int) {
+        guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+            as? InstrumentsTableViewCell else { return }
+        cell.updateTitle()
+        cell.updateSoundFontName()
+    }
+
+    func instrumentEditorVolumeChanged(row: Int) {
+        guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+            as? InstrumentsTableViewCell else { return }
+        cell.updateVolume()
+    }
+
+    func instrumentEditorPanChanged(row: Int) {
+        guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+            as? InstrumentsTableViewCell else { return }
+        cell.updateVolume()
+    }
+    
+    func instrumentEditorMuteChanged(row: Int) {
+        guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+            as? InstrumentsTableViewCell else { return }
+        cell.updateVolume()
+    }
+
+    func instrumentEditorOctaveChanged(row: Int) {
+        guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+            as? InstrumentsTableViewCell else { return }
+        cell.updateTitle()
+    }
+
+    func instrumentEditorSoloChanged(row: Int, soloing state: Bool) {
+        let instrument = gen.activeInstruments[row]
+        gen.activeInstruments.forEach { $0.solo(instrument, active: state) }
+        instrumentSettings.visibleCells.forEach { ($0 as! InstrumentsTableViewCell).updateVolume() }
     }
 }
 
-// MARK: Cell Editing
+// MARK: Instrument List Editing
 extension ViewController {
 
     /**
@@ -436,7 +446,6 @@ extension ViewController {
             //
             tableView.setEditing(false, animated: true)
             navigationItem.setRightBarButtonItems([addButton!], animated: true)
-            settings.enabled = true
         }
     }
 
@@ -476,6 +485,8 @@ extension ViewController {
         instrumentSettings.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
         instrumentSettings.scrollToRowAtIndexPath(indexPath, atScrollPosition: .None, animated: true)
 
+        gen.activeInstruments[indexPath.row].addObserver(self, forKeyPath: "volume", options: .New, context: nil)
+
         // Update buttons based on active instrument count
         //
         if gen.activeInstruments.count == gen.maxSamplerCount {
@@ -495,13 +506,10 @@ extension ViewController {
         if instrumentSettings.editing {
             instrumentSettings.setEditing(false, animated: true)
             navigationItem.setRightBarButtonItems(normalRightButtons, animated: true)
-            settings.enabled = true
         }
         else {
             instrumentSettings.setEditing(true, animated: true)
             navigationItem.setRightBarButtonItems(editingRightButtons, animated: true)
-            settings.enabled = false
         }
     }
-
 }

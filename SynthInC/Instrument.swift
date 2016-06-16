@@ -9,8 +9,6 @@
 import Foundation
 import AVFoundation
 
-internal let kSoloInstrumentNotificationKey = "SoloInstrument"
-
 final class Instrument: NSObject {
     let audioController: AudioController
     let index: Int
@@ -30,9 +28,8 @@ final class Instrument: NSObject {
     var pan: Float = 0.0 { didSet { applyPan() } }
     var enabled: Bool = false { didSet { applyEnabled() } }
     var muted: Bool = false { didSet { applyEnabled() } }
-    var solo: Bool = false
-
     private var savedMuted: Bool = false
+    var solo: Bool = false
 
     /**
      Initialize new instance.
@@ -45,7 +42,6 @@ final class Instrument: NSObject {
         self.index = index
         self.patch = SoundFont.randomPatch()
         super.init()
-        registerForSoloNotifications()
     }
     
     /**
@@ -124,36 +120,18 @@ final class Instrument: NSObject {
             kMultiChannelMixerParam_Enable, kAudioUnitScope_Input, UInt32(index), result, 0))
     }
 
-    /**
-     Receive solo change notifications.
-     */
-    private func registerForSoloNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(solo(_:)),
-                                                         name: kSoloInstrumentNotificationKey, object: nil)
-    }
-
-    /**
-     Update our mute state temporarily in response to a `solo` request. If the requesting object is ourselves, then
-     make sure we are enabled. Otherwise, disable.
-     
-     - parameter notification: holds a `userInfo` map which should also contain the `Instrument` asking for solo
-     treatment
-     */
-    func solo(notification: NSNotification) {
-        guard let userInfo = notification.userInfo else { return }
-        guard enabled else { return }
-        if let instrument = userInfo["instrument"] as? Instrument {
+    func solo(instrument: Instrument, active: Bool) {
+        if active {
             if self == instrument {
                 print("-- solo instrument \(index)")
-                solo = true
                 savedMuted = muted
                 muted = false
+                solo = true
             }
             else {
                 print("-- not solo instrument - muting \(index)")
                 savedMuted = muted
                 muted = true
-                solo = false
             }
         }
         else {
