@@ -305,22 +305,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     /**
-     Obtain a UITableViewCell to use for an instrument, and fill it in with the instrument's values.
-     - parameter tableView: the UITableView to work with
-     - parameter indexPath: the row of the table to update
-     - returns: UITableViewCell
-     */
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let identifier = "InstrumentCell" // !!! This must match prototype in Main.storyboard !!!
-        let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! InstrumentsTableViewCell
-        cell.instrument = gen.activeInstruments[indexPath.row]
-        cell.instrumentIndex?.text = "\(indexPath.row + 1)"
-        cell.updateAll(currentPosition)
-        cell.showsReorderControl = true
-        return cell
-    }
-
-    /**
      Obtain the number of rows to display in the instruments view
      - parameter tableView: the UITableView to work with
      - parameter numberOfRowsInSection: which section to report on (only one in our view)
@@ -335,44 +319,97 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             ($0 as! InstrumentsTableViewCell).updateVolume()
         }
     }
-
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "showDetail" {
-            
-            //
-            // !!! YUCK !!!
-            //
-            guard let cell = sender as? InstrumentsTableViewCell else { return }
-            guard let nc = segue.destinationViewController as? UINavigationController else { return }
-            guard let vc = nc.topViewController as? InstrumentEditorViewController else { return }
-            guard let indexPath = instrumentSettings.indexPathForCell(cell) else { return }
-            guard (indexPath.row >= 0 && indexPath.row < gen.activeInstruments.count) else { return }
-            vc.delegate = self
-            vc.editInstrument(gen.activeInstruments[indexPath.row], row: indexPath.row)
-            if let ppc = nc.popoverPresentationController {
-                ppc.barButtonItem = nil // !!! Muy importante !!!
-
-                // Position popover "arrow" to point near where the accessory item would be. NOTE: this only works right
-                // for left-to-right languages. Sigh.
-                //
-                let frame = cell.contentView.frame
-                let newFrame = CGRectMake(frame.origin.x + frame.width, frame.origin.y, 30, frame.height)
-                ppc.sourceRect = newFrame
-                ppc.sourceView = cell.contentView
-            }
-        }
-        else {
-            super.prepareForSegue(segue, sender: sender)
-        }
+    
+    func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
+        guard let cell = tableView.cellForRowAtIndexPath(indexPath) as? InstrumentsTableViewCell else { return }
+        performSegueWithIdentifier("showDetail", sender: cell)
     }
+
 }
 
-// MARK: Instrument configuration
+// MARK: Instrument Editing
 extension ViewController: InstrumentEditorViewControllerDelegate {
 
     /**
-     `PatchSelectViewControllerDelegate` method invoked when the patch picker is no longer showing. Update the 
-     instrument's row in case values changed.
+     Obtain a UITableViewCell to use for an instrument, and fill it in with the instrument's values.
+     - parameter tableView: the UITableView to work with
+     - parameter indexPath: the row of the table to update
+     - returns: UITableViewCell
+     */
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let identifier = "InstrumentCell" // !!! This must match prototype in Main.storyboard !!!
+        let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! InstrumentsTableViewCell
+        cell.instrument = gen.activeInstruments[indexPath.row]
+        cell.instrumentIndex?.text = "\(indexPath.row + 1)"
+        cell.updateAll(currentPosition)
+        cell.showsReorderControl = true
+        
+        let button = UIButton(type:.InfoLight)
+        cell.accessoryView = button
+        button.addTarget(self, action: #selector(editInstrument), forControlEvents: .TouchUpInside)
+        
+        return cell
+    }
+
+    /**
+     Present the instrument editor.
+     
+     - parameter sender: the table view cell
+     - parameter event: description of the event that triggered this call
+     */
+    func editInstrument(sender: UIButton, forEvent event: UIEvent) {
+        
+        // Use the last touch event to locate the row we are to edit
+        //
+        guard let touch = event.allTouches()?.first else { return }
+        let position = touch.locationInView(instrumentSettings)
+        guard let indexPath = instrumentSettings.indexPathForRowAtPoint(position) else { return }
+        let cell = instrumentSettings.cellForRowAtIndexPath(indexPath)
+
+        // Now present the editor
+        //
+        performSegueWithIdentifier("showDetail", sender: cell)
+    }
+
+    /**
+     Setup position of the editor popover (if used). We want the popover to point to the right row.
+     
+     - parameter segue: the storyboard segue being used
+     - parameter sender: the InstrumentTableViewCell of the instrument to edit
+     */
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "showDetail" {
+            guard let cell = sender as? InstrumentsTableViewCell,
+                let nc = segue.destinationViewController as? UINavigationController,
+                let vc = nc.topViewController as? InstrumentEditorViewController,
+                let indexPath = instrumentSettings.indexPathForCell(cell) where
+                (indexPath.row >= 0 && indexPath.row < gen.activeInstruments.count) else { return }
+            
+            // Receive some update notifications when values change
+            //
+            vc.delegate = self
+            
+            // Remember the instrument and the row being edited
+            //
+            vc.editInstrument(gen.activeInstruments[indexPath.row], row: indexPath.row)
+            
+            // Now if showing a popover, position it in the right spot
+            //
+            if let ppc = nc.popoverPresentationController {
+                ppc.barButtonItem = nil // !!! Muy importante !!!
+                ppc.sourceView = cell
+                ppc.sourceRect = cell.accessoryView!.frame
+            }
+        }
+        
+        super.prepareForSegue(segue, sender: sender)
+    }
+
+    /**
+     Editor has been dismissed.
+     
+     - parameter row: the row that was being edited
+     - parameter reason: the reason for the dismissal: Cancel or Done
      */
     func instrumentEditorDismissed(row: Int, reason: InstrumentEditorDismissedReason) {
         self.dismissViewControllerAnimated(true, completion: nil)
@@ -380,7 +417,12 @@ extension ViewController: InstrumentEditorViewControllerDelegate {
             as! InstrumentsTableViewCell
         cell.updateAll(currentPosition)
     }
-    
+
+    /**
+     Patch setting changed in the editor. Update the cell.
+     
+     - parameter row: the row that changed
+     */
     func instrumentEditorPatchChanged(row: Int) {
         guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
             as? InstrumentsTableViewCell else { return }
@@ -388,30 +430,56 @@ extension ViewController: InstrumentEditorViewControllerDelegate {
         cell.updateSoundFontName()
     }
 
+    /**
+     Volume setting changed in the editor. Update the cell.
+     
+     - parameter row: the row that changed
+     */
     func instrumentEditorVolumeChanged(row: Int) {
         guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
             as? InstrumentsTableViewCell else { return }
         cell.updateVolume()
     }
 
+    /**
+     Pan setting changed in the editor. Update the cell.
+     
+     - parameter row: the row that changed
+     */
     func instrumentEditorPanChanged(row: Int) {
         guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
             as? InstrumentsTableViewCell else { return }
         cell.updateVolume()
     }
     
+    /**
+     Mute setting changed in the editor. Update the cell.
+     
+     - parameter row: the row that changed
+     */
     func instrumentEditorMuteChanged(row: Int) {
         guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
             as? InstrumentsTableViewCell else { return }
         cell.updateVolume()
     }
 
+    /**
+     Octave setting changed in the editor. Update the cell.
+     
+     - parameter row: the row that changed
+     */
     func instrumentEditorOctaveChanged(row: Int) {
         guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
             as? InstrumentsTableViewCell else { return }
         cell.updateTitle()
     }
 
+    /**
+     Solo setting changed in the editor. Update the cell.
+     
+     - parameter row: the row that changed
+     - parameter soloing: true if solo enabled, false otherwise
+     */
     func instrumentEditorSoloChanged(row: Int, soloing state: Bool) {
         let instrument = gen.activeInstruments[row]
         gen.activeInstruments.forEach { $0.solo(instrument, active: state) }
