@@ -8,10 +8,17 @@
 
 import Foundation
 
+/// Graphical depiction of what phrases have been played by an instrument.
 class PhraseView : UIView {
 
+    /// The active phrase of the instrument
     var currentPhrase: Int = 1
 
+    /**
+     Draw/update what phrases have been played by an instrument.
+     
+     - parameter rect: the area to update
+     */
     override func drawRect(rect: CGRect) {
         guard let cgc = UIGraphicsGetCurrentContext() else { return }
         CGContextSetRGBFillColor(cgc, 1.0, 1.0, 1.0, 0.20)

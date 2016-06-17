@@ -68,8 +68,6 @@ class ViewController: UIViewController {
     /// Indication that the user is manipulating the playback slider.
     var sliderInUse = false
 
-    var editingRow: Int = -1
-
     /**
      Initialize and configure view after loading.
      */
@@ -189,6 +187,10 @@ extension ViewController: ASValueTrackingSliderDataSource {
         updateTimer?.invalidate()
     }
 
+    /**
+     Update the playback slider to reflect the current time from the active MusicPlayer. Update does not take place
+     if the user is actively manipulating the slider.
+     */
     func showPlaybackPosition() {
         if sliderInUse { return }
         let length = gen.sequenceLength
@@ -198,6 +200,9 @@ extension ViewController: ASValueTrackingSliderDataSource {
         }
         else {
             if gen.isPlaying() {
+                
+                // The player has reached the end. Stop it and reset the slider to the start.
+                //
                 gen.stop()
                 stoppedPlaying()
                 playbackPosition.value = 0.0
@@ -214,6 +219,9 @@ extension ViewController: ASValueTrackingSliderDataSource {
         updatePhrases()
     }
     
+    /**
+     Update all of the phrase indicators using the current playback position.
+     */
     func updatePhrases() {
         instrumentSettings.visibleCells.forEach {
             ($0 as! InstrumentsTableViewCell).updatePhrase(currentPosition)
@@ -257,6 +265,12 @@ extension ViewController: ASValueTrackingSliderDataSource {
         print("sliderInUse true")
     }
 
+    /**
+     Notification that the user is no longer manipulating the playback slider. Clear the flag, and ask the current
+     MusicPlayer to move to the timestamp indicated by the slider position.
+
+     - parameter sender: playback slider
+     */
     @IBAction func endChangePlaybackPosition(sender: UISlider) {
         sliderInUse = false
         gen.setPlaybackPosition(MusicTimeStamp(playbackPosition.value) * gen.sequenceLength)
@@ -325,6 +339,12 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         return gen.activeInstruments.count
     }
     
+    /**
+     User tapped on the accessory button of a row. Show the instrument editor.
+     
+     - parameter tableView: the table view being edited
+     - parameter indexPath: the row index to edit
+     */
     func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
         guard let cell = tableView.cellForRowAtIndexPath(indexPath) as? InstrumentsTableViewCell else { return }
         performSegueWithIdentifier("showDetail", sender: cell)

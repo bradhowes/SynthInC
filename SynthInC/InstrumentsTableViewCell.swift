@@ -24,13 +24,13 @@ class InstrumentsTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = UIColor(colorLiteralRed:(48/255.0), green:0.0, blue:(109/255.0), alpha:1)
-        
-        // Set up a custom selection color
+
+        // Set up a custom selection color. Just overlay a white view with %20 opacity.
         let selectionColor = UIView()
         selectionColor.backgroundColor = UIColor(colorLiteralRed:1.0, green:1.0, blue:1.0, alpha:0.2)
         selectedBackgroundView = selectionColor
     }
-    
+
     /**
      Update the view components.
      
@@ -43,16 +43,25 @@ class InstrumentsTableViewCell: UITableViewCell {
         updatePhrase(currentPosition)
     }
 
+    /**
+     Update the patch title. The patch title includes any octave adjustments.
+     */
     func updateTitle() {
         let value = Int(instrument.octave)
         let octaveTag = value != 0 ? " (\(value > 0 ? "+" : "")\(Int(value)))" : ""
         patchName?.text = instrument.patch.name + octaveTag
     }
 
+    /**
+     Update the sound font name due to user changes.
+     */
     func updateSoundFontName() {
         soundFontName?.text = instrument.patch.soundFont?.name
     }
 
+    /**
+     Update the volume indicator due to user changes.
+     */
     func updateVolume() {
         volumeLevel.muted = instrument.muted
         volumeLevel.volume = instrument.volume
@@ -61,18 +70,22 @@ class InstrumentsTableViewCell: UITableViewCell {
     }
 
     /**
-     Update the phrase label that shows the current score phrase being played by an Instrument.
-     
+     Update the phrase graph that shows the current score phrase being played by an Instrument.
+
      - parameter currentPosition: the playback position of the active MusicPlayer
      */
     func updatePhrase(currentPosition: MusicTimeStamp) {
         let phraseIndex = instrument.getSectionPlaying(currentPosition)
-        // phrase?.text = phraseIndex >= 0 ? "p.\(phraseIndex)" : ""
         phrases.currentPhrase = phraseIndex
         phrases.setNeedsDisplay()
         print(instrumentIndex.text, phraseIndex)
     }
-    
+
+    /**
+     Update the index value due to the user reordering entries in the instruments table.
+     
+     - parameter index: the new index to acquire
+     */
     func updateInstrumentIndex(index: Int) {
         instrumentIndex.text = "\(index)"
     }

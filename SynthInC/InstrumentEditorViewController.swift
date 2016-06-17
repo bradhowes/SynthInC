@@ -183,6 +183,9 @@ extension InstrumentEditorViewController {
         octaveLabel.text = value != 0 ? "\(value > 0 ? "+" : "")\(Int(value))" : ""
     }
     
+    /**
+     Stop any `solo` activity that was in place.
+     */
     private func stopSolo() {
         if instrument?.solo == true {
             delegate?.instrumentEditorSoloChanged(instrumentRow, soloing: false)
