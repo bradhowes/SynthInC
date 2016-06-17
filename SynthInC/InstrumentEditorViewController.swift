@@ -148,6 +148,7 @@ extension InstrumentEditorViewController {
      */
     override func viewWillDisappear(animated: Bool) {
         if let _ = instrument {
+            stopSolo()
             restoreInstrument()
             self.instrument = nil
             delegate?.instrumentEditorDismissed(instrumentRow, reason: .Cancel)
@@ -180,6 +181,12 @@ extension InstrumentEditorViewController {
         guard let instrument = instrument else { return }
         let value = Int(instrument.octave)
         octaveLabel.text = value != 0 ? "\(value > 0 ? "+" : "")\(Int(value))" : ""
+    }
+    
+    private func stopSolo() {
+        if instrument?.solo == true {
+            delegate?.instrumentEditorSoloChanged(instrumentRow, soloing: false)
+        }
     }
 }
 
@@ -313,6 +320,7 @@ extension InstrumentEditorViewController {
      */
     @IBAction func donePressed(sender: UIBarButtonItem) {
         guard let instrument = self.instrument else { return }
+        stopSolo()
         instrument.saveSetup()
         self.instrument = nil
         delegate?.instrumentEditorDismissed(instrumentRow, reason: .Done)
@@ -325,6 +333,7 @@ extension InstrumentEditorViewController {
      */
     @IBAction func cancelPressed(sender: UIBarButtonItem) {
         guard let _ = self.instrument else { return }
+        stopSolo()
         restoreInstrument()
         self.instrument = nil
         delegate?.instrumentEditorDismissed(instrumentRow, reason: .Cancel)

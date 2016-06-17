@@ -78,9 +78,11 @@ class ViewController: UIViewController {
 
         instrumentSettings.delegate = self
         instrumentSettings.dataSource = self
+
         playbackPosition.minimumValue = 0.0
         playbackPosition.maximumValue = 1.0
         playbackPosition.value = 0.0
+        playbackPosition.continuous = true
 
         playbackPosition.setThumbImage(UIImage(named:"Slider"), forState: .Normal)
         playbackPosition.setThumbImage(UIImage(named:"Slider"), forState: .Selected)
@@ -175,10 +177,11 @@ extension ViewController: ASValueTrackingSliderDataSource {
      Begin update timer to refresh instruments view and slider.
      */
     private func startUpdateTimer() {
-        updateTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(updatePlaybackInfo),
-                                                             userInfo: nil, repeats: true)
+        updateTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self,
+                                                             selector: #selector(showPlaybackPosition), userInfo: nil,
+                                                             repeats: true)
     }
-    
+
     /**
      Stop update timer.
      */
@@ -186,23 +189,28 @@ extension ViewController: ASValueTrackingSliderDataSource {
         updateTimer?.invalidate()
     }
 
+    func showPlaybackPosition() {
+        if sliderInUse { return }
+        let length = gen.sequenceLength
+        currentPosition = gen.getPlaybackPosition()
+        if currentPosition < length {
+            playbackPosition.value = Float(currentPosition / Double(length))
+        }
+        else {
+            if gen.isPlaying() {
+                gen.stop()
+                stoppedPlaying()
+                playbackPosition.value = 0.0
+            }
+        }
+        updatePhrases()
+    }
+
     /**
      Update instruments view and slider to reflect the current position of playing music.
      */
     func updatePlaybackInfo() {
-        let length = gen.sequenceLength
-        currentPosition = gen.getPlaybackPosition()
-        if currentPosition >= length {
-            gen.stop()
-            stoppedPlaying()
-            gen.setPlaybackPosition(0.0)
-            currentPosition = 0.0
-        }
-
-        if !sliderInUse {
-            playbackPosition.setValue(Float(currentPosition / Double(length)), animated: false)
-        }
-
+        currentPosition = MusicTimeStamp(playbackPosition.value) * gen.sequenceLength
         updatePhrases()
     }
     
@@ -235,10 +243,7 @@ extension ViewController: ASValueTrackingSliderDataSource {
      - parameter sender: the slider reporting the change
      */
     @IBAction func changePlaybackPosition(sender: UISlider) {
-        let when: MusicTimeStamp = Double(sender.value) * gen.sequenceLength
-        gen.setPlaybackPosition(when)
         updatePlaybackInfo()
-        sliderInUse = false
     }
 
     /**
@@ -249,6 +254,12 @@ extension ViewController: ASValueTrackingSliderDataSource {
      */
     @IBAction func beginChangePlaybackPosition(sender: UISlider) {
         sliderInUse = true
+        print("sliderInUse true")
+    }
+
+    @IBAction func endChangePlaybackPosition(sender: UISlider) {
+        sliderInUse = false
+        gen.setPlaybackPosition(MusicTimeStamp(playbackPosition.value) * gen.sequenceLength)
     }
 
     /**
@@ -312,12 +323,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
      */
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return gen.activeInstruments.count
-    }
-
-    func soloChanged(notification: NSNotification) {
-        instrumentSettings.visibleCells.forEach {
-            ($0 as! InstrumentsTableViewCell).updateVolume()
-        }
     }
     
     func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {

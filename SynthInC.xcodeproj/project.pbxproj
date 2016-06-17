@@ -31,6 +31,8 @@
 		BD1F14831CF5D27200E6B85F /* RandomGenerators.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1F14821CF5D27200E6B85F /* RandomGenerators.swift */; };
 		BD1F14851CF6445C00E6B85F /* Parameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1F14841CF6445C00E6B85F /* Parameters.swift */; };
 		BD1F148B1CF6FE1200E6B85F /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD1F14881CF6FE1200E6B85F /* SwiftyUserDefaults.framework */; };
+		BD216F721D1374DC00436000 /* PhraseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD216F711D1374DC00436000 /* PhraseView.swift */; };
+		BD216F741D13B3C400436000 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD216F731D13B3C400436000 /* SettingsViewController.swift */; };
 		BD435E0F1D087844000ECC3C /* FluidR3_GM.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0B1D087844000ECC3C /* FluidR3_GM.swift */; };
 		BD435E101D087844000ECC3C /* FreeFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0C1D087844000ECC3C /* FreeFont.swift */; };
 		BD435E111D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0D1D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift */; };
@@ -85,6 +87,8 @@
 		BD1F14861CF6FE1200E6B85F /* Gloss.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Gloss.framework; path = Carthage/Build/iOS/Gloss.framework; sourceTree = "<group>"; };
 		BD1F14871CF6FE1200E6B85F /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/iOS/SwiftyJSON.framework; sourceTree = "<group>"; };
 		BD1F14881CF6FE1200E6B85F /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/iOS/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
+		BD216F711D1374DC00436000 /* PhraseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhraseView.swift; sourceTree = "<group>"; };
+		BD216F731D13B3C400436000 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		BD435E0B1D087844000ECC3C /* FluidR3_GM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FluidR3_GM.swift; path = SoundFonts/FluidR3_GM.swift; sourceTree = SOURCE_ROOT; };
 		BD435E0C1D087844000ECC3C /* FreeFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FreeFont.swift; path = SoundFonts/FreeFont.swift; sourceTree = SOURCE_ROOT; };
 		BD435E0D1D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "GeneralUser GS MuseScore v1.442.swift"; path = "SoundFonts/GeneralUser GS MuseScore v1.442.swift"; sourceTree = SOURCE_ROOT; };
@@ -260,6 +264,8 @@
 			children = (
 				BD8433DE1D024BC800BD835C /* InstrumentsTableViewCell.swift */,
 				BD0BBA311D0E3A68006F7F6A /* VolumeBarView.swift */,
+				BD216F711D1374DC00436000 /* PhraseView.swift */,
+				BD216F731D13B3C400436000 /* SettingsViewController.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -420,9 +426,11 @@
 			files = (
 				BD435E121D087844000ECC3C /* RolandNicePiano.swift in Sources */,
 				BD0BBA301D0E2C42006F7F6A /* ViewController.swift in Sources */,
+				BD216F741D13B3C400436000 /* SettingsViewController.swift in Sources */,
 				BDB6C5A21CFD6C550095E9CA /* InstrumentEditorViewController.swift in Sources */,
 				BD1F14831CF5D27200E6B85F /* RandomGenerators.swift in Sources */,
 				BD435E101D087844000ECC3C /* FreeFont.swift in Sources */,
+				BD216F721D1374DC00436000 /* PhraseView.swift in Sources */,
 				BD8433DF1D024BC800BD835C /* InstrumentsTableViewCell.swift in Sources */,
 				B06746FA19BF591200DCF4E3 /* AudioController.swift in Sources */,
 				BD0757421D05FAD200595332 /* Instrument.swift in Sources */,

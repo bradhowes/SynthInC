@@ -120,6 +120,12 @@ final class Instrument: NSObject {
             kMultiChannelMixerParam_Enable, kAudioUnitScope_Input, UInt32(index), result, 0))
     }
 
+    /**
+     Change notification for solo state of an instrument.
+     
+     - parameter instrument: the Instrument that is the solo instrument
+     - parameter active: true if solo is active
+     */
     func solo(instrument: Instrument, active: Bool) {
         if active {
             if self == instrument {
@@ -149,7 +155,13 @@ final class Instrument: NSObject {
      - returns: the phrase number
      */
     func getSectionPlaying(clock: MusicTimeStamp) -> Int {
-        return sectionStarts.reduce(0) { (count, start) -> Int in count + (start > clock ? 0 : 1) }
+        for index in 0..<sectionStarts.count {
+            if sectionStarts[index] >= clock {
+                return index + 1
+            }
+        }
+        
+        return sectionStarts.count
     }
 
     /**

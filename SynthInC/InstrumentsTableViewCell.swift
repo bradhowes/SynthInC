@@ -15,8 +15,8 @@ class InstrumentsTableViewCell: UITableViewCell {
     @IBOutlet weak var instrumentIndex: UILabel!
     @IBOutlet weak var patchName: UILabel!
     @IBOutlet weak var soundFontName: UILabel!
-    @IBOutlet weak var phrase: UILabel!
     @IBOutlet weak var volumeLevel: VolumeBarView!
+    @IBOutlet weak var phrases: PhraseView!
 
     /**
      Customize the UI after the view is created from the NIB file.
@@ -67,7 +67,10 @@ class InstrumentsTableViewCell: UITableViewCell {
      */
     func updatePhrase(currentPosition: MusicTimeStamp) {
         let phraseIndex = instrument.getSectionPlaying(currentPosition)
-        phrase?.text = phraseIndex >= 0 ? "p.\(phraseIndex)" : ""
+        // phrase?.text = phraseIndex >= 0 ? "p.\(phraseIndex)" : ""
+        phrases.currentPhrase = phraseIndex
+        phrases.setNeedsDisplay()
+        print(instrumentIndex.text, phraseIndex)
     }
     
     func updateInstrumentIndex(index: Int) {
