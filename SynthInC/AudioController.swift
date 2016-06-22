@@ -42,6 +42,10 @@ final class AudioController  {
     }
 }
 
+var audioController: AudioController = {
+    return AudioController()
+}()
+
 // MARK: - AudioUnit Graph
 extension AudioController {
 

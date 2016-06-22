@@ -73,6 +73,7 @@ final class InstrumentEditorViewController: UIViewController {
      Finish setting up the view after loading.
      */
     override func viewDidLoad() {
+
         picker.delegate = self
         picker.dataSource = self
 
@@ -99,6 +100,8 @@ final class InstrumentEditorViewController: UIViewController {
         
         muteButton.setImage(UIImage(named: "Mute On"), forState: .Highlighted)
         soloButton.setImage(UIImage(named: "Solo On"), forState: .Highlighted)
+        
+        super.viewDidLoad()
     }
 
     /**

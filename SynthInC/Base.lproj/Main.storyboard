@@ -10,7 +10,7 @@
         <!--Instrument List-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController title="Instrument List" id="BYZ-38-t0r" customClass="ViewController" customModule="SynthInC" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Instrument List" id="BYZ-38-t0r" customClass="InstrumentListViewController" customModule="SynthInC" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -21,6 +21,10 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fdb-2l-g6I">
                                 <rect key="frame" x="547" y="510" width="33" height="33"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="33" id="C7d-Mk-iIg"/>
+                                    <constraint firstAttribute="height" constant="33" id="LSg-yK-Qnr"/>
+                                </constraints>
                                 <inset key="contentEdgeInsets" minX="4" minY="4" maxX="4" maxY="4"/>
                                 <state key="normal" image="Regenerate"/>
                                 <connections>
@@ -432,6 +436,7 @@
                     <connections>
                         <segue destination="3ch-u7-sMl" kind="relationship" relationship="viewControllers" id="a4A-hX-6ut"/>
                         <segue destination="2it-EW-xLL" kind="relationship" relationship="viewControllers" id="dog-JC-SIO"/>
+                        <segue destination="8Wi-q9-7HE" kind="relationship" relationship="viewControllers" id="GMI-vB-gcG"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vwz-8X-5gg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -571,6 +576,40 @@
             </objects>
             <point key="canvasLocation" x="-1786" y="-2023"/>
         </scene>
+        <!--Instrument Scene View Controller-->
+        <scene sceneID="wbZ-HJ-UFJ">
+            <objects>
+                <viewController storyboardIdentifier="instrumentScene" id="8Wi-q9-7HE" customClass="InstrumentSceneViewController" customModule="SynthInC" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jGR-mb-H8p"/>
+                        <viewControllerLayoutGuide type="bottom" id="flu-pD-Tx8"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="KSi-9M-ZBz">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2BS-Vp-dX2" customClass="SKView">
+                                <rect key="frame" x="0.0" y="20" width="600" height="531"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.18823529410000001" green="0.0" blue="0.42745098040000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="2BS-Vp-dX2" secondAttribute="trailing" constant="-20" id="3dB-tv-xGN"/>
+                            <constraint firstItem="2BS-Vp-dX2" firstAttribute="top" secondItem="jGR-mb-H8p" secondAttribute="bottom" id="79v-yq-Qeo"/>
+                            <constraint firstItem="2BS-Vp-dX2" firstAttribute="leading" secondItem="KSi-9M-ZBz" secondAttribute="leadingMargin" constant="-20" id="C9I-98-ITl"/>
+                            <constraint firstItem="flu-pD-Tx8" firstAttribute="top" secondItem="2BS-Vp-dX2" secondAttribute="bottom" id="FGd-B1-kYG"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" systemItem="history" id="w9y-Ka-eIe"/>
+                    <connections>
+                        <outlet property="sceneView" destination="2BS-Vp-dX2" id="MED-eg-jlx"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PL1-LE-qjO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1076" y="-2023"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="ByT-Vt-kdU">
             <objects>
@@ -589,6 +628,19 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qY5-oy-bWI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="358" y="-2894"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="voR-WQ-Xxg">
+            <objects>
+                <viewController id="pNM-TX-kak" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ldY-VZ-1BY">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ggI-Lq-f5u" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
         </scene>
     </scenes>
     <resources>

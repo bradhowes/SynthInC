@@ -1,4 +1,4 @@
-// ViewController.swift
+// InstrumentListViewController.swift
 // SynthInC
 //
 // Created by Brad Howes
@@ -11,8 +11,8 @@ import AVFoundation
 /**
  Main view controller for the application.
  */
-class ViewController: UIViewController {
-    
+class InstrumentListViewController: UIViewController {
+
     enum BarButtonItems: Int {
         case Add = 0, Edit, Done
     }
@@ -46,14 +46,6 @@ class ViewController: UIViewController {
     @IBOutlet var playStopButton: UIButton!
 
     /**
-     The SoundGenerator instance that manages all aspects of the music generation and performance.
-     */
-    lazy var gen: AudioController = {
-        let gen = AudioController()
-        return gen
-    }()
-    
-    /**
      The current position of the music as reported by the SoundGenerator. This is a cached value for use when the
      instrument view updates.
      */
@@ -72,7 +64,6 @@ class ViewController: UIViewController {
      Initialize and configure view after loading.
      */
     override func viewDidLoad() {
-        super.viewDidLoad()
 
         instrumentSettings.delegate = self
         instrumentSettings.dataSource = self
@@ -98,6 +89,8 @@ class ViewController: UIViewController {
         editingRightButtons = [doneButton]
 
         navigationItem.setRightBarButtonItems(normalRightButtons, animated: false)
+        
+        super.viewDidLoad()
     }
 
     /**
@@ -119,7 +112,7 @@ class ViewController: UIViewController {
 }
 
 // MARK: Settings
-extension ViewController: IASKSettingsDelegate, UIPopoverPresentationControllerDelegate {
+extension InstrumentListViewController: IASKSettingsDelegate, UIPopoverPresentationControllerDelegate {
 
     /**
      IASKAppSettingsDelegate method which signals when the settings view is no longer on the screen.
@@ -144,7 +137,7 @@ extension ViewController: IASKSettingsDelegate, UIPopoverPresentationControllerD
 }
 
 // MARK: Playback control
-extension ViewController: ASValueTrackingSliderDataSource {
+extension InstrumentListViewController: ASValueTrackingSliderDataSource {
 
     /**
      Update UI to show that music is playing.
@@ -193,17 +186,17 @@ extension ViewController: ASValueTrackingSliderDataSource {
      */
     func showPlaybackPosition() {
         if sliderInUse { return }
-        let length = gen.sequenceLength
-        currentPosition = gen.getPlaybackPosition()
+        let length = audioController.sequenceLength
+        currentPosition = audioController.getPlaybackPosition()
         if currentPosition < length {
             playbackPosition.value = Float(currentPosition / Double(length))
         }
         else {
-            if gen.isPlaying() {
+            if audioController.isPlaying() {
                 
                 // The player has reached the end. Stop it and reset the slider to the start.
                 //
-                gen.stop()
+                audioController.stop()
                 stoppedPlaying()
                 playbackPosition.value = 0.0
             }
@@ -215,10 +208,10 @@ extension ViewController: ASValueTrackingSliderDataSource {
      Update instruments view and slider to reflect the current position of playing music.
      */
     func updatePlaybackInfo() {
-        currentPosition = MusicTimeStamp(playbackPosition.value) * gen.sequenceLength
+        currentPosition = MusicTimeStamp(playbackPosition.value) * audioController.sequenceLength
         updatePhrases()
     }
-    
+
     /**
      Update all of the phrase indicators using the current playback position.
      */
@@ -239,7 +232,7 @@ extension ViewController: ASValueTrackingSliderDataSource {
     func slider(slider: ASValueTrackingSlider!, stringForValue value: Float) -> String {
         // currentPosition is the number of beats. Rate is ~120 BPM. Return HH:MM format
         let bpm = 120.0
-        let pos = Double(value) * gen.sequenceLength
+        let pos = Double(value) * audioController.sequenceLength
         let mins = pos / bpm
         let secs = mins * 60.0 - Double(Int(mins)) * 60.0
         return String(format:"%02ld:%02ld", Int(mins), Int(secs))
@@ -273,7 +266,7 @@ extension ViewController: ASValueTrackingSliderDataSource {
      */
     @IBAction func endChangePlaybackPosition(sender: UISlider) {
         sliderInUse = false
-        gen.setPlaybackPosition(MusicTimeStamp(playbackPosition.value) * gen.sequenceLength)
+        audioController.setPlaybackPosition(MusicTimeStamp(playbackPosition.value) * audioController.sequenceLength)
     }
 
     /**
@@ -282,7 +275,7 @@ extension ViewController: ASValueTrackingSliderDataSource {
      - parameter sender: the button that was tapped
      */
     @IBAction func playStop(sender: UIButton) {
-        if gen.playOrStop() == .Play {
+        if audioController.playOrStop() == .Play {
             startedPlaying()
         }
         else {
@@ -292,7 +285,7 @@ extension ViewController: ASValueTrackingSliderDataSource {
 }
 
 // MARK: Regenerate
-extension ViewController {
+extension InstrumentListViewController {
 
     /**
      Generate a new sequence of "In C" phrases.
@@ -300,7 +293,7 @@ extension ViewController {
      - parameter sender: button that was touched
      */
     @IBAction func regenerate(sender: UIButton) {
-        if gen.createMusicSequence() {
+        if audioController.createMusicSequence() {
             stoppedPlaying()
             playbackPosition.value = 0.0
             instrumentSettings.reloadData()
@@ -309,7 +302,7 @@ extension ViewController {
 }
 
 // MARK: UITableView
-extension ViewController: UITableViewDelegate, UITableViewDataSource {
+extension InstrumentListViewController: UITableViewDelegate, UITableViewDataSource {
 
     /**
      Support deselection of a row. If a row is already selected, deselect the row.
@@ -336,7 +329,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
      - returns: number of instruments active in music playback
      */
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return gen.activeInstruments.count
+        return audioController.activeInstruments.count
     }
     
     /**
@@ -353,7 +346,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 // MARK: Instrument Editing
-extension ViewController: InstrumentEditorViewControllerDelegate {
+extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
 
     /**
      Obtain a UITableViewCell to use for an instrument, and fill it in with the instrument's values.
@@ -364,7 +357,7 @@ extension ViewController: InstrumentEditorViewControllerDelegate {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let identifier = "InstrumentCell" // !!! This must match prototype in Main.storyboard !!!
         let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! InstrumentsTableViewCell
-        cell.instrument = gen.activeInstruments[indexPath.row]
+        cell.instrument = audioController.activeInstruments[indexPath.row]
         cell.instrumentIndex?.text = "\(indexPath.row + 1)"
         cell.updateAll(currentPosition)
         cell.showsReorderControl = true
@@ -408,7 +401,7 @@ extension ViewController: InstrumentEditorViewControllerDelegate {
                 let nc = segue.destinationViewController as? UINavigationController,
                 let vc = nc.topViewController as? InstrumentEditorViewController,
                 let indexPath = instrumentSettings.indexPathForCell(cell) where
-                (indexPath.row >= 0 && indexPath.row < gen.activeInstruments.count) else { return }
+                (indexPath.row >= 0 && indexPath.row < audioController.activeInstruments.count) else { return }
             
             // Receive some update notifications when values change
             //
@@ -416,7 +409,7 @@ extension ViewController: InstrumentEditorViewControllerDelegate {
             
             // Remember the instrument and the row being edited
             //
-            vc.editInstrument(gen.activeInstruments[indexPath.row], row: indexPath.row)
+            vc.editInstrument(audioController.activeInstruments[indexPath.row], row: indexPath.row)
             
             // Now if showing a popover, position it in the right spot
             //
@@ -506,14 +499,14 @@ extension ViewController: InstrumentEditorViewControllerDelegate {
      - parameter soloing: true if solo enabled, false otherwise
      */
     func instrumentEditorSoloChanged(row: Int, soloing state: Bool) {
-        let instrument = gen.activeInstruments[row]
-        gen.activeInstruments.forEach { $0.solo(instrument, active: state) }
+        let instrument = audioController.activeInstruments[row]
+        audioController.activeInstruments.forEach { $0.solo(instrument, active: state) }
         instrumentSettings.visibleCells.forEach { ($0 as! InstrumentsTableViewCell).updateVolume() }
     }
 }
 
 // MARK: Instrument List Editing
-extension ViewController {
+extension InstrumentListViewController {
 
     /**
      Notification from table view that editing is complete.
@@ -528,12 +521,12 @@ extension ViewController {
         
         // Remove the instrument from the model, then tell table view to remove the corresponding view
         //
-        gen.removeInstrument(indexPath.row)
+        audioController.removeInstrument(indexPath.row)
         tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         
         // We can definitely add a new instrument now
         addButton?.enabled = true
-        if gen.activeInstruments.count == 1 {
+        if audioController.activeInstruments.count == 1 {
             
             // We cannot do any more deletions
             //
@@ -551,7 +544,7 @@ extension ViewController {
      */
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath,
                    toIndexPath destinationIndexPath: NSIndexPath) {
-        gen.reorderInstrument(fromPos: sourceIndexPath.row, toPos: destinationIndexPath.row)
+        audioController.reorderInstrument(fromPos: sourceIndexPath.row, toPos: destinationIndexPath.row)
 
         // Swap source and destination index values
         //
@@ -569,8 +562,8 @@ extension ViewController {
      */
     @IBAction func addInstrument(sender: UIBarButtonItem) {
         let indexPath = instrumentSettings.indexPathForSelectedRow ??
-            NSIndexPath(forRow: gen.activeInstruments.count, inSection: 0)
-        guard gen.addInstrument(indexPath.row) else { return }
+            NSIndexPath(forRow: audioController.activeInstruments.count, inSection: 0)
+        guard audioController.addInstrument(indexPath.row) else { return }
         
         // Add a view for the new instrument, select it, and scroll view to make it visible
         //
@@ -578,14 +571,12 @@ extension ViewController {
         instrumentSettings.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
         instrumentSettings.scrollToRowAtIndexPath(indexPath, atScrollPosition: .None, animated: true)
 
-        gen.activeInstruments[indexPath.row].addObserver(self, forKeyPath: "volume", options: .New, context: nil)
-
         // Update buttons based on active instrument count
         //
-        if gen.activeInstruments.count == gen.maxSamplerCount {
+        if audioController.activeInstruments.count == audioController.maxSamplerCount {
             addButton?.enabled = false
         }
-        else if gen.activeInstruments.count == 2 {
+        else if audioController.activeInstruments.count == 2 {
             editButton?.enabled = true
         }
     }
