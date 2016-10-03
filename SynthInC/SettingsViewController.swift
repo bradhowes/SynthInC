@@ -18,12 +18,12 @@ class SettingsViewController : IASKAppSettingsViewController {
      
      - parameter animated: true if the view should animate its appearance
      */
-    override func viewWillAppear(animated: Bool) {
-        let userDefaults = NSUserDefaults.standardUserDefaults()
-        userDefaults.setInteger(Parameters.randomSeed, forKey: DefaultsKeys.randomSeed._key)
-        userDefaults.setInteger(Parameters.noteTimingSlop, forKey: DefaultsKeys.noteTimingSlop._key)
-        userDefaults.setDouble(Parameters.seqRepNorm, forKey: DefaultsKeys.seqRepNorm._key)
-        userDefaults.setDouble(Parameters.seqRepVar, forKey: DefaultsKeys.seqRepVar._key)
+    override func viewWillAppear(_ animated: Bool) {
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(Parameters.randomSeed, forKey: DefaultsKeys.randomSeed._key)
+        userDefaults.set(Parameters.noteTimingSlop, forKey: DefaultsKeys.noteTimingSlop._key)
+        userDefaults.set(Parameters.seqRepNorm, forKey: DefaultsKeys.seqRepNorm._key)
+        userDefaults.set(Parameters.seqRepVar, forKey: DefaultsKeys.seqRepVar._key)
         super.viewWillAppear(animated)
     }
 
@@ -32,12 +32,12 @@ class SettingsViewController : IASKAppSettingsViewController {
      
      - parameter animated: true if the view snould animate its disappearance
      */
-    override func viewWillDisappear(animated: Bool) {
-        let userDefaults = NSUserDefaults.standardUserDefaults()
-        Parameters.randomSeed = userDefaults.integerForKey(DefaultsKeys.randomSeed._key)
-        Parameters.noteTimingSlop = userDefaults.integerForKey(DefaultsKeys.noteTimingSlop._key)
-        Parameters.seqRepNorm = userDefaults.doubleForKey(DefaultsKeys.seqRepNorm._key)
-        Parameters.seqRepVar = userDefaults.doubleForKey(DefaultsKeys.seqRepVar._key)
+    override func viewWillDisappear(_ animated: Bool) {
+        let userDefaults = UserDefaults.standard
+        Parameters.randomSeed = userDefaults.integer(forKey: DefaultsKeys.randomSeed._key)
+        Parameters.noteTimingSlop = userDefaults.integer(forKey: DefaultsKeys.noteTimingSlop._key)
+        Parameters.seqRepNorm = userDefaults.double(forKey: DefaultsKeys.seqRepNorm._key)
+        Parameters.seqRepVar = userDefaults.double(forKey: DefaultsKeys.seqRepVar._key)
         Parameters.dump()
         super.viewWillDisappear(animated)
     }

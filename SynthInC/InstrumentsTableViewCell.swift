@@ -36,7 +36,7 @@ class InstrumentsTableViewCell: UITableViewCell {
      
      - parameter currentPosition: the playback position of the active MusicPlayer
      */
-    func updateAll(currentPosition: MusicTimeStamp) {
+    func updateAll(_ currentPosition: MusicTimeStamp) {
         updateTitle()
         updateSoundFontName()
         updateVolume()
@@ -74,7 +74,7 @@ class InstrumentsTableViewCell: UITableViewCell {
 
      - parameter currentPosition: the playback position of the active MusicPlayer
      */
-    func updatePhrase(currentPosition: MusicTimeStamp) {
+    func updatePhrase(_ currentPosition: MusicTimeStamp) {
         let phraseIndex = instrument.getSectionPlaying(currentPosition)
         phrases.currentPhrase = phraseIndex
         phrases.setNeedsDisplay()
@@ -86,7 +86,7 @@ class InstrumentsTableViewCell: UITableViewCell {
      
      - parameter index: the new index to acquire
      */
-    func updateInstrumentIndex(index: Int) {
+    func updateInstrumentIndex(_ index: Int) {
         instrumentIndex.text = "\(index)"
     }
 }

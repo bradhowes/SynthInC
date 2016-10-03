@@ -27,7 +27,7 @@ RolandNicePiano.name: RolandNicePiano,
     /**
      Array of registered sound font names sorted in alphabetical order. Generated from `library` entries.
      */
-    static let keys: [String] = library.keys.sort()
+    static let keys: [String] = library.keys.sorted()
     static let patchCount: Int = library.reduce(0) { $0 + $1.1.patches.count }
 
     /**
@@ -54,7 +54,7 @@ RolandNicePiano.name: RolandNicePiano,
      - parameter index: the key to use
      - returns: found SoundFont object
      */
-    static func getByIndex(index: Int) -> SoundFont {
+    static func getByIndex(_ index: Int) -> SoundFont {
         guard index >= 0 && index < keys.count else { return SoundFont.library[SoundFont.keys[0]]! }
         let key = keys[index]
         return library[key]!
@@ -65,8 +65,8 @@ RolandNicePiano.name: RolandNicePiano,
      - parameter name: the name to look for
      - returns: found index or zero
      */
-    static func indexForName(name: String) -> Int {
-        return keys.indexOf(name) ?? 0
+    static func indexForName(_ name: String) -> Int {
+        return keys.index(of: name) ?? 0
     }
 
     let soundFontExtension = "sf2"
@@ -78,7 +78,7 @@ RolandNicePiano.name: RolandNicePiano,
     let fileName: String
 
     ///  The resolved URL for the sound font
-    let fileURL: NSURL
+    let fileURL: URL
 
     /// The collection of Patches found in the sound font
     var patches: [Patch]
@@ -95,7 +95,7 @@ RolandNicePiano.name: RolandNicePiano,
     init(_ name: String, fileName: String, _ patches: [Patch], _ dbGain: Float32 = 0.0 ) {
         self.name = name
         self.fileName = fileName
-        self.fileURL = NSBundle.mainBundle().URLForResource(fileName, withExtension: soundFontExtension)!
+        self.fileURL = Bundle.main.url(forResource: fileName, withExtension: soundFontExtension)!
         self.patches = patches
         self.dbGain = dbGain
         patches.forEach { $0.soundFont = self }
@@ -108,7 +108,7 @@ RolandNicePiano.name: RolandNicePiano,
 
      - returns: found Patch or nil
      */
-    func findPatch(name: String) -> Patch? {
+    func findPatch(_ name: String) -> Patch? {
         guard let found = findPatchIndex(name) else { return nil }
         return patches[found]
     }
@@ -120,8 +120,8 @@ RolandNicePiano.name: RolandNicePiano,
      
      - returns: index of found object or nil if not found
      */
-    func findPatchIndex(name: String) -> Int? {
-        return patches.indexOf({ return $0.name == name })
+    func findPatchIndex(_ name: String) -> Int? {
+        return patches.index(where: { return $0.name == name })
     }
 }
 

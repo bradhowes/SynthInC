@@ -15,8 +15,8 @@ extension DefaultsKeys {
     static let seqRepNorm = DefaultsKey<Double?>("seqRepNorm")
     static let seqRepVar = DefaultsKey<Double?>("seqRepVar")
     static let soundFont = DefaultsKey<String?>("soundFont")
-    static let setup = DefaultsKey<NSData?>("setup")
-    static let sequence = DefaultsKey<NSData?>("sequence")
+    static let setup = DefaultsKey<Data?>("setup")
+    static let sequence = DefaultsKey<Data?>("sequence")
 }
 
 /**
@@ -61,13 +61,13 @@ struct Parameters {
     }
 
     /// The latest instruments setup data
-    static var setup: NSData? {
+    static var setup: Data? {
         get { return Defaults[.setup] }
         set { Defaults[.setup] = newValue }
     }
 
     /// The latest generated "In C" MIDI phrase sequences
-    static var sequence: NSData? {
+    static var sequence: Data? {
         get { return Defaults[.sequence] }
         set { Defaults[.sequence] = newValue }
     }

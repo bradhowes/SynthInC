@@ -11,10 +11,10 @@ import GameKit
 class RandomUniform {
 
     /// Random number source
-    private(set) var randomSource: GKARC4RandomSource
+    fileprivate(set) var randomSource: GKARC4RandomSource
     
     /// Seed value for the generator
-    private let seedData: NSData
+    fileprivate let seedData: Data
 
     /// Singleton instance
     static let sharedInstance = RandomUniform(Parameters.randomSeed)
@@ -27,9 +27,9 @@ class RandomUniform {
      */
     init(_ seed: Int) {
         var randomSeed = seed
-        seedData = NSMutableData(bytes:&randomSeed, length: sizeofValue(randomSeed))
+        seedData = NSMutableData(bytes:&randomSeed, length: MemoryLayout.size(ofValue: randomSeed)) as Data
         randomSource = GKARC4RandomSource(seed: self.seedData)
-        randomSource.dropValuesWithCount(1000)
+        randomSource.dropValues(1000)
     }
 
     /// Get the next random value from the generator. (read-only)
@@ -40,7 +40,7 @@ class RandomUniform {
      */
     func reset() {
         randomSource = GKARC4RandomSource(seed: self.seedData)
-        randomSource.dropValuesWithCount(1000)
+        randomSource.dropValues(1000)
     }
 
     /**
@@ -52,7 +52,7 @@ class RandomUniform {
      
      - returns: new `Int` value
      */
-    func uniform(lower: Int, upper: Int) -> Int {
+    func uniform(_ lower: Int, upper: Int) -> Int {
         return Int(randomSource.nextUniform() * Float(upper - lower)) + lower
     }
 
@@ -65,7 +65,7 @@ class RandomUniform {
      
      - returns: new `Double` value
      */
-    func uniform(lower: Double, upper: Double) -> Double {
+    func uniform(_ lower: Double, upper: Double) -> Double {
         return Double(randomSource.nextUniform()) * (upper - lower) + lower
     }
 
@@ -78,7 +78,7 @@ class RandomUniform {
      
      - returns: new `Float` value
      */
-    func uniform(lower: Float, upper: Float) -> Float {
+    func uniform(_ lower: Float, upper: Float) -> Float {
         return randomSource.nextUniform() * (upper - lower) + lower
     }
 }
@@ -89,7 +89,7 @@ class RandomUniform {
 class RandomGaussian {
     
     /// Actual provider of random values
-    private let randomSource: GKGaussianDistribution
+    fileprivate let randomSource: GKGaussianDistribution
 
     /**
      Initialize random number generator using bounds to describe the model.

@@ -16,16 +16,16 @@ import AVFoundation
  
  - returns: true if successful, false otherwise
  */
-internal func setAudioUnitSampleRate(au: AudioUnit) -> Bool {
+internal func setAudioUnitSampleRate(_ au: AudioUnit) -> Bool {
     var sampleRate: Float64 = 44100.0;
     if CheckError("AudioUnitSetProperty(sampleRate)", AudioUnitSetProperty(au, kAudioUnitProperty_SampleRate,
-        kAudioUnitScope_Output, 0, &sampleRate, UInt32(sizeofValue(sampleRate)))) {
+        kAudioUnitScope_Output, 0, &sampleRate, UInt32(MemoryLayout.size(ofValue: sampleRate)))) {
         return false
     }
     return true
 }
 
-extension CollectionType where Index: RandomAccessIndexType {
+extension Collection where Index: Strideable {
 
     /**
      Binary search for a collection. Provides a mechanism for locating the appropriate place to insert into a 
@@ -37,13 +37,13 @@ extension CollectionType where Index: RandomAccessIndexType {
      - returns: 2-tuple containing index into collection where ordering would be preserved and the optional value
      currently at that position (nil when index is the size of the collection)
      */
-    func binarySearch(predicate: Generator.Element -> Bool) -> (Index, Generator.Element?) {
+    func binarySearch(_ predicate: (Iterator.Element) -> Bool) -> (Index, Iterator.Element?) {
         var low = startIndex
         var high = endIndex
         while low != high {
-            let mid = low.advancedBy(low.distanceTo(high) / 2)
+            let mid = self.index(low, offsetBy: self.distance(from: low, to: high) / 2)
             if predicate(self[mid]) {
-                low = mid.advancedBy(1)
+                low = self.index(mid, offsetBy: 1)
             }
             else {
                 high = mid

@@ -15,15 +15,15 @@ import AVFoundation
  */
 final class AudioController  {
     let maxSamplerCount = Parameters.maxInstrumentCount
-    private(set) var graph: AUGraph = nil
-    private(set) var mixerUnit: AudioUnit = nil
-    private(set) var mixerNode: AUNode = 0
-    private(set) var musicPlayer: MusicPlayer = nil
-    private(set) var musicSequence: MusicSequence = nil
-    private(set) var sequenceLength: MusicTimeStamp = 0
-    private(set) var activeInstruments: [Instrument] = []
-    private var instruments: [Instrument] = []
-    private var musicTrackMap: [Instrument:MusicTrack] = [:]
+    fileprivate(set) var graph: AUGraph?
+    fileprivate(set) var mixerUnit: AudioUnit? = nil
+    fileprivate(set) var mixerNode: AUNode = 0
+    fileprivate(set) var musicPlayer: MusicPlayer? = nil
+    fileprivate(set) var musicSequence: MusicSequence? = nil
+    fileprivate(set) var sequenceLength: MusicTimeStamp = 0
+    fileprivate(set) var activeInstruments: [Instrument] = []
+    fileprivate var instruments: [Instrument] = []
+    fileprivate var musicTrackMap: [Instrument:MusicTrack] = [:]
 
     /**
      Initialize instance. Creates the AudioUnit graph with a collection of AUSampler units and a multichannel mixer.
@@ -32,12 +32,9 @@ final class AudioController  {
     init() {
         Parameters.dump()
         if setupGraph() && startGraph() {
-
             if !restoreSetup() { createSetup() }
-
-            createPlayer()
-
-            if !restoreMusicSequence() { createMusicSequence() }
+            _ = createPlayer()
+            if !restoreMusicSequence() { _ = createMusicSequence() }
         }
     }
 }
@@ -55,7 +52,7 @@ extension AudioController {
      
      - returns: true if successful, false otherwise
      */
-    private func setupGraph() -> Bool {
+    fileprivate func setupGraph() -> Bool {
         precondition(graph == nil)
         
         if CheckError("NewAUGraph", NewAUGraph(&graph)) {
@@ -78,7 +75,7 @@ extension AudioController {
                                              componentSubType: OSType(kAudioUnitSubType_MultiChannelMixer),
                                              componentManufacturer: OSType(kAudioUnitManufacturer_Apple),
                                              componentFlags: 0, componentFlagsMask: 0)
-        if CheckError("AUGraphAddNode(mixer)", AUGraphAddNode(graph, &desc, &mixerNode)) {
+        if CheckError("AUGraphAddNode(mixer)", AUGraphAddNode(graph!, &desc, &mixerNode)) {
             return false
         }
 
@@ -89,39 +86,39 @@ extension AudioController {
                                          componentSubType: OSType(kAudioUnitSubType_RemoteIO),
                                          componentManufacturer: OSType(kAudioUnitManufacturer_Apple),
                                          componentFlags: 0, componentFlagsMask: 0)
-        if CheckError("AUGraphAddNode(output)", AUGraphAddNode(graph, &desc, &outputNode)) {
+        if CheckError("AUGraphAddNode(output)", AUGraphAddNode(graph!, &desc, &outputNode)) {
             return false
         }
         
         // Open graph now that we have all of the nodes. ** Must be done before any node wiring **
         //
-        if CheckError("AUGraphOpen", AUGraphOpen(graph)) {
+        if CheckError("AUGraphOpen", AUGraphOpen(graph!)) {
             return false
         }
         
         // Fetch the AudioUnit object for the mixer node
         //
-        if CheckError("AUGraphNodeInfo(mixer)", AUGraphNodeInfo(graph, mixerNode, nil, &mixerUnit)) {
+        if CheckError("AUGraphNodeInfo(mixer)", AUGraphNodeInfo(graph!, mixerNode, nil, &mixerUnit)) {
             return false
         }
         
         // Configure the max number of inputs to the mixer
         //
         var busCount = UInt32(instruments.count);
-        if CheckError("AudioUnitSetProperty(mixer)", AudioUnitSetProperty(mixerUnit, kAudioUnitProperty_ElementCount,
-            kAudioUnitScope_Input, 0, &busCount, UInt32(sizeofValue(busCount)))) {
+        if CheckError("AudioUnitSetProperty(mixer)", AudioUnitSetProperty(mixerUnit!, kAudioUnitProperty_ElementCount,
+            kAudioUnitScope_Input, 0, &busCount, UInt32(MemoryLayout.size(ofValue: busCount)))) {
             return false
         }
         
         // Set the sample rate for the mixer
         //
-        if !setAudioUnitSampleRate(mixerUnit) {
+        if !setAudioUnitSampleRate(mixerUnit!) {
             return false
         }
         
         // Wire the mixer output to the hardware (speaker, headphone, Bluetooth, etc.)
         //
-        if CheckError("AUGraphConnectNodeInput", AUGraphConnectNodeInput(graph, mixerNode, 0, outputNode, 0)) {
+        if CheckError("AUGraphConnectNodeInput", AUGraphConnectNodeInput(graph!, mixerNode, 0, outputNode, 0)) {
             return false
         }
         
@@ -135,20 +132,20 @@ extension AudioController {
      
      - returns: true if successful
      */
-    private func startGraph() -> Bool {
+    fileprivate func startGraph() -> Bool {
         precondition(instruments.count > 0)
         
         // Check if graph is already initialized
         //
         var isInitialized: DarwinBoolean = false
-        if CheckError("AUGraphIsInitialized", AUGraphIsInitialized(graph, &isInitialized)) {
+        if CheckError("AUGraphIsInitialized", AUGraphIsInitialized(graph!, &isInitialized)) {
             return false
         }
         
         // Initialize it if not already
         //
         if isInitialized == false {
-            if CheckError("AUGraphInitialize", AUGraphInitialize(graph)) {
+            if CheckError("AUGraphInitialize", AUGraphInitialize(graph!)) {
                 return false
             }
         }
@@ -156,7 +153,7 @@ extension AudioController {
         // Check if graph is already running
         //
         var isRunning: DarwinBoolean = false
-        if CheckError("AUGraphIsRunning", AUGraphIsRunning(graph, &isRunning)) {
+        if CheckError("AUGraphIsRunning", AUGraphIsRunning(graph!, &isRunning)) {
             return false
         }
 
@@ -164,7 +161,7 @@ extension AudioController {
         //
         if isRunning == false {
             print("-- starting AUGraph")
-            if CheckError("AUGraphStart", AUGraphStart(graph)) {
+            if CheckError("AUGraphStart", AUGraphStart(graph!)) {
                 return false
             }
             print("-- AUGraph started")
@@ -181,10 +178,10 @@ extension AudioController {
      
      - returns: true if successful
      */
-    private func updateGraph() -> Bool {
+    fileprivate func updateGraph() -> Bool {
         precondition(instruments.count > 0)
         var outIsUpdated = DarwinBoolean(false)
-        if CheckError("AUGraphUpdate", AUGraphUpdate(graph, &outIsUpdated)) {
+        if CheckError("AUGraphUpdate", AUGraphUpdate(graph!, &outIsUpdated)) {
             return false
         }
         
@@ -197,16 +194,16 @@ extension AudioController {
      
      - returns: true if successful
      */
-    private func stopGraph() -> Bool {
+    fileprivate func stopGraph() -> Bool {
         precondition(instruments.count > 0)
         var isRunning: DarwinBoolean = false
-        if CheckError("AUGraphIsRunning", AUGraphIsRunning(graph, &isRunning)) {
+        if CheckError("AUGraphIsRunning", AUGraphIsRunning(graph!, &isRunning)) {
             return false
         }
         
         if isRunning == true {
             print("-- stopping AUGraph")
-            if CheckError("AUGraphStop", AUGraphStop(graph)) {
+            if CheckError("AUGraphStop", AUGraphStop(graph!)) {
                 return false
             }
             print("-- AUGraph stopped")
@@ -225,7 +222,7 @@ extension AudioController {
     /**
      Create an initial set of active instruments.
      */
-    private func createSetup() {
+    fileprivate func createSetup() {
         precondition(activeInstruments.count == 0)
         print("-- creating setup")
         for index in 0..<min(8, instruments.count) {
@@ -238,10 +235,10 @@ extension AudioController {
     /**
      Safe the current instrument configuration.
      */
-    private func saveSetup() {
+    fileprivate func saveSetup() {
         print("-- saving setup")
-        let configs: [NSData] = activeInstruments.map { $0.getSetup() }
-        Parameters.setup = NSKeyedArchiver.archivedDataWithRootObject(configs)
+        let configs: [Data] = activeInstruments.map { ($0.getSetup() as Data) }
+        Parameters.setup = NSKeyedArchiver.archivedData(withRootObject: configs)
     }
 
     /**
@@ -252,13 +249,13 @@ extension AudioController {
      
      - returns: true if successful
      */
-    func saveSetup(instrument: Instrument, data: NSData) -> Bool {
+    func saveSetup(_ instrument: Instrument, data: Data) -> Bool {
         print("-- saving instrument \(instrument.index)")
-        guard let index = activeInstruments.indexOf(instrument) else { return false }
-        guard let configData: NSData = Parameters.setup else { return false }
-        guard var configs = NSKeyedUnarchiver.unarchiveObjectWithData(configData) as? [NSData] else { return false }
+        guard let index = activeInstruments.index(of: instrument) else { return false }
+        guard let configData: Data = Parameters.setup as Data? else { return false }
+        guard var configs = NSKeyedUnarchiver.unarchiveObject(with: configData) as? [Data] else { return false }
         configs[index] = data
-        Parameters.setup = NSKeyedArchiver.archivedDataWithRootObject(configs)
+        Parameters.setup = NSKeyedArchiver.archivedData(withRootObject: configs)
         return true
     }
 
@@ -267,15 +264,15 @@ extension AudioController {
      
      - returns: true if successful
      */
-    private func restoreSetup() -> Bool {
+    fileprivate func restoreSetup() -> Bool {
         print("-- restoring setup")
         activeInstruments.removeAll()
-        guard let data: NSData = Parameters.setup else {
+        guard let data: Data = Parameters.setup as Data? else {
             print("** no NSData to unarchive")
             return false
         }
         
-        guard let configs = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [NSData] else {
+        guard let configs = NSKeyedUnarchiver.unarchiveObject(with: data) as? [Data] else {
             print("** invalid NSData format for config array")
             return false
         }
@@ -303,21 +300,19 @@ extension AudioController {
 
         if musicSequence != nil { deleteMusicSequence() }
         guard !CheckError("NewMusicSequence", NewMusicSequence(&musicSequence)) else { return false }
-        guard !CheckError("MusicSequenceSetAUGraph", MusicSequenceSetAUGraph(musicSequence, graph)) else { return false }
+        guard !CheckError("MusicSequenceSetAUGraph", MusicSequenceSetAUGraph(musicSequence!, graph)) else { return false }
 
         // Generate MusicTrack objects for each instrument. Remember the longest track duration
         //
         musicTrackMap = [:]
         activeInstruments.forEach {
-            let (musicTrack, beatClock) = $0.createMusicTrack(musicSequence)
-            if musicTrack != nil {
-                $0.assignToMusicTrack(musicTrack)
-                musicTrackMap[$0] = musicTrack
-                sequenceLength = max(beatClock, sequenceLength)
-            }
+            let (musicTrack, beatClock) = $0.createMusicTrack(musicSequence!)
+            $0.assignToMusicTrack(musicTrack)
+            musicTrackMap[$0] = musicTrack
+            sequenceLength = max(beatClock, sequenceLength)
         }
 
-        saveMusicSequence()
+        _ = saveMusicSequence()
 
         return updatePlayer()
     }
@@ -325,11 +320,11 @@ extension AudioController {
     /**
      Delete the existing music sequence.
      */
-    private func deleteMusicSequence() {
+    fileprivate func deleteMusicSequence() {
         precondition(musicPlayer != nil)
         guard musicSequence != nil else { return }
-        CheckError("MusicPlayer", MusicPlayerSetSequence(musicPlayer, nil))
-        CheckError("DisposeMusicSequence", DisposeMusicSequence(musicSequence))
+        _ = CheckError("MusicPlayer", MusicPlayerSetSequence(musicPlayer!, nil))
+        _ = CheckError("DisposeMusicSequence", DisposeMusicSequence(musicSequence!))
         musicSequence = nil
         sequenceLength = 0.0
     }
@@ -341,9 +336,9 @@ extension AudioController {
      
      - returns: the index of the given track or -1 if not found
      */
-    private func getTrackIndex(musicTrack: MusicTrack) -> Int {
+    fileprivate func getTrackIndex(_ musicTrack: MusicTrack) -> Int {
         var trackIndex: UInt32 = 0
-        return CheckError("MusicSequenceGetTrackIndex", MusicSequenceGetTrackIndex(musicSequence, musicTrack,
+        return CheckError("MusicSequenceGetTrackIndex", MusicSequenceGetTrackIndex(musicSequence!, musicTrack,
             &trackIndex)) ? -1 : Int(trackIndex)
     }
 
@@ -352,26 +347,26 @@ extension AudioController {
      
      - returns: true if successful
      */
-    private func saveMusicSequence() -> Bool {
+    fileprivate func saveMusicSequence() -> Bool {
         precondition(musicSequence != nil)
         print("-- saving music sequence")
         let data = NSMutableData()
-        let encoder = NSKeyedArchiver(forWritingWithMutableData: data)
+        let encoder = NSKeyedArchiver(forWritingWith: data)
 
         var cfData: Unmanaged<CFData>?
-        guard !CheckError("MusicSequenceFileCreateData", MusicSequenceFileCreateData(musicSequence, .MIDIType,
-            .EraseFile, 480, &cfData)) else { return false }
+        guard !CheckError("MusicSequenceFileCreateData", MusicSequenceFileCreateData(musicSequence!, .midiType,
+            .eraseFile, 480, &cfData)) else { return false }
 
-        let sequenceData: NSData = cfData!.takeRetainedValue()
-        encoder.encodeObject(sequenceData, forKey: "sequenceData")
+        let sequenceData: Data = cfData!.takeRetainedValue() as Data
+        encoder.encode(sequenceData, forKey: "sequenceData")
 
         // Obtain an array with MIDI track indices for the active instruments
         //
-        let trackMap: NSArray = activeInstruments.map { NSNumber.init(integer: getTrackIndex(musicTrackMap[$0]!)) }
-        encoder.encodeObject(trackMap, forKey: "trackMap")
+        let trackMap = activeInstruments.map { NSNumber.init(value: getTrackIndex(musicTrackMap[$0]!) as Int) }
+        encoder.encode(trackMap, forKey: "trackMap")
         encoder.finishEncoding()
 
-        Parameters.sequence = data
+        Parameters.sequence = data as Data
         saveSetup()
 
         return true
@@ -384,9 +379,9 @@ extension AudioController {
      
      - returns: MusicTrack instance if successful, nil otherwise
      */
-    private func getIndTrack(index: Int) -> MusicTrack? {
-        var musicTrack: MusicTrack = nil
-        return CheckError("MusicSequenceGetIndTrack(\(index))", MusicSequenceGetIndTrack(musicSequence, UInt32(index),
+    fileprivate func getIndTrack(_ index: Int) -> MusicTrack? {
+        var musicTrack: MusicTrack? = nil
+        return CheckError("MusicSequenceGetIndTrack(\(index))", MusicSequenceGetIndTrack(musicSequence!, UInt32(index),
             &musicTrack)) ? nil : musicTrack
     }
 
@@ -395,7 +390,7 @@ extension AudioController {
 
      - returns: true if successful
      */
-    private func restoreMusicSequence() -> Bool {
+    fileprivate func restoreMusicSequence() -> Bool {
         print("-- attempting to restore previous music sequence")
 
         guard let data = Parameters.sequence else {
@@ -405,24 +400,24 @@ extension AudioController {
 
         deleteMusicSequence()
 
-        let decoder = NSKeyedUnarchiver(forReadingWithData: data)
-        guard let sequenceData = decoder.decodeObjectForKey("sequenceData") as? NSData else {
+        let decoder = NSKeyedUnarchiver(forReadingWith: data as Data)
+        guard let sequenceData = decoder.decodeObject(forKey: "sequenceData") as? Data else {
             print("** invalid NSData for sequence data")
             return false
         }
 
         guard !CheckError("NewMusicSequence", NewMusicSequence(&musicSequence)) else { return false }
-        guard !CheckError("MusicSequenceSetAUGraph", MusicSequenceSetAUGraph(musicSequence, graph)) else { return false }
-        guard !CheckError("MusicSequenceFileLoadData", MusicSequenceFileLoadData(musicSequence, sequenceData, .AnyType,
-            .SMF_PreserveTracks)) else { return false }
+        guard !CheckError("MusicSequenceSetAUGraph", MusicSequenceSetAUGraph(musicSequence!, graph)) else { return false }
+        guard !CheckError("MusicSequenceFileLoadData", MusicSequenceFileLoadData(musicSequence!, sequenceData as CFData, .anyType,
+            MusicSequenceLoadFlags())) else { return false }
 
-        guard let objTrackIndices = decoder.decodeObjectForKey("trackMap") as? NSArray else {
+        guard let objTrackIndices = decoder.decodeObject(forKey: "trackMap") as? NSArray else {
             print("** invalid object for track map")
             return false
         }
 
         
-        let trackIndices = objTrackIndices.map { getIndTrack(Int($0.integerValue)) }
+        let trackIndices = objTrackIndices.map { getIndTrack(($0 as AnyObject).intValue) }
 
         // Assign MusicTrack instances with the Instrument it was last assigned to
         //
@@ -445,7 +440,7 @@ extension AudioController {
      
      - returns: true if successful
      */
-    private func createPlayer() -> Bool {
+    fileprivate func createPlayer() -> Bool {
         deletePlayer()
         if CheckError("NewMusicPlayer", NewMusicPlayer(&musicPlayer)) {
             return false
@@ -456,10 +451,10 @@ extension AudioController {
     /**
      Delete the current MusicPlayer instance
      */
-    private func deletePlayer() {
+    fileprivate func deletePlayer() {
         if musicPlayer != nil {
-            if musicSequence != nil && isPlaying() { stop() }
-            CheckError("DisposeMusicPlayer", DisposeMusicPlayer(musicPlayer))
+            if musicSequence != nil && isPlaying() { _ = stop() }
+            _ = CheckError("DisposeMusicPlayer", DisposeMusicPlayer(musicPlayer!))
             musicPlayer = nil
         }
     }
@@ -469,16 +464,16 @@ extension AudioController {
      
      - returns: true if successful
      */
-    private func updatePlayer() -> Bool {
+    fileprivate func updatePlayer() -> Bool {
         precondition(musicSequence != nil)
         
         // Locate the longest track duration in the sequence
         //
-        sequenceLength = (activeInstruments.maxElement { $0.trackDuration > $1.trackDuration })!.trackDuration
+        sequenceLength = (activeInstruments.max { $0.trackDuration > $1.trackDuration })!.trackDuration
         print("sequenceLength: \(sequenceLength)")
-        return !CheckError("MusicPlayerSetSequence", MusicPlayerSetSequence(musicPlayer, musicSequence)) &&
-            !CheckError("MusicPlayerSetLength", MusicPlayerSetTime(musicPlayer, 0.0)) &&
-            !CheckError("MusicPlayerPreroll", MusicPlayerPreroll(musicPlayer))
+        return !CheckError("MusicPlayerSetSequence", MusicPlayerSetSequence(musicPlayer!, musicSequence)) &&
+            !CheckError("MusicPlayerSetLength", MusicPlayerSetTime(musicPlayer!, 0.0)) &&
+            !CheckError("MusicPlayerPreroll", MusicPlayerPreroll(musicPlayer!))
     }
 }
 
@@ -492,11 +487,11 @@ extension AudioController {
      
      - returns: true if successful
      */
-    func addInstrument(pos: Int) -> Bool {
+    func addInstrument(_ pos: Int) -> Bool {
         precondition(musicPlayer != nil && activeInstruments.count < instruments.count)
 
         let wasPlaying = isPlaying()
-        if wasPlaying { stop() }
+        if wasPlaying { _ = stop() }
 
         let instrument = instruments[activeInstruments.count]
         instrument.setActiveDefaults()
@@ -505,21 +500,17 @@ extension AudioController {
             instrument.patch = activeInstruments[pos].patch
         }
 
-        let (musicTrack, beatClock) = instrument.createMusicTrack(musicSequence)
-        if musicTrack == nil {
-            instrument.enabled = false
-            return false
-        }
+        let (musicTrack, beatClock) = instrument.createMusicTrack(musicSequence!)
 
         instrument.assignToMusicTrack(musicTrack)
         musicTrackMap[instrument] = musicTrack
-        activeInstruments.insert(instrument, atIndex: pos)
+        activeInstruments.insert(instrument, at: pos)
         sequenceLength = max(beatClock, sequenceLength)
 
-        if wasPlaying { play() }
+        if wasPlaying { _ = play() }
 
         saveSetup()
-        saveMusicSequence()
+        _ = saveMusicSequence()
 
         return true
     }
@@ -531,21 +522,21 @@ extension AudioController {
      
      - returns: true if successful
      */
-    func removeInstrument(pos: Int) -> Bool {
+    func removeInstrument(_ pos: Int) -> Bool {
         precondition(pos >= 0 && pos < activeInstruments.count)
 
         let wasPlaying = isPlaying()
-        if wasPlaying { stop() }
+        if wasPlaying { _ = stop() }
 
-        let instrument = activeInstruments.removeAtIndex(pos)
+        let instrument = activeInstruments.remove(at: pos)
         instrument.assignToMusicTrack(nil)
         musicTrackMap[instrument] = nil
-        sequenceLength = (activeInstruments.maxElement { $0.trackDuration > $1.trackDuration })!.trackDuration
+        sequenceLength = (activeInstruments.max { $0.trackDuration > $1.trackDuration })!.trackDuration
 
-        if wasPlaying { play() }
+        if wasPlaying { _ = play() }
 
         saveSetup()
-        saveMusicSequence()
+        _ = saveMusicSequence()
 
         return true
     }
@@ -556,9 +547,9 @@ extension AudioController {
      - parameter fromPos: original postion
      - parameter toPos: new position
      */
-    func reorderInstrument(fromPos fromPos: Int, toPos: Int) {
+    func reorderInstrument(fromPos: Int, toPos: Int) {
         print("reorder: \(fromPos)  \(toPos)")
-        activeInstruments.insert(activeInstruments.removeAtIndex(fromPos), atIndex: toPos)
+        activeInstruments.insert(activeInstruments.remove(at: fromPos), at: toPos)
         saveSetup()
     }
 }
@@ -572,16 +563,16 @@ extension AudioController {
      - returns: true if it is playing, false otherwise
      */
     func isPlaying() -> Bool {
-        if musicPlayer == nil {
+        guard musicPlayer != nil else {
             return false
         }
-        
+
         var playing: DarwinBoolean = false
-        if CheckError("MusicPlayerIsPlaying", MusicPlayerIsPlaying(musicPlayer, &playing)) {
+        if CheckError("MusicPlayerIsPlaying", MusicPlayerIsPlaying(musicPlayer!, &playing)) {
             return false
         }
         
-        return Bool(playing)
+        return playing.boolValue ? true : false
     }
     
     /**
@@ -591,7 +582,7 @@ extension AudioController {
      - Stop: indication that the MusicPlayer is **not** playing
      */
     enum PlayOrStop {
-        case Play, Stop
+        case play, stop
     }
 
     /**
@@ -601,11 +592,11 @@ extension AudioController {
      */
     func playOrStop() -> PlayOrStop {
         if isPlaying() {
-            stop()
-            return .Stop
+            _ = stop()
+            return .stop
         }
         else {
-            return play() ? .Play : .Stop
+            return play() ? .play : .stop
         }
     }
     
@@ -617,7 +608,7 @@ extension AudioController {
     func play() -> Bool {
         precondition(musicSequence != nil && musicPlayer != nil)
         print("-- starting MusicPlayer")
-        if CheckError("MusicPlayerStart", MusicPlayerStart(musicPlayer)) {
+        if CheckError("MusicPlayerStart", MusicPlayerStart(musicPlayer!)) {
             return false
         }
         print("-- started MusicPlayer")
@@ -631,7 +622,7 @@ extension AudioController {
      */
     func stop() -> Bool {
         precondition(musicSequence != nil && musicPlayer != nil)
-        if !CheckError("MusicPlayerStop", MusicPlayerStop(musicPlayer)) {
+        if !CheckError("MusicPlayerStop", MusicPlayerStop(musicPlayer!)) {
             print("-- stopped MusicPlayer")
         }
         return true
@@ -642,10 +633,10 @@ extension AudioController {
      
      - parameter position: timestamp in "beats" to move to
      */
-    func setPlaybackPosition(position: MusicTimeStamp) {
+    func setPlaybackPosition(_ position: MusicTimeStamp) {
         precondition(musicPlayer != nil)
         print("-- playback position: \(position)")
-        if MusicPlayerSetTime(musicPlayer, position) != 0 {
+        if MusicPlayerSetTime(musicPlayer!, position) != 0 {
             print("*** failed to set playback position")
         }
     }
@@ -658,7 +649,7 @@ extension AudioController {
     func getPlaybackPosition() -> MusicTimeStamp {
         precondition(musicPlayer != nil)
         var position: MusicTimeStamp = 0
-        if MusicPlayerGetTime(musicPlayer, &position) != 0 {
+        if MusicPlayerGetTime(musicPlayer!, &position) != 0 {
             print("*** failed to fetch position")
             return 0
         }

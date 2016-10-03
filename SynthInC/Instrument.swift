@@ -13,12 +13,12 @@ final class Instrument: NSObject {
     let audioController: AudioController
     let index: Int
 
-    private(set) var samplerNode: AUNode = 0
-    private(set) var samplerUnit: AudioUnit = nil
+    fileprivate(set) var samplerNode: AUNode = 0
+    fileprivate(set) var samplerUnit: AudioUnit? = nil
 
     // -- Entries below here are restorable --
 
-    private(set) var sectionStarts: [MusicTimeStamp] = []
+    fileprivate(set) var sectionStarts: [MusicTimeStamp] = []
 
     var trackDuration: MusicTimeStamp { return sectionStarts[phrases.count] }
     var patch: Patch { didSet { applyPatch() } }
@@ -28,7 +28,7 @@ final class Instrument: NSObject {
     var pan: Float = 0.0 { didSet { applyPan() } }
     var enabled: Bool = false { didSet { applyEnabled() } }
     var muted: Bool = false { didSet { applyEnabled() } }
-    private var savedMuted: Bool = false
+    fileprivate var savedMuted: Bool = false
     var solo: Bool = false
 
     /**
@@ -48,17 +48,17 @@ final class Instrument: NSObject {
      Remove ourselves as an NSNotificationCenter observer since we are dying
      */
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
-    private func applyPatch() {
+    fileprivate func applyPatch() {
         guard samplerUnit != nil else { return }
 
         // Fetch the sound data from the sound font
         // FIXME: move to a SoundFont cache
         // FIXME: bank selection does not seem to work
         //
-        var data = AUSamplerInstrumentData(fileURL: Unmanaged.passUnretained(patch.soundFont!.fileURL),
+        var data = AUSamplerInstrumentData(fileURL: Unmanaged.passUnretained(patch.soundFont!.fileURL as CFURL),
                                            instrumentType: UInt8(kInstrumentType_SF2Preset),
                                            bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
                                            bankLSB: UInt8(kAUSampler_DefaultBankLSB),
@@ -66,8 +66,8 @@ final class Instrument: NSObject {
 
         // Attempt to have the sampler use the sound font data
         //
-        if CheckError("AudioUnitSetProperty(patch)", AudioUnitSetProperty(samplerUnit,
-            kAUSamplerProperty_LoadInstrument, kAudioUnitScope_Global, 0, &data, UInt32(sizeofValue(data)))) {
+        if CheckError("AudioUnitSetProperty(patch)", AudioUnitSetProperty(samplerUnit!,
+            kAUSamplerProperty_LoadInstrument, kAudioUnitScope_Global, 0, &data, UInt32(MemoryLayout.size(ofValue: data)))) {
 
             // Try a "safe" patch
             //
@@ -76,7 +76,7 @@ final class Instrument: NSObject {
         }
 
         let gain = patch.soundFont!.dbGain
-        if CheckError("AudioUnitSetProperty(gain)", AudioUnitSetParameter(samplerUnit, kAUSamplerParam_Gain,
+        if CheckError("AudioUnitSetProperty(gain)", AudioUnitSetParameter(samplerUnit!, kAUSamplerParam_Gain,
             kAudioUnitScope_Global, 0, gain, 0)) {
             print("** failed to set gain")
         }
@@ -85,39 +85,46 @@ final class Instrument: NSObject {
     /**
      Apply the current octave setting to the sampler AudioUnit
      */
-    private func applyOctave() {
+    fileprivate func applyOctave() {
         guard samplerUnit != nil else { return }
         let result: Float = Float(min(2, max(octave, -2))) * 12.0
-        CheckError("AudioUnitSetParameter(Tuning)", AudioUnitSetParameter(samplerUnit,
-            kAUSamplerParam_CoarseTuning, kAudioUnitScope_Global, 0, result, 0))
+        _ = CheckError("AudioUnitSetParameter(Tuning)", AudioUnitSetParameter(samplerUnit!,
+                                                                              kAUSamplerParam_CoarseTuning,
+                                                                              kAudioUnitScope_Global, 0, result, 0))
     }
 
     /**
      Apply the current volume setting to the mixer AudioUnit
      */
-    private func applyVolume() {
+    fileprivate func applyVolume() {
         guard samplerUnit != nil else { return }
-        CheckError("AudioUnitSetParameter(Volume)", AudioUnitSetParameter(audioController.mixerUnit,
-            kMultiChannelMixerParam_Volume, kAudioUnitScope_Input, UInt32(index), volume, 0))
+        _ = CheckError("AudioUnitSetParameter(Volume)", AudioUnitSetParameter(audioController.mixerUnit!,
+                                                                              kMultiChannelMixerParam_Volume,
+                                                                              kAudioUnitScope_Input, UInt32(index),
+                                                                              volume, 0))
     }
 
     /**
      Apply the current pan setting to the mixer AudioUnit
      */
-    private func applyPan() {
+    fileprivate func applyPan() {
         guard samplerUnit != nil else { return }
-        CheckError("AudioUnitSetParameter(Pan)", AudioUnitSetParameter(audioController.mixerUnit,
-            kMultiChannelMixerParam_Pan, kAudioUnitScope_Input, UInt32(index), pan, 0))
+        _ = CheckError("AudioUnitSetParameter(Pan)", AudioUnitSetParameter(audioController.mixerUnit!,
+                                                                           kMultiChannelMixerParam_Pan,
+                                                                           kAudioUnitScope_Input, UInt32(index), pan,
+                                                                           0))
     }
 
     /**
      Apply the enabled setting to the mixer AudioUnit
      */
-    private func applyEnabled() {
+    fileprivate func applyEnabled() {
         guard samplerUnit != nil else { return }
         let result: Float = (enabled && !muted) ? 1.0 : 0.0
-        CheckError("AudioUnitSetParameter(Enable)", AudioUnitSetParameter(audioController.mixerUnit,
-            kMultiChannelMixerParam_Enable, kAudioUnitScope_Input, UInt32(index), result, 0))
+        _ = CheckError("AudioUnitSetParameter(Enable)", AudioUnitSetParameter(audioController.mixerUnit!,
+                                                                              kMultiChannelMixerParam_Enable,
+                                                                              kAudioUnitScope_Input, UInt32(index),
+                                                                              result, 0))
     }
 
     /**
@@ -126,7 +133,7 @@ final class Instrument: NSObject {
      - parameter instrument: the Instrument that is the solo instrument
      - parameter active: true if solo is active
      */
-    func solo(instrument: Instrument, active: Bool) {
+    func solo(_ instrument: Instrument, active: Bool) {
         if active {
             if self == instrument {
                 print("-- solo instrument \(index)")
@@ -154,7 +161,7 @@ final class Instrument: NSObject {
      
      - returns: the phrase number
      */
-    func getSectionPlaying(clock: MusicTimeStamp) -> Int {
+    func getSectionPlaying(_ clock: MusicTimeStamp) -> Int {
         for index in 0..<sectionStarts.count {
             if sectionStarts[index] >= clock {
                 return index + 1
@@ -177,7 +184,7 @@ final class Instrument: NSObject {
             componentSubType: OSType(kAudioUnitSubType_Sampler),
             componentManufacturer: OSType(kAudioUnitManufacturer_Apple),
             componentFlags: 0, componentFlagsMask: 0)
-        if CheckError("AUGraphAddNode(sampler)", AUGraphAddNode(audioController.graph, &desc, &samplerNode)) {
+        if CheckError("AUGraphAddNode(sampler)", AUGraphAddNode(audioController.graph!, &desc, &samplerNode)) {
             return false
         }
         
@@ -196,20 +203,20 @@ final class Instrument: NSObject {
         // Get the AudioUnit associated with each sampler. We will need this later when we set the soundfont
         //
         samplerUnit = nil
-        if CheckError("AUGraphNodeInfo(sampler)", AUGraphNodeInfo(audioController.graph, samplerNode, nil,
+        if CheckError("AUGraphNodeInfo(sampler)", AUGraphNodeInfo(audioController.graph!, samplerNode, nil,
             &samplerUnit)) {
             return false
         }
         
         // Set the sample rate to match the mixer
         //
-        if !setAudioUnitSampleRate(samplerUnit) {
+        if !setAudioUnitSampleRate(samplerUnit!) {
             return false
         }
         
         // Connect the sampler output to a unique mixer input
         //
-        if CheckError("AUGraphConnectNodeInput(sampler)", AUGraphConnectNodeInput(audioController.graph, samplerNode,
+        if CheckError("AUGraphConnectNodeInput(sampler)", AUGraphConnectNodeInput(audioController.graph!, samplerNode,
             0, audioController.mixerNode, UInt32(index))) {
             return false
         }
@@ -236,7 +243,7 @@ final class Instrument: NSObject {
      */
     func saveSetup() {
         let data = getSetup()
-        audioController.saveSetup(self, data: data)
+        _ = audioController.saveSetup(self, data: data)
     }
 
     /**
@@ -244,23 +251,23 @@ final class Instrument: NSObject {
      
      - returns: NSData containing archived configuration values
      */
-    func getSetup() -> NSData {
+    func getSetup() -> Data {
         let data = NSMutableData()
-        let encoder = NSKeyedArchiver(forWritingWithMutableData: data)
+        let encoder = NSKeyedArchiver(forWritingWith: data)
         
-        encoder.encodeObject(patch.soundFont!.name, forKey: "soundFontName")
-        encoder.encodeObject(patch.name, forKey: "patchName")
+        encoder.encode(patch.soundFont!.name, forKey: "soundFontName")
+        encoder.encode(patch.name, forKey: "patchName")
         
-        let tmp: NSArray = sectionStarts.map { NSNumber.init(double: $0) }
-        encoder.encodeObject(tmp, forKey: "sectionStarts")
+        let tmp = sectionStarts.map { NSNumber.init(value: $0 as Double) }
+        encoder.encode(tmp, forKey: "sectionStarts")
 
-        encoder.encodeInteger(octave, forKey: "octave")
-        encoder.encodeFloat(volume, forKey: "volume")
-        encoder.encodeFloat(pan, forKey: "pan")
-        encoder.encodeBool(muted, forKey: "muted")
+        encoder.encode(octave, forKey: "octave")
+        encoder.encode(volume, forKey: "volume")
+        encoder.encode(pan, forKey: "pan")
+        encoder.encode(muted, forKey: "muted")
         encoder.finishEncoding()
         
-        return data
+        return data as Data
     }
 
     /**
@@ -270,26 +277,26 @@ final class Instrument: NSObject {
      
      - returns: true if successful
      */
-    func restoreSetup(data: NSData) -> Bool {
+    func restoreSetup(_ data: Data) -> Bool {
         precondition(samplerUnit != nil)
 
-        let decoder = NSKeyedUnarchiver(forReadingWithData: data)
+        let decoder = NSKeyedUnarchiver(forReadingWith: data)
 
-        guard let soundFontName = decoder.decodeObjectForKey("soundFontName") as? String else { return false }
-        guard let patchName = decoder.decodeObjectForKey("patchName") as? String else { return false }
+        guard let soundFontName = decoder.decodeObject(forKey: "soundFontName") as? String else { return false }
+        guard let patchName = decoder.decodeObject(forKey: "patchName") as? String else { return false }
         if let soundFont = SoundFont.library[soundFontName],
             let patch = soundFont.findPatch(patchName) {
             self.patch = patch
         }
 
-        guard let objSectionStarts = decoder.decodeObjectForKey("sectionStarts") as? NSArray else { return false }
-        self.sectionStarts = objSectionStarts.map { Double($0.doubleValue) }
+        guard let objSectionStarts = decoder.decodeObject(forKey: "sectionStarts") as? NSArray else { return false }
+        self.sectionStarts = objSectionStarts.map { Double(($0 as AnyObject).doubleValue) }
         print(self.sectionStarts)
 
-        octave = decoder.decodeIntegerForKey("octave")
-        volume = decoder.decodeFloatForKey("volume")
-        pan = decoder.decodeFloatForKey("pan")
-        muted = decoder.decodeBoolForKey("muted")
+        octave = decoder.decodeInteger(forKey: "octave")
+        volume = decoder.decodeFloat(forKey: "volume")
+        pan = decoder.decodeFloat(forKey: "pan")
+        muted = decoder.decodeBool(forKey: "muted")
 
         return true
     }
@@ -301,7 +308,7 @@ final class Instrument: NSObject {
      
      - returns: 2-tuple containing the new MusicTrack and the duration of the new track. If error, returns (nil, -1)
      */
-    func createMusicTrack(musicSequence: MusicSequence) -> (MusicTrack, MusicTimeStamp) {
+    func createMusicTrack(_ musicSequence: MusicSequence) -> (MusicTrack?, MusicTimeStamp) {
         print("-- creating music track for instrument \(index)")
 
         var trackCount: UInt32 = 0
@@ -309,7 +316,7 @@ final class Instrument: NSObject {
             return (nil, -1.0)
         }
 
-        var track: MusicTrack = nil
+        var track: MusicTrack? = nil
         sectionStarts.removeAll()
         if CheckError("MusicSequenceNewTrack", MusicSequenceNewTrack(musicSequence, &track)) {
             return (nil, -1.0)
@@ -321,7 +328,7 @@ final class Instrument: NSObject {
             let repVar = RandomUniform.sharedInstance.uniform(0.0, upper:Parameters.seqRepVar)
             let reps = max(1, Int((Parameters.seqRepNorm + repVar) / phrase.beats))
             for _ in 0..<reps {
-                beatClock = phrase.addToTrack(track, clock: beatClock)
+                beatClock = phrase.addToTrack(track!, clock: beatClock)
             }
         }
 
@@ -329,7 +336,7 @@ final class Instrument: NSObject {
         //
         sectionStarts.append(beatClock)
 
-        return (track, beatClock)
+        return (track!, beatClock)
     }
 
     /**
@@ -337,9 +344,9 @@ final class Instrument: NSObject {
      
      - parameter musicTrack: the MusicTrack to link to. May be nil.
      */
-    func assignToMusicTrack(musicTrack: MusicTrack) {
+    func assignToMusicTrack(_ musicTrack: MusicTrack?) {
         print("-- assigning instrument \(index) to track \(musicTrack)")
-        CheckError("MusicTrackSetDestNode", MusicTrackSetDestNode(musicTrack, samplerNode))
+        _ = CheckError("MusicTrackSetDestNode", MusicTrackSetDestNode(musicTrack!, samplerNode))
         if musicTrack != nil {
             applyOctave()
             applyPan()

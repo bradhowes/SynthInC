@@ -19,10 +19,10 @@ class PhraseView : UIView {
      
      - parameter rect: the area to update
      */
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         guard let cgc = UIGraphicsGetCurrentContext() else { return }
-        CGContextSetRGBFillColor(cgc, 1.0, 1.0, 1.0, 0.20)
-        let rect = CGRectMake(bounds.minX, bounds.minY, bounds.width * CGFloat(currentPhrase - 1) / 53.0, bounds.height)
-        CGContextFillRect(cgc, rect)
+        cgc.setFillColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.20)
+        let rect = CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width * CGFloat(currentPhrase - 1) / 53.0, height: bounds.height)
+        cgc.fill(rect)
     }
 }
