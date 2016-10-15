@@ -14,8 +14,6 @@
 		B06746E319BF58F700DCF4E3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B06746E219BF58F700DCF4E3 /* Images.xcassets */; };
 		B06746EF19BF58F700DCF4E3 /* SynthInCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06746EE19BF58F700DCF4E3 /* SynthInCTests.swift */; };
 		B06746FA19BF591200DCF4E3 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06746F819BF591200DCF4E3 /* AudioController.swift */; };
-		BD07573D1D05818300595332 /* ASValuePopUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = BD07573A1D05818300595332 /* ASValuePopUpView.m */; };
-		BD07573E1D05818300595332 /* ASValueTrackingSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = BD07573C1D05818300595332 /* ASValueTrackingSlider.m */; };
 		BD0757401D05FA7D00595332 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD07573F1D05FA7D00595332 /* Utils.swift */; };
 		BD0757421D05FAD200595332 /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0757411D05FAD200595332 /* Instrument.swift */; };
 		BD0BBA301D0E2C42006F7F6A /* InstrumentListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0BBA2F1D0E2C42006F7F6A /* InstrumentListViewController.swift */; };
@@ -38,8 +36,6 @@
 		BD435E121D087844000ECC3C /* RolandNicePiano.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */; };
 		BD8433DF1D024BC800BD835C /* InstrumentsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8433DE1D024BC800BD835C /* InstrumentsTableViewCell.swift */; };
 		BDB6C5A21CFD6C550095E9CA /* InstrumentEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */; };
-		BDD0901C1D14743D005E03B6 /* InstrumentSceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD0901B1D14743D005E03B6 /* InstrumentSceneViewController.swift */; };
-		BDD090201D14968F005E03B6 /* Instruments.sks in Resources */ = {isa = PBXBuildFile; fileRef = BDD0901F1D14968F005E03B6 /* Instruments.sks */; };
 		BDD090221D1498F1005E03B6 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDD090211D1498F1005E03B6 /* SpriteKit.framework */; };
 		D65AD46D1E7B021F45A55AB8 /* Pods_SynthInCTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 643BD2A6E0910D35ADA101A5 /* Pods_SynthInCTests.framework */; };
 /* End PBXBuildFile section */
@@ -71,11 +67,6 @@
 		B06746EE19BF58F700DCF4E3 /* SynthInCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynthInCTests.swift; sourceTree = "<group>"; };
 		B06746F819BF591200DCF4E3 /* AudioController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
 		B06746FE19BF673300DCF4E3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		BD0757381D05818300595332 /* SynthInC-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SynthInC-Bridging-Header.h"; sourceTree = "<group>"; };
-		BD0757391D05818300595332 /* ASValuePopUpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ASValuePopUpView.h; path = Vendor/ASValuePopUpView.h; sourceTree = "<group>"; };
-		BD07573A1D05818300595332 /* ASValuePopUpView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ASValuePopUpView.m; path = Vendor/ASValuePopUpView.m; sourceTree = "<group>"; };
-		BD07573B1D05818300595332 /* ASValueTrackingSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ASValueTrackingSlider.h; path = Vendor/ASValueTrackingSlider.h; sourceTree = "<group>"; };
-		BD07573C1D05818300595332 /* ASValueTrackingSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ASValueTrackingSlider.m; path = Vendor/ASValueTrackingSlider.m; sourceTree = "<group>"; };
 		BD07573F1D05FA7D00595332 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		BD0757411D05FAD200595332 /* Instrument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Instrument.swift; sourceTree = "<group>"; };
 		BD0BBA2F1D0E2C42006F7F6A /* InstrumentListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentListViewController.swift; sourceTree = "<group>"; };
@@ -100,8 +91,6 @@
 		BD49572A1D11A325000324ED /* FluidR3_GM.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = FluidR3_GM.sh; path = SoundFonts/FluidR3_GM.sh; sourceTree = "<group>"; };
 		BD8433DE1D024BC800BD835C /* InstrumentsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentsTableViewCell.swift; sourceTree = "<group>"; };
 		BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentEditorViewController.swift; sourceTree = "<group>"; };
-		BDD0901B1D14743D005E03B6 /* InstrumentSceneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentSceneViewController.swift; sourceTree = "<group>"; };
-		BDD0901F1D14968F005E03B6 /* Instruments.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Instruments.sks; sourceTree = "<group>"; };
 		BDD090211D1498F1005E03B6 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
 		F100CD6C12FE8A2B6C574ABD /* Pods-SynthInC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SynthInC.release.xcconfig"; path = "Pods/Target Support Files/Pods-SynthInC/Pods-SynthInC.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -172,7 +161,6 @@
 				BD4957261D1135A1000324ED /* Sound Fonts */,
 				BD0757441D05FE6400595332 /* Utility */,
 				B06746D919BF58F700DCF4E3 /* Supporting Files */,
-				BD0757371D05815800595332 /* Vendor */,
 			);
 			name = Source;
 			path = SynthInC;
@@ -204,18 +192,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		BD0757371D05815800595332 /* Vendor */ = {
-			isa = PBXGroup;
-			children = (
-				BD0757391D05818300595332 /* ASValuePopUpView.h */,
-				BD07573A1D05818300595332 /* ASValuePopUpView.m */,
-				BD07573B1D05818300595332 /* ASValueTrackingSlider.h */,
-				BD07573C1D05818300595332 /* ASValueTrackingSlider.m */,
-				BD0757381D05818300595332 /* SynthInC-Bridging-Header.h */,
-			);
-			name = Vendor;
-			sourceTree = "<group>";
-		};
 		BD0757431D05FE2B00595332 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
@@ -241,7 +217,6 @@
 		BD0757451D05FE8300595332 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				BDD0901B1D14743D005E03B6 /* InstrumentSceneViewController.swift */,
 				BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */,
 				BD0BBA2F1D0E2C42006F7F6A /* InstrumentListViewController.swift */,
 				BD216F731D13B3C400436000 /* SettingsViewController.swift */,
@@ -307,7 +282,6 @@
 			children = (
 				B06746DF19BF58F700DCF4E3 /* Main.storyboard */,
 				B01161BE1B149C2A005A90F7 /* Launch Screen.xib */,
-				BDD0901F1D14968F005E03B6 /* Instruments.sks */,
 			);
 			name = Layouts;
 			sourceTree = "<group>";
@@ -415,7 +389,6 @@
 				B01161BF1B149C2A005A90F7 /* Launch Screen.xib in Resources */,
 				B06746E119BF58F700DCF4E3 /* Main.storyboard in Resources */,
 				BD1BD0461CFCAACE00C804A4 /* Settings.bundle in Resources */,
-				BDD090201D14968F005E03B6 /* Instruments.sks in Resources */,
 				B06746E319BF58F700DCF4E3 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -527,7 +500,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDD0901C1D14743D005E03B6 /* InstrumentSceneViewController.swift in Sources */,
 				BD435E121D087844000ECC3C /* RolandNicePiano.swift in Sources */,
 				BD0BBA301D0E2C42006F7F6A /* InstrumentListViewController.swift in Sources */,
 				BD216F741D13B3C400436000 /* SettingsViewController.swift in Sources */,
@@ -541,8 +513,6 @@
 				BD1F14811CF5D1AE00E6B85F /* Phrases.swift in Sources */,
 				BD0757401D05FA7D00595332 /* Utils.swift in Sources */,
 				BD435E0F1D087844000ECC3C /* FluidR3_GM.swift in Sources */,
-				BD07573E1D05818300595332 /* ASValueTrackingSlider.m in Sources */,
-				BD07573D1D05818300595332 /* ASValuePopUpView.m in Sources */,
 				BD0BBA321D0E3A68006F7F6A /* VolumeBarView.swift in Sources */,
 				B06746DC19BF58F700DCF4E3 /* AppDelegate.swift in Sources */,
 				BD1F14771CF582A400E6B85F /* CheckError.swift in Sources */,
@@ -690,7 +660,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.brhcode.SynthInC;
 				PRODUCT_NAME = SynthInC;
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "SynthInC/SynthInC-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -711,7 +680,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.brhcode.SynthInC;
 				PRODUCT_NAME = SynthInC;
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "SynthInC/SynthInC-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

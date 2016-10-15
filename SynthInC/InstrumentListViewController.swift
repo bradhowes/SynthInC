@@ -7,11 +7,12 @@
 import UIKit
 import InAppSettingsKit
 import AVFoundation
+import ASValueTrackingSlider
 
 /**
  Main view controller for the application.
  */
-class InstrumentListViewController: UIViewController {
+final class InstrumentListViewController: UIViewController {
 
     enum BarButtonItems: Int {
         case add = 0, edit, done
@@ -417,6 +418,7 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
                 ppc.barButtonItem = nil // !!! Muy importante !!!
                 ppc.sourceView = cell
                 ppc.sourceRect = cell.accessoryView!.frame
+                vc.preferredContentSize.width = self.preferredContentSize.width
             }
         }
         
@@ -430,7 +432,7 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
      - parameter reason: the reason for the dismissal: Cancel or Done
      */
     func instrumentEditorDismissed(_ row: Int, reason: InstrumentEditorDismissedReason) {
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: false, completion: nil)
         let cell = instrumentSettings.cellForRow(at: IndexPath(row: row, section: 0))
             as! InstrumentsTableViewCell
         cell.updateAll(currentPosition)

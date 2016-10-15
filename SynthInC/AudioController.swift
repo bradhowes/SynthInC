@@ -9,6 +9,8 @@ import AudioToolbox
 import CoreAudio
 import AVFoundation
 
+internal var audioController: AudioController = AudioController()
+
 /**
  Manages the audio components and instruments used to play the "In C" score. Holds a set of Instrument instances, each
  of which holds an AUSampler element that will play a unique track.
@@ -16,10 +18,10 @@ import AVFoundation
 final class AudioController  {
     let maxSamplerCount = Parameters.maxInstrumentCount
     fileprivate(set) var graph: AUGraph?
-    fileprivate(set) var mixerUnit: AudioUnit? = nil
+    fileprivate(set) var mixerUnit: AudioUnit?
     fileprivate(set) var mixerNode: AUNode = 0
-    fileprivate(set) var musicPlayer: MusicPlayer? = nil
-    fileprivate(set) var musicSequence: MusicSequence? = nil
+    fileprivate(set) var musicPlayer: MusicPlayer?
+    fileprivate(set) var musicSequence: MusicSequence?
     fileprivate(set) var sequenceLength: MusicTimeStamp = 0
     fileprivate(set) var activeInstruments: [Instrument] = []
     fileprivate var instruments: [Instrument] = []
@@ -38,10 +40,6 @@ final class AudioController  {
         }
     }
 }
-
-var audioController: AudioController = {
-    return AudioController()
-}()
 
 // MARK: - AudioUnit Graph
 extension AudioController {

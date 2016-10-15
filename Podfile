@@ -7,6 +7,7 @@ use_frameworks!
 target 'SynthInC' do
   pod 'InAppSettingsKit', '~> 2.8'
   pod 'SwiftyUserDefaults', '~> 3.0'
+  pod 'ASValueTrackingSlider', '~>  0.12.1'
 end
 
 target 'SynthInCTests' do

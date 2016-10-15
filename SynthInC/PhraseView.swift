@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import UIKit
 
 /// Graphical depiction of what phrases have been played by an instrument.
-class PhraseView : UIView {
+final class PhraseView : UIView {
 
     /// The active phrase of the instrument
     var currentPhrase: Int = 1

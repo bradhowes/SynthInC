@@ -4,12 +4,12 @@
 // Created by Brad Howes
 // Copyright (c) 2016 Brad Howes. All rights reserved.
 
-import Foundation
+import UIKit
 
 /**
  Representation of a sound font library. NOTE: all sound font files must have 'sf2' extension.
  */
-class SoundFont {
+final class SoundFont {
 
     /**
      Mapping of registered sound fonts. Add additional sound font entries here to make them available to the
@@ -28,6 +28,7 @@ RolandNicePiano.name: RolandNicePiano,
      Array of registered sound font names sorted in alphabetical order. Generated from `library` entries.
      */
     static let keys: [String] = library.keys.sorted()
+    static let maxWidth: CGFloat = library.values.map { $0.width }.max() ?? 100.0
     static let patchCount: Int = library.reduce(0) { $0 + $1.1.patches.count }
 
     /**
@@ -73,6 +74,7 @@ RolandNicePiano.name: RolandNicePiano,
 
     /// Presentation name of the sound font
     let name: String
+    let width: CGFloat
 
     /// The file name of the sound font (sans extension)
     let fileName: String
@@ -82,7 +84,7 @@ RolandNicePiano.name: RolandNicePiano,
 
     /// The collection of Patches found in the sound font
     var patches: [Patch]
-
+    var maxPatchWidth: CGFloat
     let dbGain: Float32
 
     /**
@@ -93,11 +95,15 @@ RolandNicePiano.name: RolandNicePiano,
      - parameter patches: the array of Patch objects for the sound font
      */
     init(_ name: String, fileName: String, _ patches: [Patch], _ dbGain: Float32 = 0.0 ) {
+        let fontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
         self.name = name
+        self.width = (name as NSString).size(attributes: fontAttributes).width
         self.fileName = fileName
         self.fileURL = Bundle.main.url(forResource: fileName, withExtension: soundFontExtension)!
         self.patches = patches
         self.dbGain = dbGain
+        self.maxPatchWidth = patches.map { $0.width }.max() ?? 100.0
+
         patches.forEach { $0.soundFont = self }
     }
 
@@ -128,10 +134,11 @@ RolandNicePiano.name: RolandNicePiano,
 /**
  Representation of a patch in a sound font.
  */
-class Patch {
+final class Patch {
     
     /// Display name for the patch
     let name: String
+    let width: CGFloat
     /// Bank number where the patch resides in the sound font
     let bank: Int
     /// Program patch number where the patch resides in the sound font
@@ -147,7 +154,9 @@ class Patch {
      - parameter patch: the program ID of the patch in the sound font
      */
     init(_ name: String, _ bank: Int, _ patch: Int) {
+        let fontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
         self.name = name
+        self.width = (name as NSString).size(attributes: fontAttributes).width
         self.bank = bank
         self.patch = patch
         self.soundFont = nil

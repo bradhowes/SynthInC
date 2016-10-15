@@ -7,7 +7,7 @@
 import UIKit
 
 /// Custom UIView for showing Instrument volume and pan setting
-class VolumeBarView: UIView {
+final class VolumeBarView: UIView {
 
     var volume: Float = 0.0
     var pan: Float = 0.0

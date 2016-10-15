@@ -8,7 +8,7 @@ import UIKit
 import AVFoundation
 
 /// Simple derivation of UITableViewCell for the instruments view.
-class InstrumentsTableViewCell: UITableViewCell {
+final class InstrumentsTableViewCell: UITableViewCell {
 
     weak var instrument: Instrument!
 

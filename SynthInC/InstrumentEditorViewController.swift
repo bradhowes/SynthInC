@@ -6,6 +6,7 @@
 
 import Foundation
 import UIKit
+import ASValueTrackingSlider
 
 /**
  Dismissed reason
@@ -100,7 +101,10 @@ final class InstrumentEditorViewController: UIViewController {
         
         muteButton.setImage(UIImage(named: "Mute On"), for: .highlighted)
         soloButton.setImage(UIImage(named: "Solo On"), for: .highlighted)
-        
+
+        let maxWidth = SoundFont.maxWidth * 2.0 + 40.0
+        preferredContentSize.width = min(UIApplication.shared.windows.first!.frame.width, maxWidth)
+
         super.viewDidLoad()
     }
 
@@ -150,10 +154,10 @@ extension InstrumentEditorViewController {
      - parameter animated: true if the view will disappear in animated fashion
      */
     override func viewWillDisappear(_ animated: Bool) {
-        if let _ = instrument {
+        if instrument != nil {
             stopSolo()
             restoreInstrument()
-            self.instrument = nil
+            instrument = nil
             delegate?.instrumentEditorDismissed(instrumentRow, reason: .cancel)
         }
         super.viewWillDisappear(animated)
@@ -314,6 +318,15 @@ extension InstrumentEditorViewController: UIPickerViewDelegate, UIPickerViewData
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 2
     }
+
+//    func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+//        if component == 0 {
+//            return SoundFont.maxWidth
+//        }
+//        else {
+//            return SoundFont.getByIndex(soundFontIndex).maxPatchWidth
+//        }
+//    }
 }
 
 // MARK: - Control Activity
@@ -383,14 +396,11 @@ extension InstrumentEditorViewController {
      */
     @IBAction func soloInstrument(_ sender: UIButton) {
         guard let instrument = instrument else { return }
-        if !instrument.solo {
-            updateSoloImage(true)
-            delegate?.instrumentEditorSoloChanged(instrumentRow, soloing: true)
+        if !instrument.solo && instrument.muted {
+            muteInstrument(sender)
         }
-        else {
-            updateSoloImage(false)
-            delegate?.instrumentEditorSoloChanged(instrumentRow, soloing: false)
-        }
+        updateSoloImage(!instrument.solo)
+        delegate?.instrumentEditorSoloChanged(instrumentRow, soloing: !instrument.solo)
     }
 
     /**

@@ -11,7 +11,7 @@ import InAppSettingsKit
 import SwiftyUserDefaults
 
 /// Slight derivation of `IASKAppSettingsViewController` in order to marshal settings.
-class SettingsViewController : IASKAppSettingsViewController {
+final class SettingsViewController : IASKAppSettingsViewController {
 
     /**
      Update NSUserDefaults values using values from Parameters class
