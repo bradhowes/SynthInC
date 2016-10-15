@@ -1,0 +1,18 @@
+PODS:
+  - ASValueTrackingSlider (0.12.1)
+  - InAppSettingsKit (2.8)
+  - SwiftyUserDefaults (3.0.0)
+
+DEPENDENCIES:
+  - ASValueTrackingSlider (~> 0.12.1)
+  - InAppSettingsKit (~> 2.8)
+  - SwiftyUserDefaults (~> 3.0)
+
+SPEC CHECKSUMS:
+  ASValueTrackingSlider: 5261de3fcf00adb339efc93885e8f0bc99e703cd
+  InAppSettingsKit: fe3e73f8f9530cdd6270065cd7df7b3773f557e6
+  SwiftyUserDefaults: 0f1d45fc3aafb9064dac661e367f8f83fe21a4b4
+
+PODFILE CHECKSUM: 7df86f37ce1100231270f7fa7cad406091dceeb1
+
+COCOAPODS: 1.0.1
