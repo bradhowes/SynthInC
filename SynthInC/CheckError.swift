@@ -14,7 +14,7 @@ import AVFoundation
  
  - returns: true if there was an error
  */
-func CheckError(method: String, _ error:OSStatus) -> Bool {
+func CheckError(_ method: String, _ error:OSStatus) -> Bool {
     switch(error) {
     case 0:
         // print("-- \(method) OK")

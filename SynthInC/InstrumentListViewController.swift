@@ -7,14 +7,15 @@
 import UIKit
 import InAppSettingsKit
 import AVFoundation
+import ASValueTrackingSlider
 
 /**
  Main view controller for the application.
  */
-class InstrumentListViewController: UIViewController {
+final class InstrumentListViewController: UIViewController {
 
     enum BarButtonItems: Int {
-        case Add = 0, Edit, Done
+        case add = 0, edit, done
     }
 
     /// Flag indicating if the settings pop-up is current shown
@@ -55,7 +56,7 @@ class InstrumentListViewController: UIViewController {
      When playing music, this timer fires every second to update the instruments table view with the sequence they
      are currently playing (1-54)
      */
-    var updateTimer: NSTimer? = nil
+    var updateTimer: Timer? = nil
 
     /// Indication that the user is manipulating the playback slider.
     var sliderInUse = false
@@ -71,19 +72,19 @@ class InstrumentListViewController: UIViewController {
         playbackPosition.minimumValue = 0.0
         playbackPosition.maximumValue = 1.0
         playbackPosition.value = 0.0
-        playbackPosition.continuous = true
+        playbackPosition.isContinuous = true
 
-        playbackPosition.setThumbImage(UIImage(named:"Slider"), forState: .Normal)
-        playbackPosition.setThumbImage(UIImage(named:"Slider"), forState: .Selected)
-        playbackPosition.setThumbImage(UIImage(named:"Slider"), forState: .Highlighted)
+        playbackPosition.setThumbImage(UIImage(named:"Slider"), for: UIControlState())
+        playbackPosition.setThumbImage(UIImage(named:"Slider"), for: .selected)
+        playbackPosition.setThumbImage(UIImage(named:"Slider"), for: .highlighted)
         playbackPosition.popUpViewColor = UIColor.init(red: 12/255.0, green: 102/255.0, blue: 223/255.0, alpha: 1.0)
         playbackPosition.dataSource = self
 
         setNeedsStatusBarAppearanceUpdate()
 
-        addButton.enabled = true
-        editButton.enabled = true
-        doneButton.enabled = true
+        addButton.isEnabled = true
+        editButton.isEnabled = true
+        doneButton.isEnabled = true
 
         normalRightButtons = [editButton]
         editingRightButtons = [doneButton]
@@ -98,8 +99,8 @@ class InstrumentListViewController: UIViewController {
      
      - returns: UIStatusBarStyle.LigthContent
      */
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .lightContent
     }
 
     /**
@@ -118,9 +119,9 @@ extension InstrumentListViewController: IASKSettingsDelegate, UIPopoverPresentat
      IASKAppSettingsDelegate method which signals when the settings view is no longer on the screen.
      - parameter sender: the settings controller that was dismissed
      */
-    func settingsViewControllerDidEnd(sender: IASKAppSettingsViewController!) {
-        self.dismissViewControllerAnimated(true, completion: nil)
-        normalRightButtons.forEach { $0.enabled = true }
+    func settingsViewControllerDidEnd(_ sender: IASKAppSettingsViewController!) {
+        self.dismiss(animated: true, completion: nil)
+        normalRightButtons.forEach { $0.isEnabled = true }
         showingSettings = false
     }
 
@@ -129,9 +130,9 @@ extension InstrumentListViewController: IASKSettingsDelegate, UIPopoverPresentat
      
      - parameter popoverPresentationController: the controller
      */
-    func popoverPresentationControllerDidDismissPopover(popoverPresentationController:
+    func popoverPresentationControllerDidDismissPopover(_ popoverPresentationController:
         UIPopoverPresentationController) {
-        normalRightButtons.forEach { $0.enabled = true }
+        normalRightButtons.forEach { $0.isEnabled = true }
         showingSettings = false
     }
 }
@@ -142,33 +143,33 @@ extension InstrumentListViewController: ASValueTrackingSliderDataSource {
     /**
      Update UI to show that music is playing.
      */
-    private func startedPlaying() {
+    fileprivate func startedPlaying() {
         let image = UIImage(named: "Pause")
-        playStopButton.setImage(image, forState: .Normal)
-        playStopButton.setImage(image, forState: .Highlighted)
-        playStopButton.setImage(image, forState: .Selected)
+        playStopButton.setImage(image, for: UIControlState())
+        playStopButton.setImage(image, for: .highlighted)
+        playStopButton.setImage(image, for: .selected)
         startUpdateTimer()
         updatePlaybackInfo()
-        playbackPosition.showPopUpViewAnimated(true)
+        playbackPosition.showPopUpView(animated: true)
     }
     
     /**
      Update UI to show that music is not playing.
      */
-    private func stoppedPlaying() {
+    fileprivate func stoppedPlaying() {
         let image = UIImage(named: "Play")
-        playStopButton.setImage(image, forState: .Normal)
-        playStopButton.setImage(image, forState: .Highlighted)
-        playStopButton.setImage(image, forState: .Selected)
-        playbackPosition.hidePopUpViewAnimated(true)
+        playStopButton.setImage(image, for: UIControlState())
+        playStopButton.setImage(image, for: .highlighted)
+        playStopButton.setImage(image, for: .selected)
+        playbackPosition.hidePopUpView(animated: true)
         endUpdateTimer()
     }
     
     /**
      Begin update timer to refresh instruments view and slider.
      */
-    private func startUpdateTimer() {
-        updateTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self,
+    fileprivate func startUpdateTimer() {
+        updateTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self,
                                                              selector: #selector(showPlaybackPosition), userInfo: nil,
                                                              repeats: true)
     }
@@ -176,7 +177,7 @@ extension InstrumentListViewController: ASValueTrackingSliderDataSource {
     /**
      Stop update timer.
      */
-    private func endUpdateTimer() {
+    fileprivate func endUpdateTimer() {
         updateTimer?.invalidate()
     }
 
@@ -196,7 +197,7 @@ extension InstrumentListViewController: ASValueTrackingSliderDataSource {
                 
                 // The player has reached the end. Stop it and reset the slider to the start.
                 //
-                audioController.stop()
+                _ = audioController.stop()
                 stoppedPlaying()
                 playbackPosition.value = 0.0
             }
@@ -229,7 +230,7 @@ extension InstrumentListViewController: ASValueTrackingSliderDataSource {
      
      - returns: string value in MM:SS format
      */
-    func slider(slider: ASValueTrackingSlider!, stringForValue value: Float) -> String {
+    func slider(_ slider: ASValueTrackingSlider!, stringForValue value: Float) -> String {
         // currentPosition is the number of beats. Rate is ~120 BPM. Return HH:MM format
         let bpm = 120.0
         let pos = Double(value) * audioController.sequenceLength
@@ -243,7 +244,7 @@ extension InstrumentListViewController: ASValueTrackingSliderDataSource {
      position
      - parameter sender: the slider reporting the change
      */
-    @IBAction func changePlaybackPosition(sender: UISlider) {
+    @IBAction func changePlaybackPosition(_ sender: UISlider) {
         updatePlaybackInfo()
     }
 
@@ -253,7 +254,7 @@ extension InstrumentListViewController: ASValueTrackingSliderDataSource {
      
      - parameter sender: the UISlider being manipulated
      */
-    @IBAction func beginChangePlaybackPosition(sender: UISlider) {
+    @IBAction func beginChangePlaybackPosition(_ sender: UISlider) {
         sliderInUse = true
         print("sliderInUse true")
     }
@@ -264,7 +265,7 @@ extension InstrumentListViewController: ASValueTrackingSliderDataSource {
 
      - parameter sender: playback slider
      */
-    @IBAction func endChangePlaybackPosition(sender: UISlider) {
+    @IBAction func endChangePlaybackPosition(_ sender: UISlider) {
         sliderInUse = false
         audioController.setPlaybackPosition(MusicTimeStamp(playbackPosition.value) * audioController.sequenceLength)
     }
@@ -274,8 +275,8 @@ extension InstrumentListViewController: ASValueTrackingSliderDataSource {
      Command SoundGenerator to stop or start playback.
      - parameter sender: the button that was tapped
      */
-    @IBAction func playStop(sender: UIButton) {
-        if audioController.playOrStop() == .Play {
+    @IBAction func playStop(_ sender: UIButton) {
+        if audioController.playOrStop() == .play {
             startedPlaying()
         }
         else {
@@ -292,7 +293,7 @@ extension InstrumentListViewController {
      
      - parameter sender: button that was touched
      */
-    @IBAction func regenerate(sender: UIButton) {
+    @IBAction func regenerate(_ sender: UIButton) {
         if audioController.createMusicSequence() {
             stoppedPlaying()
             playbackPosition.value = 0.0
@@ -312,11 +313,11 @@ extension InstrumentListViewController: UITableViewDelegate, UITableViewDataSour
      
      - returns: indexPath if row should be selected, nil otherwise
      */
-    func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
-        guard let currentRow = tableView.indexPathForSelectedRow?.row else { return indexPath }
-        let newRow = indexPath.row
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        guard let currentRow = (tableView.indexPathForSelectedRow as NSIndexPath?)?.row else { return indexPath }
+        let newRow = (indexPath as NSIndexPath).row
         if currentRow == newRow {
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: true)
             return nil
         }
         return indexPath
@@ -328,7 +329,7 @@ extension InstrumentListViewController: UITableViewDelegate, UITableViewDataSour
      - parameter numberOfRowsInSection: which section to report on (only one in our view)
      - returns: number of instruments active in music playback
      */
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return audioController.activeInstruments.count
     }
     
@@ -338,9 +339,9 @@ extension InstrumentListViewController: UITableViewDelegate, UITableViewDataSour
      - parameter tableView: the table view being edited
      - parameter indexPath: the row index to edit
      */
-    func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
-        guard let cell = tableView.cellForRowAtIndexPath(indexPath) as? InstrumentsTableViewCell else { return }
-        performSegueWithIdentifier("showDetail", sender: cell)
+    func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? InstrumentsTableViewCell else { return }
+        performSegue(withIdentifier: "showDetail", sender: cell)
     }
 
 }
@@ -354,17 +355,17 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
      - parameter indexPath: the row of the table to update
      - returns: UITableViewCell
      */
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    @objc(tableView:cellForRowAtIndexPath:) func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let identifier = "InstrumentCell" // !!! This must match prototype in Main.storyboard !!!
-        let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as! InstrumentsTableViewCell
-        cell.instrument = audioController.activeInstruments[indexPath.row]
-        cell.instrumentIndex?.text = "\(indexPath.row + 1)"
+        let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as! InstrumentsTableViewCell
+        cell.instrument = audioController.activeInstruments[(indexPath as NSIndexPath).row]
+        cell.instrumentIndex?.text = "\((indexPath as NSIndexPath).row + 1)"
         cell.updateAll(currentPosition)
         cell.showsReorderControl = true
         
-        let button = UIButton(type:.InfoLight)
+        let button = UIButton(type:.infoLight)
         cell.accessoryView = button
-        button.addTarget(self, action: #selector(editInstrument), forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(editInstrument), for: .touchUpInside)
         
         return cell
     }
@@ -375,18 +376,18 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
      - parameter sender: the table view cell
      - parameter event: description of the event that triggered this call
      */
-    func editInstrument(sender: UIButton, forEvent event: UIEvent) {
+    func editInstrument(_ sender: UIButton, forEvent event: UIEvent) {
         
         // Use the last touch event to locate the row we are to edit
         //
-        guard let touch = event.allTouches()?.first else { return }
-        let position = touch.locationInView(instrumentSettings)
-        guard let indexPath = instrumentSettings.indexPathForRowAtPoint(position) else { return }
-        let cell = instrumentSettings.cellForRowAtIndexPath(indexPath)
+        guard let touch = event.allTouches?.first else { return }
+        let position = touch.location(in: instrumentSettings)
+        guard let indexPath = instrumentSettings.indexPathForRow(at: position) else { return }
+        let cell = instrumentSettings.cellForRow(at: indexPath)
 
         // Now present the editor
         //
-        performSegueWithIdentifier("showDetail", sender: cell)
+        performSegue(withIdentifier: "showDetail", sender: cell)
     }
 
     /**
@@ -395,13 +396,13 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
      - parameter segue: the storyboard segue being used
      - parameter sender: the InstrumentTableViewCell of the instrument to edit
      */
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
             guard let cell = sender as? InstrumentsTableViewCell,
-                let nc = segue.destinationViewController as? UINavigationController,
+                let nc = segue.destination as? UINavigationController,
                 let vc = nc.topViewController as? InstrumentEditorViewController,
-                let indexPath = instrumentSettings.indexPathForCell(cell) where
-                (indexPath.row >= 0 && indexPath.row < audioController.activeInstruments.count) else { return }
+                let indexPath = instrumentSettings.indexPath(for: cell) ,
+                ((indexPath as NSIndexPath).row >= 0 && (indexPath as NSIndexPath).row < audioController.activeInstruments.count) else { return }
             
             // Receive some update notifications when values change
             //
@@ -409,7 +410,7 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
             
             // Remember the instrument and the row being edited
             //
-            vc.editInstrument(audioController.activeInstruments[indexPath.row], row: indexPath.row)
+            vc.editInstrument(audioController.activeInstruments[(indexPath as NSIndexPath).row], row: (indexPath as NSIndexPath).row)
             
             // Now if showing a popover, position it in the right spot
             //
@@ -417,10 +418,11 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
                 ppc.barButtonItem = nil // !!! Muy importante !!!
                 ppc.sourceView = cell
                 ppc.sourceRect = cell.accessoryView!.frame
+                vc.preferredContentSize.width = self.preferredContentSize.width
             }
         }
         
-        super.prepareForSegue(segue, sender: sender)
+        super.prepare(for: segue, sender: sender)
     }
 
     /**
@@ -429,9 +431,9 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
      - parameter row: the row that was being edited
      - parameter reason: the reason for the dismissal: Cancel or Done
      */
-    func instrumentEditorDismissed(row: Int, reason: InstrumentEditorDismissedReason) {
-        self.dismissViewControllerAnimated(true, completion: nil)
-        let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+    func instrumentEditorDismissed(_ row: Int, reason: InstrumentEditorDismissedReason) {
+        self.dismiss(animated: false, completion: nil)
+        let cell = instrumentSettings.cellForRow(at: IndexPath(row: row, section: 0))
             as! InstrumentsTableViewCell
         cell.updateAll(currentPosition)
     }
@@ -441,8 +443,8 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
      
      - parameter row: the row that changed
      */
-    func instrumentEditorPatchChanged(row: Int) {
-        guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+    func instrumentEditorPatchChanged(_ row: Int) {
+        guard let cell = instrumentSettings.cellForRow(at: IndexPath(row: row, section: 0))
             as? InstrumentsTableViewCell else { return }
         cell.updateTitle()
         cell.updateSoundFontName()
@@ -453,8 +455,8 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
      
      - parameter row: the row that changed
      */
-    func instrumentEditorVolumeChanged(row: Int) {
-        guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+    func instrumentEditorVolumeChanged(_ row: Int) {
+        guard let cell = instrumentSettings.cellForRow(at: IndexPath(row: row, section: 0))
             as? InstrumentsTableViewCell else { return }
         cell.updateVolume()
     }
@@ -464,8 +466,8 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
      
      - parameter row: the row that changed
      */
-    func instrumentEditorPanChanged(row: Int) {
-        guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+    func instrumentEditorPanChanged(_ row: Int) {
+        guard let cell = instrumentSettings.cellForRow(at: IndexPath(row: row, section: 0))
             as? InstrumentsTableViewCell else { return }
         cell.updateVolume()
     }
@@ -475,8 +477,8 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
      
      - parameter row: the row that changed
      */
-    func instrumentEditorMuteChanged(row: Int) {
-        guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+    func instrumentEditorMuteChanged(_ row: Int) {
+        guard let cell = instrumentSettings.cellForRow(at: IndexPath(row: row, section: 0))
             as? InstrumentsTableViewCell else { return }
         cell.updateVolume()
     }
@@ -486,8 +488,8 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
      
      - parameter row: the row that changed
      */
-    func instrumentEditorOctaveChanged(row: Int) {
-        guard let cell = instrumentSettings.cellForRowAtIndexPath(NSIndexPath(forRow: row, inSection: 0))
+    func instrumentEditorOctaveChanged(_ row: Int) {
+        guard let cell = instrumentSettings.cellForRow(at: IndexPath(row: row, section: 0))
             as? InstrumentsTableViewCell else { return }
         cell.updateTitle()
     }
@@ -498,7 +500,7 @@ extension InstrumentListViewController: InstrumentEditorViewControllerDelegate {
      - parameter row: the row that changed
      - parameter soloing: true if solo enabled, false otherwise
      */
-    func instrumentEditorSoloChanged(row: Int, soloing state: Bool) {
+    func instrumentEditorSoloChanged(_ row: Int, soloing state: Bool) {
         let instrument = audioController.activeInstruments[row]
         audioController.activeInstruments.forEach { $0.solo(instrument, active: state) }
         instrumentSettings.visibleCells.forEach { ($0 as! InstrumentsTableViewCell).updateVolume() }
@@ -515,17 +517,17 @@ extension InstrumentListViewController {
      - parameter commitEditingStyle: the editing style that is coming to an end
      - parameter indexPath: the index of the row being edited
      */
-    func tableView(tableView: UITableView, commitEditingStyle: UITableViewCellEditingStyle, forRowAtIndexPath
-        indexPath: NSIndexPath) {
-        guard commitEditingStyle == .Delete else { return }
+    @objc(tableView:commitEditingStyle:forRowAtIndexPath:) func tableView(_ tableView: UITableView, commit commitEditingStyle: UITableViewCellEditingStyle, forRowAt
+        indexPath: IndexPath) {
+        guard commitEditingStyle == .delete else { return }
         
         // Remove the instrument from the model, then tell table view to remove the corresponding view
         //
-        audioController.removeInstrument(indexPath.row)
-        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        _ = audioController.removeInstrument((indexPath as NSIndexPath).row)
+        tableView.deleteRows(at: [indexPath], with: .fade)
         
         // We can definitely add a new instrument now
-        addButton?.enabled = true
+        addButton?.isEnabled = true
         if audioController.activeInstruments.count == 1 {
             
             // We cannot do any more deletions
@@ -542,16 +544,16 @@ extension InstrumentListViewController {
      - parameter sourceIndexPath: the original location of the instrument
      - parameter destinationIndexPath: the new location of the instrument
      */
-    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath,
-                   toIndexPath destinationIndexPath: NSIndexPath) {
-        audioController.reorderInstrument(fromPos: sourceIndexPath.row, toPos: destinationIndexPath.row)
+    @objc(tableView:moveRowAtIndexPath:toIndexPath:) func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath,
+                   to destinationIndexPath: IndexPath) {
+        audioController.reorderInstrument(fromPos: (sourceIndexPath as NSIndexPath).row, toPos: (destinationIndexPath as NSIndexPath).row)
 
         // Swap source and destination index values
         //
-        let cellFrom = tableView.cellForRowAtIndexPath(sourceIndexPath) as! InstrumentsTableViewCell
-        let cellTo = tableView.cellForRowAtIndexPath(destinationIndexPath) as! InstrumentsTableViewCell
-        cellFrom.updateInstrumentIndex(destinationIndexPath.row + 1)
-        cellTo.updateInstrumentIndex(sourceIndexPath.row + 1)
+        let cellFrom = tableView.cellForRow(at: sourceIndexPath) as! InstrumentsTableViewCell
+        let cellTo = tableView.cellForRow(at: destinationIndexPath) as! InstrumentsTableViewCell
+        cellFrom.updateInstrumentIndex((destinationIndexPath as NSIndexPath).row + 1)
+        cellTo.updateInstrumentIndex((sourceIndexPath as NSIndexPath).row + 1)
     }
 
     /**
@@ -560,24 +562,24 @@ extension InstrumentListViewController {
      
      - parameter sender: the button
      */
-    @IBAction func addInstrument(sender: UIBarButtonItem) {
+    @IBAction func addInstrument(_ sender: UIBarButtonItem) {
         let indexPath = instrumentSettings.indexPathForSelectedRow ??
-            NSIndexPath(forRow: audioController.activeInstruments.count, inSection: 0)
-        guard audioController.addInstrument(indexPath.row) else { return }
+            IndexPath(row: audioController.activeInstruments.count, section: 0)
+        guard audioController.addInstrument((indexPath as NSIndexPath).row) else { return }
         
         // Add a view for the new instrument, select it, and scroll view to make it visible
         //
-        instrumentSettings.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-        instrumentSettings.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
-        instrumentSettings.scrollToRowAtIndexPath(indexPath, atScrollPosition: .None, animated: true)
+        instrumentSettings.insertRows(at: [indexPath], with: .automatic)
+        instrumentSettings.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        instrumentSettings.scrollToRow(at: indexPath, at: .none, animated: true)
 
         // Update buttons based on active instrument count
         //
         if audioController.activeInstruments.count == audioController.maxSamplerCount {
-            addButton?.enabled = false
+            addButton?.isEnabled = false
         }
         else if audioController.activeInstruments.count == 2 {
-            editButton?.enabled = true
+            editButton?.isEnabled = true
         }
     }
 
@@ -586,8 +588,8 @@ extension InstrumentListViewController {
      
      - parameter sender: the button
      */
-    @IBAction func editInstruments(sender: UIBarButtonItem) {
-        if instrumentSettings.editing {
+    @IBAction func editInstruments(_ sender: UIBarButtonItem) {
+        if instrumentSettings.isEditing {
             instrumentSettings.setEditing(false, animated: true)
             navigationItem.setRightBarButtonItems(normalRightButtons, animated: true)
         }

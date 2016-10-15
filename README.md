@@ -16,8 +16,8 @@ showing and editing app settings in-app.
 * [ASValueTrackingSlider](https://github.com/alskipp/ASValueTrackingSlider) -- great bit of code for showing
 UISlider values (see image above)
 
-The first two have entries in the [Carthage](https://github.com/Carthage/Carthage) Cartfile. For the
-ASValueTrackingSlider, I just copied the necessary files, unchanged.
+The first two have entries in the [CocoaPods](https://cocoapods.org) Podfile. For the ASValueTrackingSlider, I just 
+copied the necessary files, unchanged.
 
 # SoundFont Files
 

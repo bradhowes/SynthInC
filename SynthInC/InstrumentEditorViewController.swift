@@ -6,6 +6,7 @@
 
 import Foundation
 import UIKit
+import ASValueTrackingSlider
 
 /**
  Dismissed reason
@@ -14,7 +15,7 @@ import UIKit
  - Cancel: user pressed the Cancel button
  */
 enum InstrumentEditorDismissedReason {
-    case Done, Cancel
+    case done, cancel
 }
 
 /**
@@ -28,13 +29,13 @@ protocol InstrumentEditorViewControllerDelegate : NSObjectProtocol {
      - parameter row: the UITableView row associated with the edit
      - parameter reason: the `PatchSelectDismissedReason` value
      */
-    func instrumentEditorDismissed(row: Int, reason: InstrumentEditorDismissedReason)
-    func instrumentEditorPatchChanged(row: Int)
-    func instrumentEditorVolumeChanged(row: Int)
-    func instrumentEditorPanChanged(row: Int)
-    func instrumentEditorMuteChanged(row: Int)
-    func instrumentEditorOctaveChanged(row: Int)
-    func instrumentEditorSoloChanged(row: Int, soloing: Bool)
+    func instrumentEditorDismissed(_ row: Int, reason: InstrumentEditorDismissedReason)
+    func instrumentEditorPatchChanged(_ row: Int)
+    func instrumentEditorVolumeChanged(_ row: Int)
+    func instrumentEditorPanChanged(_ row: Int)
+    func instrumentEditorMuteChanged(_ row: Int)
+    func instrumentEditorOctaveChanged(_ row: Int)
+    func instrumentEditorSoloChanged(_ row: Int, soloing: Bool)
 }
 
 /// View controller for the instrument editing view.
@@ -86,21 +87,24 @@ final class InstrumentEditorViewController: UIViewController {
         volumeSlider.maximumValue = 100.0
 
         let thumb = UIImage(named: "Slider")
-        volumeSlider.setThumbImage(thumb, forState: .Normal)
-        volumeSlider.setThumbImage(thumb, forState: .Selected)
-        volumeSlider.setThumbImage(thumb, forState: .Highlighted)
+        volumeSlider.setThumbImage(thumb, for: UIControlState())
+        volumeSlider.setThumbImage(thumb, for: .selected)
+        volumeSlider.setThumbImage(thumb, for: .highlighted)
         volumeSlider.popUpViewColor = UIColor.init(red: 12/255.0, green: 102/255.0, blue: 223/255.0, alpha: 1.0)
 
         panSlider.minimumValue = -1.0
         panSlider.maximumValue = 1.0
-        panSlider.setThumbImage(thumb, forState: .Normal)
-        panSlider.setThumbImage(thumb, forState: .Selected)
-        panSlider.setThumbImage(thumb, forState: .Highlighted)
+        panSlider.setThumbImage(thumb, for: UIControlState())
+        panSlider.setThumbImage(thumb, for: .selected)
+        panSlider.setThumbImage(thumb, for: .highlighted)
         panSlider.popUpViewColor = UIColor.init(red: 12/255.0, green: 102/255.0, blue: 223/255.0, alpha: 1.0)
         
-        muteButton.setImage(UIImage(named: "Mute On"), forState: .Highlighted)
-        soloButton.setImage(UIImage(named: "Solo On"), forState: .Highlighted)
-        
+        muteButton.setImage(UIImage(named: "Mute On"), for: .highlighted)
+        soloButton.setImage(UIImage(named: "Solo On"), for: .highlighted)
+
+        let maxWidth = SoundFont.maxWidth * 2.0 + 40.0
+        preferredContentSize.width = min(UIApplication.shared.windows.first!.frame.width, maxWidth)
+
         super.viewDidLoad()
     }
 
@@ -109,8 +113,8 @@ final class InstrumentEditorViewController: UIViewController {
      
      - returns: UIStatusBarStyle.LigthContent
      */
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .lightContent
     }
 }
 
@@ -122,7 +126,7 @@ extension InstrumentEditorViewController {
      
      - parameter animated: true if the view is being animated while it is shown
      */
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         precondition(originalPatch != nil && instrument != nil)
         
         picker.selectRow(soundFontIndex, inComponent: 0, animated: false)
@@ -149,12 +153,12 @@ extension InstrumentEditorViewController {
      
      - parameter animated: true if the view will disappear in animated fashion
      */
-    override func viewWillDisappear(animated: Bool) {
-        if let _ = instrument {
+    override func viewWillDisappear(_ animated: Bool) {
+        if instrument != nil {
             stopSolo()
             restoreInstrument()
-            self.instrument = nil
-            delegate?.instrumentEditorDismissed(instrumentRow, reason: .Cancel)
+            instrument = nil
+            delegate?.instrumentEditorDismissed(instrumentRow, reason: .cancel)
         }
         super.viewWillDisappear(animated)
     }
@@ -164,8 +168,8 @@ extension InstrumentEditorViewController {
      
      - parameter value: the boolean value to use
      */
-    private func updateSoloImage(value: Bool) {
-        soloButton.setImage(UIImage(named: value ? "Solo On" : "Solo Off"), forState: .Normal)
+    fileprivate func updateSoloImage(_ value: Bool) {
+        soloButton.setImage(UIImage(named: value ? "Solo On" : "Solo Off"), for: UIControlState())
     }
     
     /**
@@ -173,14 +177,14 @@ extension InstrumentEditorViewController {
      
      - parameter value: the boolean value to use
      */
-    private func updateMuteImage(value: Bool) {
-        muteButton.setImage(UIImage(named: value ? "Mute On" : "Mute Off"), forState: .Normal)
+    fileprivate func updateMuteImage(_ value: Bool) {
+        muteButton.setImage(UIImage(named: value ? "Mute On" : "Mute Off"), for: UIControlState())
     }
     
     /**
      Update the octave label with the current value setting.
      */
-    private func updateOctaveText() {
+    fileprivate func updateOctaveText() {
         guard let instrument = instrument else { return }
         let value = Int(instrument.octave)
         octaveLabel.text = value != 0 ? "\(value > 0 ? "+" : "")\(Int(value))" : ""
@@ -189,7 +193,7 @@ extension InstrumentEditorViewController {
     /**
      Stop any `solo` activity that was in place.
      */
-    private func stopSolo() {
+    fileprivate func stopSolo() {
         if instrument?.solo == true {
             delegate?.instrumentEditorSoloChanged(instrumentRow, soloing: false)
         }
@@ -205,7 +209,7 @@ extension InstrumentEditorViewController {
      - parameter instrument: Instrument instance to modify
      - parameter row: the row index in the instruments table view in the main view
      */
-    func editInstrument(instrument: Instrument, row: Int) {
+    func editInstrument(_ instrument: Instrument, row: Int) {
         print("editing instrument \(row)")
         self.instrument = instrument
         self.instrumentRow = row
@@ -226,7 +230,7 @@ extension InstrumentEditorViewController {
     /**
      Restore the Instrument instance settings to original values.
      */
-    private func restoreInstrument() {
+    fileprivate func restoreInstrument() {
         guard let instrument = self.instrument else { return }
         instrument.patch = originalPatch!
         instrument.volume = originalVolume
@@ -248,7 +252,7 @@ extension InstrumentEditorViewController: UIPickerViewDelegate, UIPickerViewData
      
      - returns: number of elements in the component
      */
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return component == 0 ? SoundFont.keys.count : SoundFont.getByIndex(soundFontIndex).patches.count
     }
     
@@ -262,7 +266,7 @@ extension InstrumentEditorViewController: UIPickerViewDelegate, UIPickerViewData
      
      - returns: text of the item
      */
-    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int)
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int)
         -> NSAttributedString? {
         var text: String
         if component == 0 {
@@ -274,7 +278,7 @@ extension InstrumentEditorViewController: UIPickerViewDelegate, UIPickerViewData
             text = soundFont.patches[row].name
         }
 
-        return NSAttributedString(string: text, attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])
+        return NSAttributedString(string: text, attributes: [NSForegroundColorAttributeName: UIColor.white])
     }
 
     /**
@@ -285,7 +289,7 @@ extension InstrumentEditorViewController: UIPickerViewDelegate, UIPickerViewData
      - parameter row: the row which is now current
      - parameter component: the component that changed (0 = sound font; 1 = patch)
      */
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if component == 0 {
             soundFontIndex = row
             pickerView.reloadComponent(1)
@@ -311,9 +315,18 @@ extension InstrumentEditorViewController: UIPickerViewDelegate, UIPickerViewData
      
      - returns: 2
      */
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 2
     }
+
+//    func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+//        if component == 0 {
+//            return SoundFont.maxWidth
+//        }
+//        else {
+//            return SoundFont.getByIndex(soundFontIndex).maxPatchWidth
+//        }
+//    }
 }
 
 // MARK: - Control Activity
@@ -324,12 +337,12 @@ extension InstrumentEditorViewController {
     
      - parameter sender: the button
      */
-    @IBAction func donePressed(sender: UIBarButtonItem) {
+    @IBAction func donePressed(_ sender: UIBarButtonItem) {
         guard let instrument = self.instrument else { return }
         stopSolo()
         instrument.saveSetup()
         self.instrument = nil
-        delegate?.instrumentEditorDismissed(instrumentRow, reason: .Done)
+        delegate?.instrumentEditorDismissed(instrumentRow, reason: .done)
     }
 
     /**
@@ -337,12 +350,12 @@ extension InstrumentEditorViewController {
      
      - parameter sender: the button
      */
-    @IBAction func cancelPressed(sender: UIBarButtonItem) {
+    @IBAction func cancelPressed(_ sender: UIBarButtonItem) {
         guard let _ = self.instrument else { return }
         stopSolo()
         restoreInstrument()
         self.instrument = nil
-        delegate?.instrumentEditorDismissed(instrumentRow, reason: .Cancel)
+        delegate?.instrumentEditorDismissed(instrumentRow, reason: .cancel)
     }
 
     /**
@@ -350,7 +363,7 @@ extension InstrumentEditorViewController {
      
      - parameter sender: the stepper with the current octave shift value
      */
-    @IBAction func changeOctave(sender: UIStepper) {
+    @IBAction func changeOctave(_ sender: UIStepper) {
         instrument?.octave = Int(sender.value)
         updateOctaveText()
         delegate?.instrumentEditorOctaveChanged(instrumentRow)
@@ -361,7 +374,7 @@ extension InstrumentEditorViewController {
      
      - parameter sender: the volume slider
      */
-    @IBAction func changeVolume(sender: UISlider) {
+    @IBAction func changeVolume(_ sender: UISlider) {
         instrument?.volume = sender.value / 100.0
         delegate?.instrumentEditorVolumeChanged(instrumentRow)
     }
@@ -371,7 +384,7 @@ extension InstrumentEditorViewController {
      
      - parameter sender: the pan slider
      */
-    @IBAction func changePan(sender: UISlider) {
+    @IBAction func changePan(_ sender: UISlider) {
         instrument?.pan = sender.value
         delegate?.instrumentEditorPanChanged(instrumentRow)
     }
@@ -381,16 +394,13 @@ extension InstrumentEditorViewController {
      
      - parameter sender: the button
      */
-    @IBAction func soloInstrument(sender: UIButton) {
+    @IBAction func soloInstrument(_ sender: UIButton) {
         guard let instrument = instrument else { return }
-        if !instrument.solo {
-            updateSoloImage(true)
-            delegate?.instrumentEditorSoloChanged(instrumentRow, soloing: true)
+        if !instrument.solo && instrument.muted {
+            muteInstrument(sender)
         }
-        else {
-            updateSoloImage(false)
-            delegate?.instrumentEditorSoloChanged(instrumentRow, soloing: false)
-        }
+        updateSoloImage(!instrument.solo)
+        delegate?.instrumentEditorSoloChanged(instrumentRow, soloing: !instrument.solo)
     }
 
     /**
@@ -398,7 +408,7 @@ extension InstrumentEditorViewController {
 
      - parameter sender: the button
      */
-    @IBAction func muteInstrument(sender: UIButton) {
+    @IBAction func muteInstrument(_ sender: UIButton) {
         guard let instrument = instrument else { return }
         instrument.muted = !instrument.muted
         updateMuteImage(instrument.muted)

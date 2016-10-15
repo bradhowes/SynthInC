@@ -7,7 +7,7 @@
 import UIKit
 
 /// Custom UIView for showing Instrument volume and pan setting
-class VolumeBarView: UIView {
+final class VolumeBarView: UIView {
 
     var volume: Float = 0.0
     var pan: Float = 0.0
@@ -18,32 +18,32 @@ class VolumeBarView: UIView {
      
      - parameter rect: area to update
      */
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         guard let cgc = UIGraphicsGetCurrentContext() else { return }
 
         // Fill the entire view
         //
-        CGContextSetRGBFillColor(cgc, 1.0, 1.0, 1.0, 0.20)
-        CGContextFillRect(cgc, bounds)
+        cgc.setFillColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.20)
+        cgc.fill(bounds)
 
         // Set the volume color depending on mute status
         //
         if muted {
-            CGContextSetRGBFillColor(cgc, 0.8, 0, 0, 0.80)
+            cgc.setFillColor(red: 0.8, green: 0, blue: 0, alpha: 0.80)
         }
         else {
-            CGContextSetRGBFillColor(cgc, 0.2, 0.8, 0.2, 0.80)
+            cgc.setFillColor(red: 0.2, green: 0.8, blue: 0.2, alpha: 0.80)
         }
 
         // Draw the bar for volume
         let w = bounds.width
-        let rect = CGRectMake(bounds.minX, bounds.minY, w * CGFloat(volume), bounds.height)
-        CGContextFillRect(cgc, rect)
+        let rect = CGRect(x: bounds.minX, y: bounds.minY, width: w * CGFloat(volume), height: bounds.height)
+        cgc.fill(rect)
         
         // Draw a small indicator for the pan
         //
         let px = bounds.minX + w * CGFloat((pan + 1.0) / 2.0)
-        CGContextSetRGBFillColor(cgc, 1, 1, 1, 0.90)
-        CGContextFillRect(cgc, CGRectMake(px - 2, bounds.minY, 4, bounds.height))
+        cgc.setFillColor(red: 1, green: 1, blue: 1, alpha: 0.90)
+        cgc.fill(CGRect(x: px - 2, y: bounds.minY, width: 4, height: bounds.height))
     }
 }

@@ -13,7 +13,7 @@ import AVFoundation
  
  - returns: the note textual representation
  */
-private func noteText(note: Int) -> String {
+private func noteText(_ note: Int) -> String {
     let notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
     let octave = (note / 12) - 1
     let index = note % 12
@@ -53,7 +53,7 @@ struct Note {
      
      - returns: the clock value at the end of the note duration
      */
-    func addToTrack(track: MusicTrack, clock: MusicTimeStamp, octaveShift: Int = 0) -> MusicTimeStamp {
+    func addToTrack(_ track: MusicTrack, clock: MusicTimeStamp, octaveShift: Int = 0) -> MusicTimeStamp {
         let slop = slopGen.value
         
         // Calculate the note duration in beats
@@ -103,7 +103,7 @@ struct Phrase {
 
      - returns: the clock value at the end of the phrase
      */
-    func addToTrack(track: MusicTrack, clock: MusicTimeStamp, octaveShift: Int = 0) -> MusicTimeStamp {
+    func addToTrack(_ track: MusicTrack, clock: MusicTimeStamp, octaveShift: Int = 0) -> MusicTimeStamp {
         var nextClock = clock
         for note in notes {
             nextClock = note.addToTrack(track, clock: clock, octaveShift: octaveShift)
