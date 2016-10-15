@@ -8,6 +8,8 @@ does it is fairly simplistic. At times though, It does create some nice interpla
 
 The Swift code is fairly straightforward and it only uses stock iOS CoreAudio and AVFramework frameworks.
 
+NOTE: the code now uses and requires Xcode 8 / Swift 3.
+
 # Dependencies
 
 * [InAppSettingsKit](https://github.com/futuretap/InAppSettingsKit) -- old but dependable framework for
@@ -16,8 +18,7 @@ showing and editing app settings in-app.
 * [ASValueTrackingSlider](https://github.com/alskipp/ASValueTrackingSlider) -- great bit of code for showing
 UISlider values (see image above)
 
-The first two have entries in the [CocoaPods](https://cocoapods.org) Podfile. For the ASValueTrackingSlider, I just 
-copied the necessary files, unchanged.
+All have entries in the [CocoaPods](https://cocoapods.org) Podfile.
 
 # SoundFont Files
 
