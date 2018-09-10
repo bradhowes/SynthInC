@@ -8,7 +8,7 @@ does it is fairly simplistic. At times though, It does create some nice interpla
 
 The Swift code is fairly straightforward and it only uses stock iOS CoreAudio and AVFramework frameworks.
 
-NOTE: the code now uses and requires Xcode 8 / Swift 3.
+NOTE: the code now uses and requires Xcode 8 / Swift 4.
 
 # Dependencies
 

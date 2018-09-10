@@ -4,17 +4,38 @@
 // Created by Brad Howes
 // Copyright (c) 2016 Brad Howes. All rights reserved.
 
+import AVFoundation
 import UIKit
+
+extension UIApplication {
+
+    /// True if app is being tested
+    static var beingTested: Bool {
+        if let _ = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] { return true }
+        if let testingEnv = ProcessInfo.processInfo.environment["DYLD_INSERT_LIBRARIES"] { return testingEnv.contains("libXCTTargetBootstrapInject.dylib") }
+        return false
+    }
+}
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    /// Magical attribute -- DO NOT REMOVE or else app will not work
     var window: UIWindow?
 
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
         launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+
+        // Setup the AV system so that we can play audio along with others
+        // TODO: handle background playback as well
+        DispatchQueue.global(qos: .utility).async {
+            let audioSession = AVAudioSession.sharedInstance()
+            do {
+                try audioSession.setCategory(AVAudioSessionCategoryAmbient)
+            } catch {
+                print("audioSession.setCategory(AVAudioSessionCategoryAmbient) failed.")
+            }
+        }
         return true
     }
 

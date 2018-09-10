@@ -1,4 +1,4 @@
-// CheckError.swift
+// IsAudioError.swift
 // SynthInC
 //
 // Adapted from code by Gene De Lisa (Copyright © 2016)
@@ -14,10 +14,10 @@ import AVFoundation
  
  - returns: true if there was an error
  */
-func CheckError(_ method: String, _ error:OSStatus) -> Bool {
+public func IsAudioError(_ method: String, _ error:OSStatus) -> Bool {
     switch(error) {
     case 0:
-        // print("-- \(method) OK")
+        print("-- \(method) OK")
         return false
     case kAUGraphErr_NodeNotFound:
         print("*** error: \(method) \(method) kAUGraphErr_NodeNotFound")

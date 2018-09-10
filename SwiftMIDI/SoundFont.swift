@@ -5,17 +5,20 @@
 // Copyright (c) 2016 Brad Howes. All rights reserved.
 
 import UIKit
+import GameKit
+
+let systemFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
 
 /**
  Representation of a sound font library. NOTE: all sound font files must have 'sf2' extension.
  */
-final class SoundFont {
+public final class SoundFont {
 
     /**
      Mapping of registered sound fonts. Add additional sound font entries here to make them available to the
      SoundFont code.
      */
-    static let library: [String:SoundFont] = [
+    public static let library: [String:SoundFont] = [
 // -BEGIN-
 FluidR3GMSoundFont.name: FluidR3GMSoundFont,
 FreeFontGMVer32SoundFont.name: FreeFontGMVer32SoundFont,
@@ -27,26 +30,23 @@ RolandNicePiano.name: RolandNicePiano,
     /**
      Array of registered sound font names sorted in alphabetical order. Generated from `library` entries.
      */
-    static let keys: [String] = library.keys.sorted()
-    static let maxWidth: CGFloat = library.values.map { $0.width }.max() ?? 100.0
-    static let patchCount: Int = library.reduce(0) { $0 + $1.1.patches.count }
+    public static let keys: [String] = library.keys.sorted()
+
+    /**
+     Maximium width of all library names.
+     */
+    public static let maxNameWidth: CGFloat = library.values.map { $0.nameWidth }.max() ?? 100.0
+    public static let patchCount: Int = library.reduce(0) { $0 + $1.1.patches.count }
 
     /**
      Obtain a random patch from all registered sound fonts.
      - returns: radom Patch object
      */
-    static func randomPatch() -> Patch {
-        var pos = RandomUniform.sharedInstance.uniform(0, upper: patchCount)
-        let soundFont = library.filter {
-            (k, sf) -> Bool in
-            let result = (pos >= 0 && pos < sf.patches.count)
-            if pos >= 0 { pos -= sf.patches.count }
-            return result
-        }.last!.1
-
-        let index = pos + soundFont.patches.count
-        precondition(index >= 0 && index < soundFont.patches.count)
-        return soundFont.patches[index]
+    public static func randomPatch(randomSource: GKRandomDistribution) -> Patch {
+        let namePos = randomSource.nextInt(upperBound: keys.count)
+        let soundFont = getByIndex(namePos)
+        let patchPos = randomSource.nextInt(upperBound: soundFont.patches.count)
+        return soundFont.patches[patchPos]
     }
 
     /**
@@ -55,7 +55,7 @@ RolandNicePiano.name: RolandNicePiano,
      - parameter index: the key to use
      - returns: found SoundFont object
      */
-    static func getByIndex(_ index: Int) -> SoundFont {
+    public static func getByIndex(_ index: Int) -> SoundFont {
         guard index >= 0 && index < keys.count else { return SoundFont.library[SoundFont.keys[0]]! }
         let key = keys[index]
         return library[key]!
@@ -66,26 +66,30 @@ RolandNicePiano.name: RolandNicePiano,
      - parameter name: the name to look for
      - returns: found index or zero
      */
-    static func indexForName(_ name: String) -> Int {
+    public static func indexForName(_ name: String) -> Int {
         return keys.index(of: name) ?? 0
     }
 
-    let soundFontExtension = "sf2"
+    public let soundFontExtension = "sf2"
 
     /// Presentation name of the sound font
-    let name: String
-    let width: CGFloat
-
+    public let name: String
+    /// Width of the sound font name
+    public lazy var nameWidth = {
+        return (name as NSString).size(withAttributes: systemFontAttributes).width
+    }()
+    
     /// The file name of the sound font (sans extension)
-    let fileName: String
-
+    public let fileName: String
     ///  The resolved URL for the sound font
-    let fileURL: URL
+    public let fileURL: URL
 
     /// The collection of Patches found in the sound font
-    var patches: [Patch]
-    var maxPatchWidth: CGFloat
-    let dbGain: Float32
+    public let patches: [Patch]
+    /// The max width of all of the patch names in the sound font
+    public lazy var maxPatchNameWidth = { patches.map { $0.nameWidth }.max() ?? 100.0 }()
+    /// The gain to apply to a patch in the sound font
+    public let dbGain: Float32
 
     /**
      Initialize new SoundFont instance.
@@ -93,17 +97,14 @@ RolandNicePiano.name: RolandNicePiano,
      - parameter name: the display name for the sound font
      - parameter fileName: the file name of the sound font in the application bundle
      - parameter patches: the array of Patch objects for the sound font
+     - parameter dbGain: AudioUnit attenuation to apply to patches from this sound font [-90, +12]
      */
     init(_ name: String, fileName: String, _ patches: [Patch], _ dbGain: Float32 = 0.0 ) {
-        let fontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
         self.name = name
-        self.width = (name as NSString).size(attributes: fontAttributes).width
         self.fileName = fileName
-        self.fileURL = Bundle.main.url(forResource: fileName, withExtension: soundFontExtension)!
+        self.fileURL = Bundle(for: SoundFont.self).url(forResource: fileName, withExtension: soundFontExtension)!
         self.patches = patches
-        self.dbGain = dbGain
-        self.maxPatchWidth = patches.map { $0.width }.max() ?? 100.0
-
+        self.dbGain = min(max(dbGain, -90.0), 12.0)
         patches.forEach { $0.soundFont = self }
     }
 
@@ -114,7 +115,7 @@ RolandNicePiano.name: RolandNicePiano,
 
      - returns: found Patch or nil
      */
-    func findPatch(_ name: String) -> Patch? {
+    public func findPatch(_ name: String) -> Patch? {
         guard let found = findPatchIndex(name) else { return nil }
         return patches[found]
     }
@@ -126,7 +127,7 @@ RolandNicePiano.name: RolandNicePiano,
      
      - returns: index of found object or nil if not found
      */
-    func findPatchIndex(_ name: String) -> Int? {
+    public func findPatchIndex(_ name: String) -> Int? {
         return patches.index(where: { return $0.name == name })
     }
 }
@@ -134,17 +135,21 @@ RolandNicePiano.name: RolandNicePiano,
 /**
  Representation of a patch in a sound font.
  */
-final class Patch {
+public final class Patch {
     
     /// Display name for the patch
-    let name: String
-    let width: CGFloat
+    public let name: String
+    /// Width of the name in the system font
+    public lazy var nameWidth: CGFloat = {
+        return (name as NSString).size(withAttributes: systemFontAttributes).width
+    }()
+
     /// Bank number where the patch resides in the sound font
-    let bank: Int
+    public let bank: Int
     /// Program patch number where the patch resides in the sound font
-    let patch: Int
-    /// Reference to the SoundFont parent
-    weak var soundFont: SoundFont?
+    public let patch: Int
+    /// Reference to the SoundFont parent (set by the SoundFont itself)
+    public weak var soundFont: SoundFont! = nil
 
     /**
      Initialize Patch instance.
@@ -154,11 +159,29 @@ final class Patch {
      - parameter patch: the program ID of the patch in the sound font
      */
     init(_ name: String, _ bank: Int, _ patch: Int) {
-        let fontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
         self.name = name
-        self.width = (name as NSString).size(attributes: fontAttributes).width
         self.bank = bank
         self.patch = patch
-        self.soundFont = nil
     }
 }
+
+let FavoriteSoundFont = SoundFont.getByIndex(0)
+public let FavoritePatches = [
+    FavoriteSoundFont.patches[0],
+    FavoriteSoundFont.patches[7],
+    FavoriteSoundFont.patches[2],
+    FavoriteSoundFont.patches[12],
+    FavoriteSoundFont.patches[24],
+    FavoriteSoundFont.patches[42],
+    FavoriteSoundFont.patches[32],
+    FavoriteSoundFont.patches[40],
+    FavoriteSoundFont.patches[46],
+    FavoriteSoundFont.patches[52],
+    FavoriteSoundFont.patches[53],
+    FavoriteSoundFont.patches[54],
+    FavoriteSoundFont.patches[64],
+    FavoriteSoundFont.patches[73],
+    FavoriteSoundFont.patches[74],
+    FavoriteSoundFont.patches[79],
+    FavoriteSoundFont.patches[108],
+]

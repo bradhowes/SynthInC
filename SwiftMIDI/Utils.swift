@@ -18,7 +18,7 @@ import AVFoundation
  */
 internal func setAudioUnitSampleRate(_ au: AudioUnit) -> Bool {
     var sampleRate: Float64 = 44100.0;
-    if CheckError("AudioUnitSetProperty(sampleRate)", AudioUnitSetProperty(au, kAudioUnitProperty_SampleRate,
+    if IsAudioError("AudioUnitSetProperty(sampleRate)", AudioUnitSetProperty(au, kAudioUnitProperty_SampleRate,
         kAudioUnitScope_Output, 0, &sampleRate, UInt32(MemoryLayout.size(ofValue: sampleRate)))) {
         return false
     }

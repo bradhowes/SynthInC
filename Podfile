@@ -5,12 +5,11 @@ platform :ios, '10.0'
 use_frameworks!
 
 target 'SynthInC' do
-  pod 'InAppSettingsKit', '~> 2.8'
-  pod 'SwiftyUserDefaults', '~> 3.0'
+  pod 'InAppSettingsKit', '~> 2.9'
+  pod 'SwiftyUserDefaults', '~> 4.0.0-alpha.1'
   pod 'ASValueTrackingSlider', '~>  0.12.1'
 end
 
 target 'SynthInCTests' do
     inherit! :search_paths
 end
-

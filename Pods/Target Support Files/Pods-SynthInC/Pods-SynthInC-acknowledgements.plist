@@ -37,6 +37,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 </string>
+			<key>License</key>
+			<string>MIT</string>
 			<key>Title</key>
 			<string>ASValueTrackingSlider</string>
 			<key>Type</key>
@@ -59,6 +61,8 @@ or substantial portions of the Software.
 
 This code is licensed under the BSD license that is available at: &lt;http://www.opensource.org/licenses/bsd-license.php&gt;
 </string>
+			<key>License</key>
+			<string>BSD</string>
 			<key>Title</key>
 			<string>InAppSettingsKit</string>
 			<key>Type</key>
@@ -68,7 +72,7 @@ This code is licensed under the BSD license that is available at: &lt;http://www
 			<key>FooterText</key>
 			<string>The MIT License (MIT)
 
-Copyright (c) 2015-2016 Rados&#322;aw Pietruszewski
+Copyright (c) 2015-2018 Radosław Pietruszewski, Łukasz Mróz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -88,6 +92,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 </string>
+			<key>License</key>
+			<string>MIT</string>
 			<key>Title</key>
 			<string>SwiftyUserDefaults</string>
 			<key>Type</key>

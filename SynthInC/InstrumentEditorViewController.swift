@@ -7,6 +7,7 @@
 import Foundation
 import UIKit
 import ASValueTrackingSlider
+import SwiftMIDI
 
 /**
  Dismissed reason
@@ -15,7 +16,7 @@ import ASValueTrackingSlider
  - Cancel: user pressed the Cancel button
  */
 enum InstrumentEditorDismissedReason {
-    case done, cancel
+    case cancel, done
 }
 
 /**
@@ -52,14 +53,17 @@ final class InstrumentEditorViewController: UIViewController {
     @IBOutlet weak var muteButton: UIButton!
 
     weak var delegate: InstrumentEditorViewControllerDelegate?
-    var instrument: Instrument?
+    var instrument: Instrument? {
+        didSet {
+            guard let instrument = self.instrument else { return }
+            self.instrumentConfig = instrument.encodeConfiguration()
+            self.soundFontIndex = SoundFont.indexForName(instrument.patch.soundFont.name)
+            self.patchIndex = instrument.patch.soundFont.findPatchIndex(instrument.patch.name) ?? 0
+        }
+    }
     var instrumentRow: Int = -1
-    var originalPatch: Patch?
-    var originalOctave = 0
-    var originalVolume: Float = 1.0
-    var originalPan: Float = 0.0
-    var originalMuted: Bool = false
-    var currentMuted: Bool = false
+    var instrumentConfig: Data!
+    
     var soundFontIndex = 0
     var patchIndex = 0
 
@@ -102,8 +106,8 @@ final class InstrumentEditorViewController: UIViewController {
         muteButton.setImage(UIImage(named: "Mute On"), for: .highlighted)
         soloButton.setImage(UIImage(named: "Solo On"), for: .highlighted)
 
-        let maxWidth = SoundFont.maxWidth * 2.0 + 40.0
-        preferredContentSize.width = min(UIApplication.shared.windows.first!.frame.width, maxWidth)
+        let maxNameWidth = SoundFont.maxNameWidth * 2.0 + 40.0 // Gah! Why this?!
+        preferredContentSize.width = min(UIApplication.shared.windows.first!.frame.width, maxNameWidth)
 
         super.viewDidLoad()
     }
@@ -127,22 +131,23 @@ extension InstrumentEditorViewController {
      - parameter animated: true if the view is being animated while it is shown
      */
     override func viewWillAppear(_ animated: Bool) {
-        precondition(originalPatch != nil && instrument != nil)
-        
+        precondition(instrument != nil)
+        guard let instrument = self.instrument else { return }
+
         picker.selectRow(soundFontIndex, inComponent: 0, animated: false)
         picker.reloadComponent(1)
         picker.selectRow(patchIndex, inComponent: 1, animated: false)
         
-        octaveChange.value = Double(originalOctave)
+        octaveChange.value = Double(instrument.octave)
         updateOctaveText()
         
-        volumeSlider.value = originalVolume * 100.0
-        panSlider.value = originalPan
-        
-        updateSoloImage(false)
-        updateMuteImage(originalMuted)
+        volumeSlider.value = instrument.volume * 100.0
+        panSlider.value = instrument.pan
 
-        title = "Instrument \(instrumentRow + 1)"
+        updateSoloImage(false)
+        updateMuteImage(instrument.muted)
+
+        title = instrument.patch.name
 
         super.viewWillAppear(animated)
     }
@@ -154,10 +159,10 @@ extension InstrumentEditorViewController {
      - parameter animated: true if the view will disappear in animated fashion
      */
     override func viewWillDisappear(_ animated: Bool) {
-        if instrument != nil {
+        if let instrument = self.instrument {
             stopSolo()
-            restoreInstrument()
-            instrument = nil
+            _ = instrument.configure(with: instrumentConfig)
+            self.instrument = nil
             delegate?.instrumentEditorDismissed(instrumentRow, reason: .cancel)
         }
         super.viewWillDisappear(animated)
@@ -187,7 +192,7 @@ extension InstrumentEditorViewController {
     fileprivate func updateOctaveText() {
         guard let instrument = instrument else { return }
         let value = Int(instrument.octave)
-        octaveLabel.text = value != 0 ? "\(value > 0 ? "+" : "")\(Int(value))" : ""
+        octaveLabel.text = "\(value > 0 ? "+" : "")\(Int(value))"
     }
     
     /**
@@ -213,30 +218,7 @@ extension InstrumentEditorViewController {
         print("editing instrument \(row)")
         self.instrument = instrument
         self.instrumentRow = row
-        
-        // Record current Instrument settings in case we need to restore them when user touches "Cancel"
-        //
-        originalPatch = instrument.patch
-        originalOctave = instrument.octave
-        originalPan = instrument.pan
-        originalVolume = instrument.volume
-        originalMuted = instrument.muted
-        print("originalMuted: \(originalMuted)")
-
-        soundFontIndex = SoundFont.indexForName(originalPatch!.soundFont!.name)
-        patchIndex = originalPatch!.soundFont!.findPatchIndex(originalPatch!.name)!
-    }
-
-    /**
-     Restore the Instrument instance settings to original values.
-     */
-    fileprivate func restoreInstrument() {
-        guard let instrument = self.instrument else { return }
-        instrument.patch = originalPatch!
-        instrument.volume = originalVolume
-        instrument.octave = originalOctave
-        instrument.muted = originalMuted
-        self.instrument = nil
+        self.instrumentConfig = instrument.encodeConfiguration()
     }
 }
 
@@ -278,7 +260,7 @@ extension InstrumentEditorViewController: UIPickerViewDelegate, UIPickerViewData
             text = soundFont.patches[row].name
         }
 
-        return NSAttributedString(string: text, attributes: [NSForegroundColorAttributeName: UIColor.white])
+        return NSAttributedString(string: text, attributes: [NSAttributedStringKey.foregroundColor: UIColor.white])
     }
 
     /**
@@ -338,9 +320,7 @@ extension InstrumentEditorViewController {
      - parameter sender: the button
      */
     @IBAction func donePressed(_ sender: UIBarButtonItem) {
-        guard let instrument = self.instrument else { return }
         stopSolo()
-        instrument.saveSetup()
         self.instrument = nil
         delegate?.instrumentEditorDismissed(instrumentRow, reason: .done)
     }
@@ -351,9 +331,8 @@ extension InstrumentEditorViewController {
      - parameter sender: the button
      */
     @IBAction func cancelPressed(_ sender: UIBarButtonItem) {
-        guard let _ = self.instrument else { return }
         stopSolo()
-        restoreInstrument()
+        _ = instrument?.configure(with: instrumentConfig)
         self.instrument = nil
         delegate?.instrumentEditorDismissed(instrumentRow, reason: .cancel)
     }
@@ -412,7 +391,6 @@ extension InstrumentEditorViewController {
         guard let instrument = instrument else { return }
         instrument.muted = !instrument.muted
         updateMuteImage(instrument.muted)
-        currentMuted = instrument.muted
         delegate?.instrumentEditorMuteChanged(instrumentRow)
     }
 }
