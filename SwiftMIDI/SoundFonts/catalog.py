@@ -24,7 +24,7 @@ def run(filePaths):
 
             registrations += '{}SoundFont.name: {}SoundFont,\n'.format(name, name)
             year = date.today().year
-            with open('../SwiftMIDI/SoundFonts/' + filePath + '.swift', 'w') as swiftFile:
+            with open('./' + filePath + '.swift', 'w') as swiftFile:
                 swiftFile.write('''//
 // SynthInC
 //
@@ -40,7 +40,7 @@ let {}SoundFont = SoundFont("{}", fileName: "{}", [
                                                                               each[1]))
                 swiftFile.write('])\n')
 
-    with open('../SwiftMIDI/SoundFont.swift', 'r') as sf:
+    with open('../SoundFont.swift', 'r') as sf:
         contents = sf.read()
 
     begin = contents.find('// -BEGIN-')
@@ -49,7 +49,7 @@ let {}SoundFont = SoundFont("{}", fileName: "{}", [
     if end == -1: raise "*** missing '// -END-' token in SoundFont.swift file"
     contents = contents[:begin] + '// -BEGIN-\n' + registrations + contents[end:]
 
-    with open('../SynthInC/SoundFont.swift', 'w') as sf:
+    with open('../SoundFont.swift', 'w') as sf:
         sf.write(contents)
 
 if __name__ == '__main__':
