@@ -317,7 +317,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		BD4957261D1135A1000324ED /* Sound Fonts */ = {
+		BD4957261D1135A1000324ED /* SoundFonts */ = {
 			isa = PBXGroup;
 			children = (
 				BD1F14721CF4E98000E6B85F /* GeneralUser GS MuseScore v1.442.sf2 */,
@@ -329,8 +329,7 @@
 				BD435E0D1D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift */,
 				BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */,
 			);
-			name = "Sound Fonts";
-			path = SynthInC;
+			path = SoundFonts;
 			sourceTree = "<group>";
 		};
 		BD4957271D11A2E9000324ED /* Extras */ = {
@@ -382,7 +381,7 @@
 		BDDD0AD920F8BF2400AFB002 /* SwiftMIDI */ = {
 			isa = PBXGroup;
 			children = (
-				BD4957261D1135A1000324ED /* Sound Fonts */,
+				BD4957261D1135A1000324ED /* SoundFonts */,
 				B06746F819BF591200DCF4E3 /* AudioController.swift */,
 				BD0757411D05FAD200595332 /* Instrument.swift */,
 				BD1F14761CF582A400E6B85F /* IsAudioError.swift */,
