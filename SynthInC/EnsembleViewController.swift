@@ -95,7 +95,7 @@ final class EnsembleViewController: UIViewController {
         ensemble.delegate = self
         ensemble.dataSource = self
 
-        playbackPosition.setThumbImage(UIImage(named:"Slider"), for: UIControlState())
+        playbackPosition.setThumbImage(UIImage(named:"Slider"), for: UIControl.State())
         playbackPosition.setThumbImage(UIImage(named:"Slider"), for: .selected)
         playbackPosition.setThumbImage(UIImage(named:"Slider"), for: .highlighted)
 
@@ -175,7 +175,7 @@ extension EnsembleViewController: ASValueTrackingSliderDataSource {
      */
     fileprivate func startedPlaying() {
         let image = UIImage(named: "Pause")
-        playStopButton.setImage(image, for: UIControlState())
+        playStopButton.setImage(image, for: UIControl.State())
         playStopButton.setImage(image, for: .highlighted)
         playStopButton.setImage(image, for: .selected)
         startUpdateTimer()
@@ -188,7 +188,7 @@ extension EnsembleViewController: ASValueTrackingSliderDataSource {
      */
     fileprivate func stoppedPlaying() {
         let image = UIImage(named: "Play")
-        playStopButton.setImage(image, for: UIControlState())
+        playStopButton.setImage(image, for: UIControl.State())
         playStopButton.setImage(image, for: .highlighted)
         playStopButton.setImage(image, for: .selected)
         playbackPosition.hidePopUpView(animated: true)
@@ -626,7 +626,7 @@ extension EnsembleViewController {
      - parameter commitEditingStyle: the editing style that is coming to an end
      - parameter indexPath: the index of the row being edited
      */
-    func tableView(_ tableView: UITableView, commit commitEditingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit commitEditingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         guard commitEditingStyle == .delete else { return }
         
         // Remove the instrument from the model, then tell table view to remove the corresponding view

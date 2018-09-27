@@ -10,6 +10,11 @@ import Foundation
 import AVFoundation
 import GameKit
 
+/**
+ Representation of a specific instrument in a performance. Each instrument has a SoundFont patch that
+ defines the instrument's sound. There are also volume, panning parameters that will affect the sound
+ the instrument generates.
+ */
 public final class Instrument: NSObject {
     var index: Int = -1
     fileprivate(set) var samplerNode: AUNode = 0
@@ -18,18 +23,24 @@ public final class Instrument: NSObject {
     fileprivate var soloMutedState: Bool = false
     public fileprivate(set) var ready: Bool = false
 
+    /// The current SoundFont patch being used by the instrument
     public var patch: Patch { didSet { if (oldValue !== patch) { applyPatch() } } }
+    /// The current octave the instrument plays in (0 being the default)
     public var octave: Int = 0 { didSet { if (oldValue != octave) { applyOctave() } } }
+    /// The current volume the instrument plays at (0.75 being the default)
     public var volume: Float = 0.75 { didSet { if (oldValue != volume) { applyVolume() } } }
+    /// The current stereo pan value, where -1 means all left channel, +1 means all right channel, and 0 is in the middle
     public var pan: Float = 0.0 { didSet { if (oldValue != pan) { applyPan() } } }
+    /// If true, the instrument is muted and not generating any output audio
     public var muted: Bool = false { didSet { if (oldValue != muted) { applyMuted() } } }
+    /// If true, this instrument is the only one playing. All others will be muted.
     public var solo: Bool = false
 
     /**
      Initialize new instance.
      
-     - parameter audioController: the AudioController instance that manages audio (our owner)
-     - parameter index: unique ID in range of [0..N] where N is the maximum number of Instrument objects.
+     - parameter graph: the AUGraph we belong to
+     - parameter patch: the SoundFont patch to use for sound generating
      */
     init?(graph: AUGraph, patch: Patch) {
         self.patch = patch
@@ -37,6 +48,12 @@ public final class Instrument: NSObject {
         guard createSampler(graph: graph) else { return nil }
     }
 
+    /**
+     Initialize new instance from a saved configuration.
+     
+     - parameter graph: the AUGraph we belong to
+     - parameter settings: configuration settings for the instrument.
+     */
     init?(graph: AUGraph, settings: Data) {
         let decoder = NSKeyedUnarchiver(forReadingWith: settings)
         guard let soundFontName = decoder.decodeObject(forKey: "soundFontName") as? String else { return nil }

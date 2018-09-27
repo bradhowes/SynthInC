@@ -91,14 +91,14 @@ final class InstrumentEditorViewController: UIViewController {
         volumeSlider.maximumValue = 100.0
 
         let thumb = UIImage(named: "Slider")
-        volumeSlider.setThumbImage(thumb, for: UIControlState())
+        volumeSlider.setThumbImage(thumb, for: UIControl.State())
         volumeSlider.setThumbImage(thumb, for: .selected)
         volumeSlider.setThumbImage(thumb, for: .highlighted)
         volumeSlider.popUpViewColor = UIColor.init(red: 12/255.0, green: 102/255.0, blue: 223/255.0, alpha: 1.0)
 
         panSlider.minimumValue = -1.0
         panSlider.maximumValue = 1.0
-        panSlider.setThumbImage(thumb, for: UIControlState())
+        panSlider.setThumbImage(thumb, for: UIControl.State())
         panSlider.setThumbImage(thumb, for: .selected)
         panSlider.setThumbImage(thumb, for: .highlighted)
         panSlider.popUpViewColor = UIColor.init(red: 12/255.0, green: 102/255.0, blue: 223/255.0, alpha: 1.0)
@@ -174,7 +174,7 @@ extension InstrumentEditorViewController {
      - parameter value: the boolean value to use
      */
     fileprivate func updateSoloImage(_ value: Bool) {
-        soloButton.setImage(UIImage(named: value ? "Solo On" : "Solo Off"), for: UIControlState())
+        soloButton.setImage(UIImage(named: value ? "Solo On" : "Solo Off"), for: UIControl.State())
     }
     
     /**
@@ -183,7 +183,7 @@ extension InstrumentEditorViewController {
      - parameter value: the boolean value to use
      */
     fileprivate func updateMuteImage(_ value: Bool) {
-        muteButton.setImage(UIImage(named: value ? "Mute On" : "Mute Off"), for: UIControlState())
+        muteButton.setImage(UIImage(named: value ? "Mute On" : "Mute Off"), for: UIControl.State())
     }
     
     /**
@@ -260,7 +260,7 @@ extension InstrumentEditorViewController: UIPickerViewDelegate, UIPickerViewData
             text = soundFont.patches[row].name
         }
 
-        return NSAttributedString(string: text, attributes: [NSAttributedStringKey.foregroundColor: UIColor.white])
+        return NSAttributedString(string: text, attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
     }
 
     /**

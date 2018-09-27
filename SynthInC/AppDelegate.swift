@@ -24,14 +24,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions
-        launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         // Setup the AV system so that we can play audio along with others
         // TODO: handle background playback as well
         DispatchQueue.global(qos: .utility).async {
             let audioSession = AVAudioSession.sharedInstance()
             do {
-                try audioSession.setCategory(AVAudioSessionCategoryAmbient)
+                try audioSession.setCategory(.ambient, mode: .default, options: [])
             } catch {
                 print("audioSession.setCategory(AVAudioSessionCategoryAmbient) failed.")
             }

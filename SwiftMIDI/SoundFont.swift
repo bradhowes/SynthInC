@@ -7,7 +7,7 @@
 import UIKit
 import GameKit
 
-let systemFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
+let systemFontAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
 
 /**
  Representation of a sound font library. NOTE: all sound font files must have 'sf2' extension.
@@ -16,7 +16,8 @@ public final class SoundFont {
 
     /**
      Mapping of registered sound fonts. Add additional sound font entries here to make them available to the
-     SoundFont code.
+     SoundFont code. NOTE: the value of this mapping is manipulated by the Python script `catalog.py` found in
+     the `Extras` folder. In particular, it expects to find the -BEGIN- and -END- comments.
      */
     public static let library: [String:SoundFont] = [
 // -BEGIN-

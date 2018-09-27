@@ -10,14 +10,29 @@ import AVFoundation
  A sequence of notes for a part of the "In C" score.
  */
 public struct Phrase {
+    
+    /// The collection of notes in the phrase
     public let notes: [Note]
+    /// The duration required to play all of the notes in the phrase
     public let duration: MusicTimeStamp
-
+    
+    /**
+     Create a new Phrase using a sequence of Note objects.
+     - parameter notes: one or or more Note objects that make up the phrase
+     */
     public init(_ notes: Note...) {
         self.notes = notes
         self.duration = notes.filter{ $0.duration > 0 }.reduce(0.0) { $0 + $1.duration }
     }
 
+    /**
+     Hand the notes of a phrase to an optional recorder function.
+
+     - Parameters:
+       - clock: the current clock value
+       - recorder: the optional function to pass in each note
+     - Returns: the ending clock value
+     */
     func record(clock: MusicTimeStamp, recorder: ((MusicTimeStamp, Note)->Void)? = nil) -> MusicTimeStamp {
         switch recorder {
         case let r?: return notes.reduce(clock) { r($0, $1); return $1.getEndTime(clock: $0) }
@@ -26,7 +41,8 @@ public struct Phrase {
     }
 }
 
-/// The set of 53 phrases in the "In C" score
+/// The set of 53 phrases in the "In C" score. The "0" phrase is a whole note rest so that we can
+/// accomodate the grace note in the first phrase.
 public let ScorePhrases: [Phrase] = [
     Phrase( // 0
         Note(.re,  Duration.whole)),

@@ -26,20 +26,27 @@ public func noteText(_ note: Int) -> String {
 // Duration.quarter == MusicTimeStamp(1.0)
 
 public typealias Duration = Int
+
+
+/// Additional functions for Duration values.
 public extension Duration {
 
+    /// Calculate a dotted note duration
     var dotted: Duration { return self + self / 2 }
+    /// Obtain a scaled note duration, where 1.0 is a 1/4 note (why?)
     var scaled: MusicTimeStamp { return MusicTimeStamp(self) / MusicTimeStamp(480.0) }
+    /// Obtain a grace note duration
     var grace: Duration { return -abs(self / 2) }
 
     static let thirtysecond = 60
-    static let sixteenth = thirtysecond * 2
-    static let eighth = sixteenth * 2
-    static let quarter = eighth * 2
-    static let half = quarter * 2
-    static let whole = half * 2
+    static let sixteenth = thirtysecond * 2 //  120
+    static let eighth = sixteenth * 2       //  240
+    static let quarter = eighth * 2         //  480
+    static let half = quarter * 2           //  960
+    static let whole = half * 2             // 1920
 }
 
+/// Enumeration of all of the notes in the "In C" score. The assigned integers are the MIDI note values.
 public enum NoteValue : Int {
     case re = 0
     case G3 = 55
@@ -90,10 +97,23 @@ public struct Note {
         self.duration = abs(duration.scaled)
     }
 
+    /**
+     Obtain the time when this note starts playing
+    
+     - parameter clock: the current clock time
+     - parameter slop: random variation to apply to the time
+     - returns: start time
+     */
     public func getStartTime(clock: MusicTimeStamp, slop: MusicTimeStamp) -> MusicTimeStamp {
         return clock + (isGraceNote ? -duration : slop)
     }
 
+    /**
+     Obtain the time when this note stops playing
+    
+     - parameter clock: the current clock time
+     - returns: end time
+     */
     public func getEndTime(clock: MusicTimeStamp) -> MusicTimeStamp {
         return isGraceNote ? clock : clock + duration
     }
