@@ -153,7 +153,6 @@
 		BD7C336F20FFD9B40042B762 /* PhraseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhraseTests.swift; sourceTree = "<group>"; };
 		BD8433DE1D024BC800BD835C /* InstrumentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentCell.swift; sourceTree = "<group>"; };
 		BDB0E35F210F24F5002492B5 /* CreateRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecording.swift; sourceTree = "<group>"; };
-		BDB0E363210F4FEF002492B5 /* ScratchPad.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = ScratchPad.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentEditorViewController.swift; sourceTree = "<group>"; };
 		BDC621BA211330CF0097AEC4 /* SwiftyTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyTimer.swift; sourceTree = "<group>"; };
 		BDD090211D1498F1005E03B6 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
@@ -163,10 +162,8 @@
 		BDDD0AE020F8BF2400AFB002 /* SwiftMIDITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftMIDITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDDD0AE720F8BF2400AFB002 /* NoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTests.swift; sourceTree = "<group>"; };
 		BDDD0AE920F8BF2400AFB002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BDDD0B2720F8D94400AFB002 /* MIDI Playing.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = "MIDI Playing.playground"; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BDE166AC2101DB690097E5C4 /* Performance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Performance.swift; sourceTree = "<group>"; };
 		BDE166AE2101E1430097E5C4 /* Recording.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Recording.swift; sourceTree = "<group>"; };
-		BDE166B0210254DC0097E5C4 /* Performance Generation.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = "Performance Generation.playground"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		BDFA66062102837000810712 /* Rando.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rando.swift; sourceTree = "<group>"; };
 		BDFA660821031FF800810712 /* RandoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RandoTests.swift; sourceTree = "<group>"; };
 		F100CD6C12FE8A2B6C574ABD /* Pods-SynthInC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SynthInC.release.xcconfig"; path = "Pods/Target Support Files/Pods-SynthInC/Pods-SynthInC.release.xcconfig"; sourceTree = "<group>"; };
@@ -227,7 +224,6 @@
 				BDD8B4B91D0039C200CC8698 /* Resources */,
 				B06746D819BF58F700DCF4E3 /* Source */,
 				B06746EB19BF58F700DCF4E3 /* Tests */,
-				BDDD0B2820F8D95400AFB002 /* Playgrounds */,
 				BDDD0AD920F8BF2400AFB002 /* SwiftMIDI */,
 				BDDD0AE620F8BF2400AFB002 /* SwiftMIDITests */,
 				BD1BD0371CF778BE00C804A4 /* Frameworks */,
@@ -405,16 +401,6 @@
 				BDDD0AE920F8BF2400AFB002 /* Info.plist */,
 			);
 			path = SwiftMIDITests;
-			sourceTree = "<group>";
-		};
-		BDDD0B2820F8D95400AFB002 /* Playgrounds */ = {
-			isa = PBXGroup;
-			children = (
-				BDB0E363210F4FEF002492B5 /* ScratchPad.playground */,
-				BDE166B0210254DC0097E5C4 /* Performance Generation.playground */,
-				BDDD0B2720F8D94400AFB002 /* MIDI Playing.playground */,
-			);
-			name = Playgrounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -931,6 +917,7 @@
 			baseConfigurationReference = 0015E7ED2FDFCE1FCF4F64B7 /* Pods-SynthInCTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Z7R62JH5A8;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -954,6 +941,7 @@
 			baseConfigurationReference = 796A0CFAAA66079C6C6D0A92 /* Pods-SynthInCTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = Z7R62JH5A8;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -977,7 +965,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -994,6 +982,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.braysoft.SwiftMIDI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 4.2;
@@ -1012,7 +1001,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -1030,6 +1019,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.braysoft.SwiftMIDI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";

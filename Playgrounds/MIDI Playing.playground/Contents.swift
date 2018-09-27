@@ -15,7 +15,7 @@ let musicPlayer = optionalMusicPlayer!
 
 let audioController = AudioController()
 
-audioController.createEnsemble(ensembleSize: 4) {
+audioController.createEnsemble(ensembleSize: 4, instrumentDoneCallback: {_ in}) {finished in
     let performance = Performance(perfGen: BasicPerformanceGenerator(ensembleSize: audioController.ensemble.count, rando: rando))
     if let recording = Recording(performance: performance, rando: rando) {
         _ = IsAudioError("MusicPlayerSetSequence", MusicPlayerSetSequence(musicPlayer, recording.musicSequence))

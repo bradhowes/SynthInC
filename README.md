@@ -22,13 +22,19 @@ All have entries in the [CocoaPods](https://cocoapods.org) Podfile.
 
 # SoundFont Files
 
-For some info on SoundFont files look [here](https://musescore.org/en/handbook/soundfont#list). To use the
-`FluidR3\_GM` file, you will need to combine the FluidR3\_GM.sf2.1 and FluidR3\_GM.sf2.2 files into one. There
-is a simple Bash script to this: `FluidR3\_GM.sh`. Just run like so:
+For some info on SoundFont files look [here](https://musescore.org/en/handbook/soundfont#list). The repository
+comes with four SoundFont files, though the largest one -- `FluidR3_GM` -- is too large to store natively on
+Github so it has been broken into three files: `FluidR3_GM.sf2.1`, `FluidR3_GM.sf2.2`, and `FluidR3_GM.sf2.3`.
+To make the`FluidR3\_GM` file, you will need to run a simple Bash script --  `FluidR3\_GM.sh` -- like so:
 
 ```
 % ./FluidR3_GM.sh
 ```
 
-There is also a basic Python script called `catalog.py` which will generate a SoundFont catalog in Swift. There is
-no integration with Xcode so you have to add the files yourself, but it may be handy nonetheless.
+There is also a simple Python script called `catalog.py` which will generate a SoundFont catalog in Swift. Each `*.sf2`
+that is in the [./SoundFonts](https://github.com/bradhowes/SynthInC/tree/master/SwiftMIDI/SoundFonts) directory
+will get its own `*.swift` file with its own `SoundFont` instance that describes all of the patches or presets that
+were found in the `*.sf2` file. If you add a new SoundFont file to this directory, you will also need to add it to the
+Xcode project for the `SwiftMIDI` framework so that it gets installed in the iOS application bundle. You will also need
+to add the generated `*.swift` file as well so that the application knows what presets are available in the SoundFont
+file.

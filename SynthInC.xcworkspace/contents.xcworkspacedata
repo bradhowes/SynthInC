@@ -2,6 +2,22 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:README.md">
+   </FileRef>
+   <Group
+      location = "group:Playgrounds"
+      name = "Playgrounds">
+      <FileRef
+         location = "group:MIDI Playing.playground">
+      </FileRef>
+      <FileRef
+         location = "group:ScratchPad.playground">
+      </FileRef>
+      <FileRef
+         location = "group:Performance Generation.playground">
+      </FileRef>
+   </Group>
+   <FileRef
       location = "group:SynthInC.xcodeproj">
    </FileRef>
    <FileRef
