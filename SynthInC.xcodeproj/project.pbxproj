@@ -24,6 +24,8 @@
 		BD3FB7B920E5004D005CFBBF /* SessionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3FB7B820E5004D005CFBBF /* SessionsTableViewCell.swift */; };
 		BD4DBD3D2111E917005DD658 /* InstrumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4DBD3C2111E917005DD658 /* InstrumentTests.swift */; };
 		BD4DBD3F21121162005DD658 /* AudioControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4DBD3E21121162005DD658 /* AudioControllerTests.swift */; };
+		BD6B4FFB215D474D00BC1345 /* catalog.py in Resources */ = {isa = PBXBuildFile; fileRef = BD6B4FF9215D474D00BC1345 /* catalog.py */; };
+		BD6B4FFC215D474D00BC1345 /* FluidR3_GM.sh in Resources */ = {isa = PBXBuildFile; fileRef = BD6B4FFA215D474D00BC1345 /* FluidR3_GM.sh */; };
 		BD7C336C20FFBA960042B762 /* SoundFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7C336B20FFBA960042B762 /* SoundFontTests.swift */; };
 		BD7C336E20FFC88C0042B762 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7C336D20FFC88C0042B762 /* Note.swift */; };
 		BD7C337020FFD9B40042B762 /* PhraseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7C336F20FFD9B40042B762 /* PhraseTests.swift */; };
@@ -142,10 +144,10 @@
 		BD435E0C1D087844000ECC3C /* FreeFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FreeFont.swift; path = SwiftMIDI/SoundFonts/FreeFont.swift; sourceTree = SOURCE_ROOT; };
 		BD435E0D1D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "GeneralUser GS MuseScore v1.442.swift"; path = "SwiftMIDI/SoundFonts/GeneralUser GS MuseScore v1.442.swift"; sourceTree = SOURCE_ROOT; };
 		BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RolandNicePiano.swift; path = SwiftMIDI/SoundFonts/RolandNicePiano.swift; sourceTree = SOURCE_ROOT; };
-		BD4957281D11A311000324ED /* catalog.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = catalog.py; path = SoundFonts/catalog.py; sourceTree = "<group>"; };
-		BD49572A1D11A325000324ED /* FluidR3_GM.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = FluidR3_GM.sh; path = SoundFonts/FluidR3_GM.sh; sourceTree = "<group>"; };
 		BD4DBD3C2111E917005DD658 /* InstrumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentTests.swift; sourceTree = "<group>"; };
 		BD4DBD3E21121162005DD658 /* AudioControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioControllerTests.swift; sourceTree = "<group>"; };
+		BD6B4FF9215D474D00BC1345 /* catalog.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = catalog.py; sourceTree = "<group>"; };
+		BD6B4FFA215D474D00BC1345 /* FluidR3_GM.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = FluidR3_GM.sh; sourceTree = "<group>"; };
 		BD7C336B20FFBA960042B762 /* SoundFontTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundFontTests.swift; sourceTree = "<group>"; };
 		BD7C336D20FFC88C0042B762 /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		BD7C336F20FFD9B40042B762 /* PhraseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhraseTests.swift; sourceTree = "<group>"; };
@@ -226,7 +228,6 @@
 				B06746D819BF58F700DCF4E3 /* Source */,
 				B06746EB19BF58F700DCF4E3 /* Tests */,
 				BDDD0B2820F8D95400AFB002 /* Playgrounds */,
-				BD4957271D11A2E9000324ED /* Extras */,
 				BDDD0AD920F8BF2400AFB002 /* SwiftMIDI */,
 				BDDD0AE620F8BF2400AFB002 /* SwiftMIDITests */,
 				BD1BD0371CF778BE00C804A4 /* Frameworks */,
@@ -320,6 +321,8 @@
 		BD4957261D1135A1000324ED /* SoundFonts */ = {
 			isa = PBXGroup;
 			children = (
+				BD6B4FF9215D474D00BC1345 /* catalog.py */,
+				BD6B4FFA215D474D00BC1345 /* FluidR3_GM.sh */,
 				BD1F14721CF4E98000E6B85F /* GeneralUser GS MuseScore v1.442.sf2 */,
 				BD1F14781CF5CDA400E6B85F /* FluidR3_GM.sf2 */,
 				BD1F14791CF5CDA400E6B85F /* FreeFont.sf2 */,
@@ -330,15 +333,6 @@
 				BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */,
 			);
 			path = SoundFonts;
-			sourceTree = "<group>";
-		};
-		BD4957271D11A2E9000324ED /* Extras */ = {
-			isa = PBXGroup;
-			children = (
-				BD49572A1D11A325000324ED /* FluidR3_GM.sh */,
-				BD4957281D11A311000324ED /* catalog.py */,
-			);
-			name = Extras;
 			sourceTree = "<group>";
 		};
 		BDAEC4211D11CE7C00201498 /* Views */ = {
@@ -601,7 +595,9 @@
 			files = (
 				BDDD0B2920F9131D00AFB002 /* GeneralUser GS MuseScore v1.442.sf2 in Resources */,
 				BDDD0B2A20F9132500AFB002 /* FluidR3_GM.sf2 in Resources */,
+				BD6B4FFC215D474D00BC1345 /* FluidR3_GM.sh in Resources */,
 				BDDD0B2C20F9132500AFB002 /* RolandNicePiano.sf2 in Resources */,
+				BD6B4FFB215D474D00BC1345 /* catalog.py in Resources */,
 				BDDD0B2B20F9132500AFB002 /* FreeFont.sf2 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
