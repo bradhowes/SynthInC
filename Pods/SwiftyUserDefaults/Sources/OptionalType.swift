@@ -1,7 +1,7 @@
 //
 // SwiftyUserDefaults
 //
-// Copyright (c) 2015-2018 Radosław Pietruszewski, Łukasz Mróz
+// Copyright (c) 2015-present Radosław Pietruszewski, Łukasz Mróz
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,22 @@
 // SOFTWARE.
 //
 
-public protocol OptionalType {
-    associatedtype Wrapped
-    var wrapped: Wrapped? { get }
+protocol OptionalTypeCheck {
+    var isNil: Bool { get }
 }
 
-extension Optional: OptionalType {
+public protocol OptionalType {
+    associatedtype Wrapped
+    
+    static var __swifty_empty: Self { get }
+}
 
-    public var wrapped: Wrapped? {
-        return self
+extension Optional: OptionalType, OptionalTypeCheck {
+    public static var __swifty_empty: Optional {
+        return nil
+    }
+
+    var isNil: Bool {
+        return self == nil
     }
 }

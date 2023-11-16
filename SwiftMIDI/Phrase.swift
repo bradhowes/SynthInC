@@ -42,7 +42,7 @@ public struct Phrase {
 }
 
 /// The set of 53 phrases in the "In C" score. The "0" phrase is a whole note rest so that we can
-/// accomodate the grace note in the first phrase.
+/// accommodate the grace note in the first phrase.
 public let ScorePhrases: [Phrase] = [
     Phrase( // 0
         Note(.re,  Duration.whole)),

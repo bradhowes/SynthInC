@@ -54,7 +54,7 @@ public final class AudioController  {
 
         DispatchQueue.global(qos: .utility).async(execute: workItem)
     }
-    
+
     public func restoreEnsemble(data: Data, instrumentDoneCallback: @escaping (Int) -> Void, finishedCallback: @escaping (Bool) -> Void) {
         ensemble.removeAll()
         let workItem = DispatchWorkItem() {
