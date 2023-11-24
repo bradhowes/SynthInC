@@ -108,10 +108,14 @@ final class EnsembleViewController: UIViewController {
     
     if !UIApplication.beingTested {
       if let config = Parameters.ensemble {
-        audioController.restoreEnsemble(data: config, instrumentDoneCallback: self.instrumentIsReady, finishedCallback: ensembleIsReady)
+        audioController.restoreEnsemble(data: config, 
+                                        instrumentDoneCallback: self.instrumentIsReady,
+                                        finishedCallback: ensembleIsReady)
       }
       else {
-        audioController.createEnsemble(ensembleSize: 8, instrumentDoneCallback:  self.instrumentIsReady, finishedCallback: ensembleIsReady)
+        audioController.createEnsemble(ensembleSize: 8, 
+                                       instrumentDoneCallback:  self.instrumentIsReady,
+                                       finishedCallback: ensembleIsReady)
       }
     }
     

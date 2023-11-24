@@ -68,7 +68,7 @@ public final class SoundFont {
    - returns: found index or zero
    */
   public static func indexForName(_ name: String) -> Int {
-    return keys.index(of: name) ?? 0
+    return keys.firstIndex(of: name) ?? 0
   }
   
   public let soundFontExtension = "sf2"
@@ -129,7 +129,7 @@ public final class SoundFont {
    - returns: index of found object or nil if not found
    */
   public func findPatchIndex(_ name: String) -> Int? {
-    return patches.index(where: { return $0.name == name })
+    return patches.firstIndex(where: { return $0.name == name })
   }
 }
 

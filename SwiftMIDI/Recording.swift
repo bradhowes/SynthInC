@@ -68,12 +68,12 @@ public final class Recording {
   }
   
   public init?(data: Data) {
-    let decoder = NSKeyedUnarchiver(forReadingWith: data)
+    guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { return nil }
     guard let sequenceData = decoder.decodeObject(forKey: "sequenceData") as? Data else {
       print("** invalid NSData for sequence data")
       return nil
     }
-    
+
     var musicSequence: MusicSequence?
     if IsAudioError("NewMusicSequence", NewMusicSequence(&musicSequence)) { return nil }
     
@@ -100,7 +100,7 @@ public final class Recording {
   deinit {
     DisposeMusicSequence(musicSequence)
   }
-  
+
   public func activate(audioController: AudioController) -> Bool {
     guard let graph = audioController.graph else { return false }
     guard audioController.ensemble.count == tracks.count else { return false }
@@ -125,9 +125,7 @@ public final class Recording {
    */
   public func saveMusicSequence() -> Data? {
     print("-- saving music sequence")
-    let data = NSMutableData()
-    let encoder = NSKeyedArchiver(forWritingWith: data)
-    
+    let encoder = NSKeyedArchiver(requiringSecureCoding: false)
     var cfData: Unmanaged<CFData>?
     if IsAudioError("MusicSequenceFileCreateData", MusicSequenceFileCreateData(musicSequence, .midiType, .eraseFile, 480, &cfData)) {
       return nil
@@ -137,9 +135,7 @@ public final class Recording {
     encoder.encode(sequenceData, forKey: "sequenceData")
     encoder.encode(tracks.count, forKey: "trackCount")
     encoder.encode(sequenceLength, forKey: "sequenceLength")
-    
     encoder.finishEncoding()
-    
-    return data as Data
+    return encoder.encodedData
   }
 }

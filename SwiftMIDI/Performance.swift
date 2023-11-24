@@ -147,7 +147,7 @@ public class Part {
   }
   
   public init?(data: Data) {
-    let decoder = NSKeyedUnarchiver(forReadingWith: data)
+    guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { return nil }
     self.index = decoder.decodeInteger(forKey: "index")
     guard let playCounts = decoder.decodeObject(forKey: "playCounts") as? [Int] else { return nil }
     guard let normalizedRunningDurations = decoder.decodeObject(forKey: "normalizedRunningDurations") as? [CGFloat] else { return nil }
@@ -156,15 +156,12 @@ public class Part {
   }
   
   public func encodePerformance() -> Data {
-    let data = NSMutableData()
-    let encoder = NSKeyedArchiver(forWritingWith: data)
-    
+    let encoder = NSKeyedArchiver(requiringSecureCoding: false)
     encoder.encode(index, forKey: "index")
     encoder.encode(playCounts, forKey: "playCounts")
     encoder.encode(normalizedRunningDurations, forKey: "normalizedRunningDurations")
     encoder.finishEncoding()
-    
-    return data as Data
+    return encoder.encodedData
   }
   
   public func timeline() -> String {
@@ -187,7 +184,7 @@ public class Performance {
   }
   
   public init?(data: Data) {
-    let decoder = NSKeyedUnarchiver(forReadingWith: data)
+    guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { return nil }
     guard let configs = decoder.decodeObject(forKey: "parts") as? [Data] else { return nil }
     let parts = configs.compactMap{ Part(data: $0) }
     guard configs.count == parts.count else { return nil }
@@ -195,11 +192,10 @@ public class Performance {
   }
   
   public func encodePerformance() -> Data {
-    let data = NSMutableData()
-    let encoder = NSKeyedArchiver(forWritingWith: data)
+    let encoder = NSKeyedArchiver(requiringSecureCoding: false)
     encoder.encode(parts.map { $0.encodePerformance() }, forKey: "parts")
     encoder.finishEncoding()
-    return data as Data
+    return encoder.encodedData
   }
   
   public func playCounts() -> String {

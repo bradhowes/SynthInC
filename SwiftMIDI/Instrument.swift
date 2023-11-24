@@ -55,7 +55,8 @@ public final class Instrument: NSObject {
    - parameter settings: configuration settings for the instrument.
    */
   init?(graph: AUGraph, settings: Data) {
-    let decoder = NSKeyedUnarchiver(forReadingWith: settings)
+    guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: settings) else { return nil }
+    decoder.requiresSecureCoding = false
     guard let soundFontName = decoder.decodeObject(forKey: "soundFontName") as? String else { return nil }
     guard let patchName = decoder.decodeObject(forKey: "patchName") as? String else { return nil }
 
@@ -121,7 +122,12 @@ public final class Instrument: NSObject {
 
     // Connect the sampler output to a unique mixer input
     //
-    if IsAudioError("AUGraphConnectNodeInput(sampler)", AUGraphConnectNodeInput(graph, samplerNode, 0, mixerNode, UInt32(index))) {
+    if IsAudioError("AUGraphConnectNodeInput(sampler)", 
+                    AUGraphConnectNodeInput(graph,
+                                            samplerNode,
+                                            0,
+                                            mixerNode,
+                                            UInt32(index))) {
       return false
     }
 
@@ -159,8 +165,13 @@ public final class Instrument: NSObject {
 
     // Attempt to have the sampler use the sound font data
     //
-    if IsAudioError("AudioUnitSetProperty(patch)", AudioUnitSetProperty(samplerUnit,
-                                                                        kAUSamplerProperty_LoadInstrument, kAudioUnitScope_Global, 0, &data, UInt32(MemoryLayout.size(ofValue: data)))) {
+    if IsAudioError("AudioUnitSetProperty(patch)",
+                    AudioUnitSetProperty(samplerUnit,
+                                         kAUSamplerProperty_LoadInstrument,
+                                         kAudioUnitScope_Global,
+                                         0,
+                                         &data,
+                                         UInt32(MemoryLayout.size(ofValue: data)))) {
       print("** failed to use patch")
 
       // Try a "safe" patch
@@ -249,9 +260,8 @@ public final class Instrument: NSObject {
    - returns: NSData containing archived configuration values
    */
   public func encodeConfiguration() -> Data {
-    let data = NSMutableData()
-    let encoder = NSKeyedArchiver(forWritingWith: data)
-
+    let encoder = NSKeyedArchiver(requiringSecureCoding: false)
+    encoder.outputFormat = .xml
     encoder.encode(patch.soundFont.name, forKey: "soundFontName")
     encoder.encode(patch.name, forKey: "patchName")
     encoder.encode(octave, forKey: "octave")
@@ -259,8 +269,7 @@ public final class Instrument: NSObject {
     encoder.encode(pan, forKey: "pan")
     encoder.encode(muted, forKey: "muted")
     encoder.finishEncoding()
-
-    return data as Data
+    return encoder.encodedData
   }
 
   /**
@@ -271,20 +280,16 @@ public final class Instrument: NSObject {
    - returns: true if successful
    */
   public func configure(with data: Data) -> Bool {
-    let decoder = NSKeyedUnarchiver(forReadingWith: data)
-
-    guard let soundFontName = decoder.decodeObject(forKey: "soundFontName") as? String else { return false }
-    guard let patchName = decoder.decodeObject(forKey: "patchName") as? String else { return false }
-    if let soundFont = SoundFont.library[soundFontName],
-       let p = soundFont.findPatch(patchName) {
-      patch = p
-    }
-
+    let decoder = try! NSKeyedUnarchiver(forReadingFrom: data)
+    decoder.requiresSecureCoding = false
+    let soundFontName = decoder.decodeObject(forKey: "soundFontName") as! String
+    let patchName = decoder.decodeObject(forKey: "patchName") as! String
+    let soundFont = SoundFont.library[soundFontName]!
+    patch = soundFont.findPatch(patchName)!
     octave = decoder.decodeInteger(forKey: "octave")
     volume = decoder.decodeFloat(forKey: "volume")
     pan = decoder.decodeFloat(forKey: "pan")
     muted = decoder.decodeBool(forKey: "muted")
-
     return true
   }
 }

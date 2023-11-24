@@ -22,8 +22,7 @@ public final class AudioController  {
   public fileprivate(set) var mixerNode: AUNode = 0
   public fileprivate(set) var ensemble: [Instrument] = []
 
-  public init() {
-  }
+  public init() {}
 
   deinit {
     print("*** AudioController.deinit")
@@ -37,7 +36,8 @@ public final class AudioController  {
 
    - returns: true if successful, false otherwise
    */
-  public func createEnsemble(ensembleSize: Int, instrumentDoneCallback: @escaping (Int) -> Void, finishedCallback: @escaping (Bool) -> Void) {
+  public func createEnsemble(ensembleSize: Int, instrumentDoneCallback: @escaping (Int) -> Void, 
+                             finishedCallback: @escaping (Bool) -> Void) {
     ensemble.removeAll()
     let workItem = DispatchWorkItem() {
       if self.beginSetup() {
@@ -55,37 +55,52 @@ public final class AudioController  {
     DispatchQueue.global(qos: .utility).async(execute: workItem)
   }
 
-  public func restoreEnsemble(data: Data, instrumentDoneCallback: @escaping (Int) -> Void, finishedCallback: @escaping (Bool) -> Void) {
+  public func restoreEnsemble(data: Data, instrumentDoneCallback: @escaping (Int) -> Void, 
+                              finishedCallback: @escaping (Bool) -> Void) {
     ensemble.removeAll()
     let workItem = DispatchWorkItem() {
       if self.beginSetup() {
-        let decoder = NSKeyedUnarchiver(forReadingWith: data)
-        if let configs = decoder.decodeObject(forKey: "configs") as? [Data] {
-          for config in configs {
-            if let instrument = Instrument(graph: self.graph!, settings: config) {
-              self.ensemble.append(instrument)
-            }
+        guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { return }
+        decoder.requiresSecureCoding = false
+        decoder.decodingFailurePolicy = .raiseException
+        let blob = decoder.decodeObject(forKey: "configs")
+        let configs = blob as! [Data]
+        for config in configs {
+          if let instrument = Instrument(graph: self.graph!, settings: config) {
+            self.ensemble.append(instrument)
           }
         }
       }
-
       self.finishSetup(instrumentDoneCallback: instrumentDoneCallback, finishedCallback: finishedCallback)
     }
-
     DispatchQueue.global(qos: .utility).async(execute: workItem)
+  }
+
+  /**
+   Save the current instrument configuration.
+   */
+  public func encodeEnsemble() -> Data {
+    print("-- saving setup")
+    let encoder = NSKeyedArchiver(requiringSecureCoding: false)
+    encoder.outputFormat = .xml
+    let configs = ensemble.map { $0.encodeConfiguration() }
+    encoder.encode(configs, forKey: "configs")
+    encoder.finishEncoding()
+    return encoder.encodedData
   }
 
   fileprivate func disposeGraph() -> Bool {
     guard let graph = self.graph else { return true }
-    return stopGraph() && !IsAudioError("AUGraphClose", AUGraphClose(graph)) && !IsAudioError("DisposeAUGraph", DisposeAUGraph(graph))
+    return stopGraph() && !IsAudioError("AUGraphClose", AUGraphClose(graph)) && !IsAudioError("DisposeAUGraph", 
+                                                                                              DisposeAUGraph(graph))
   }
 
   fileprivate func beginSetup() -> Bool {
     return disposeGraph() && !IsAudioError("NewAUGraph", NewAUGraph(&graph))
   }
 
-  fileprivate func finishSetup(instrumentDoneCallback: @escaping (Int) -> Void, finishedCallback: @escaping (Bool) -> Void) {
-
+  fileprivate func finishSetup(instrumentDoneCallback: @escaping (Int) -> Void,
+                               finishedCallback: @escaping (Bool) -> Void) {
     var result = false
     defer { finishedCallback(result) }
 
@@ -126,8 +141,13 @@ public final class AudioController  {
     // Configure the max number of inputs to the mixer
     //
     var busCount = UInt32(ensemble.count);
-    if IsAudioError("AudioUnitSetProperty(mixer)", AudioUnitSetProperty(mixerUnit!, kAudioUnitProperty_ElementCount,
-                                                                        kAudioUnitScope_Input, 0, &busCount, UInt32(MemoryLayout.size(ofValue: busCount)))) {
+    if IsAudioError("AudioUnitSetProperty(mixer)",
+                    AudioUnitSetProperty(mixerUnit!,
+                                         kAudioUnitProperty_ElementCount,
+                                         kAudioUnitScope_Input,
+                                         0,
+                                         &busCount,
+                                         UInt32(MemoryLayout.size(ofValue: busCount)))) {
       return;
     }
 
@@ -139,7 +159,12 @@ public final class AudioController  {
 
     // Wire the mixer output to the hardware (speaker, headphone, Bluetooth, etc.)
     //
-    if IsAudioError("AUGraphConnectNodeInput", AUGraphConnectNodeInput(graph!, mixerNode, 0, outputNode, 0)) {
+    if IsAudioError("AUGraphConnectNodeInput",
+                    AUGraphConnectNodeInput(graph!,
+                                            mixerNode,
+                                            0,
+                                            outputNode,
+                                            0)) {
       return;
     }
 
@@ -227,20 +252,6 @@ public final class AudioController  {
     print("-- AUGraph stopped")
 
     return true
-  }
-
-  /**
-   Save the current instrument configuration.
-   */
-  public func encodeEnsemble() -> Data {
-    print("-- saving setup")
-    let data = NSMutableData()
-    let encoder = NSKeyedArchiver(forWritingWith: data)
-    let configs = ensemble.map { $0.encodeConfiguration() }
-    encoder.encode(configs, forKey: "configs")
-    encoder.finishEncoding()
-
-    return data as Data
   }
 
   /**
