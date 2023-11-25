@@ -6,7 +6,7 @@ import SwiftMIDI
 
 /// Graphical depiction of what phrases have been played by an instrument.
 final class PhraseView : UIView {
-  
+
   static let phraseColors: [CGColor] = {
     let phraseColorSaturation: CGFloat = 0.5
     let phraseColorBrightness: CGFloat = 0.95
@@ -20,22 +20,22 @@ final class PhraseView : UIView {
       }
       return nextValue
     }()
-    
+
     return ScorePhrases.map { ($0, UIColor(hue: hueGenerator(), saturation: phraseColorSaturation, 
                                            brightness: phraseColorBrightness, alpha: phraseColorAlpha).cgColor).1 }
   }()
-  
+
   weak var part: Part! = nil
   var normalizedCurrentPosition: CGFloat = 0.0
-  
+
   /**
    Draw/update what phrases have been played by an instrument.
-   
+
    - parameter rect: the area to update
    */
   override func draw(_ rect: CGRect) {
     guard let cgc = UIGraphicsGetCurrentContext() else { return }
-    
+
     // Draw color bands that show how long a performner stays in each phrase
     var lastX: CGFloat = 0.0
     for (index, duration) in part.normalizedRunningDurations.enumerated() {
@@ -46,13 +46,13 @@ final class PhraseView : UIView {
       lastX = x
       cgc.fill(rect)
     }
-    
+
     // Draw indicator showing playback position
     cgc.setFillColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.30)
     let x = bounds.width * normalizedCurrentPosition
     let rect = CGRect(x: 0, y: bounds.minY, width: x, height: bounds.height)
     cgc.fill(rect)
-    
+
     cgc.setFillColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0)
     cgc.fill(CGRect(x: x - 2, y: bounds.midY - 8, width: 4, height: 16))
   }

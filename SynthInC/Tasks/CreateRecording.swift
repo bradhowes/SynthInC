@@ -6,7 +6,7 @@ import SwiftMIDI
 class CreateRecording : NSObject
 {
   private let audioController: AudioController
-  
+
   init(audioController: AudioController) {
     self.audioController = audioController
     super.init()

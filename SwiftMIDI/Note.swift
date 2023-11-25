@@ -4,9 +4,9 @@ import AVFoundation
 
 /**
  Generate a textual representation of a MIDI note. For instance, MIDI note 60 is "C4" and 73 is "C#5"
- 
+
  - parameter note: the MIDI note to convert
- 
+
  - returns: the note textual representation
  */
 public func noteText(_ note: Int) -> String {
@@ -26,14 +26,14 @@ public typealias Duration = Int
 
 /// Additional functions for Duration values.
 public extension Duration {
-  
+
   /// Calculate a dotted note duration
   var dotted: Duration { return self + self / 2 }
   /// Obtain a scaled note duration, where 1.0 is a 1/4 note (why?)
   var scaled: MusicTimeStamp { return MusicTimeStamp(self) / MusicTimeStamp(480.0) }
   /// Obtain a grace note duration
   var grace: Duration { return -abs(self / 2) }
-  
+
   static let thirtysecond = 60
   static let sixteenth = thirtysecond * 2 //  120
   static let eighth = sixteenth * 2       //  240
@@ -80,10 +80,10 @@ public struct Note {
   let note: NoteValue
   let isGraceNote: Bool
   let duration: MusicTimeStamp
-  
+
   /**
    Initialize new Note instance
-   
+
    - parameter note: the pitch of the note (a value of zero (0) indicates a rest)
    - parameter duration: how long the note plays (120 is a sixteenth note)
    */
@@ -92,10 +92,10 @@ public struct Note {
     self.isGraceNote = duration < 0
     self.duration = abs(duration.scaled)
   }
-  
+
   /**
    Obtain the time when this note starts playing
-   
+
    - parameter clock: the current clock time
    - parameter slop: random variation to apply to the time
    - returns: start time
@@ -103,10 +103,10 @@ public struct Note {
   public func getStartTime(clock: MusicTimeStamp, slop: MusicTimeStamp) -> MusicTimeStamp {
     return clock + (isGraceNote ? -duration : slop)
   }
-  
+
   /**
    Obtain the time when this note stops playing
-   
+
    - parameter clock: the current clock time
    - returns: end time
    */

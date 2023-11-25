@@ -6,14 +6,14 @@ import UIKit
  Main view controller for the application.
  */
 final class SessionsListViewController: UITableViewController {
-  
+
   enum BarButtonItems: Int {
     case add = 0, edit, done
   }
-  
+
   @IBOutlet weak var addButton: UIBarButtonItem!
   @IBOutlet weak var editButton: UIBarButtonItem!
-  
+
   /**
    Initialize and configure view after loading.
    */
@@ -23,16 +23,16 @@ final class SessionsListViewController: UITableViewController {
     editButton.isEnabled = true
     super.viewDidLoad()
   }
-  
+
   /**
    Tell the OS that we have a dark background
-   
+
    - returns: UIStatusBarStyle.LigthContent
    */
   override var preferredStatusBarStyle : UIStatusBarStyle {
     return .lightContent
   }
-  
+
   /**
    Memory pressure in effect. Resources should be purged. But what?
    */
@@ -40,13 +40,13 @@ final class SessionsListViewController: UITableViewController {
     print("*** memory pressure ***")
     super.didReceiveMemoryWarning()
   }
-  
+
   /**
    Support deselection of a row. If a row is already selected, deselect the row.
-   
+
    - parameter tableView: the instruments view
    - parameter indexPath: the index of the row that will be selected
-   
+
    - returns: indexPath if row should be selected, nil otherwise
    */
   override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
@@ -58,7 +58,7 @@ final class SessionsListViewController: UITableViewController {
     }
     return indexPath
   }
-  
+
   /**
    Obtain the number of rows to display in the instruments view
    - parameter tableView: the UITableView to work with
@@ -68,7 +68,7 @@ final class SessionsListViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return 1;
   }
-  
+
   /**
    Obtain a UITableViewCell to use for an instrument, and fill it in with the instrument's values.
    - parameter tableView: the UITableView to work with
@@ -79,10 +79,10 @@ final class SessionsListViewController: UITableViewController {
     let identifier = "SessionCell" // !!! This must match prototype in Main.storyboard !!!
     let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as! SessionsTableViewCell
     cell.showsReorderControl = true
-    
+
     let button = UIButton(type:.infoLight)
     cell.accessoryView = button
-    
+
     return cell
   }    
 }

@@ -6,10 +6,10 @@ import SwiftyUserDefaults
 
 /// Slight derivation of `IASKAppSettingsViewController` in order to marshal settings.
 final class SettingsViewController : IASKAppSettingsViewController {
-  
+
   /**
    Update NSUserDefaults values using values from Parameters class
-   
+
    - parameter animated: true if the view should animate its appearance
    */
   override func viewWillAppear(_ animated: Bool) {
@@ -21,10 +21,10 @@ final class SettingsViewController : IASKAppSettingsViewController {
     //        userDefaults.set(Parameters.seqRepVar, forKey: DefaultsKeys.seqRepVar._key)
     super.viewWillAppear(animated)
   }
-  
+
   /**
    Update the Parameters class instances using values from NSUserDefaults
-   
+
    - parameter animated: true if the view snould animate its disappearance
    */
   override func viewWillDisappear(_ animated: Bool) {

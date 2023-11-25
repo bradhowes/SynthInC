@@ -6,12 +6,12 @@ import AVFoundation
  A sequence of notes for a part of the "In C" score.
  */
 public struct Phrase {
-  
+
   /// The collection of notes in the phrase
   public let notes: [Note]
   /// The duration required to play all of the notes in the phrase
   public let duration: MusicTimeStamp
-  
+
   /**
    Create a new Phrase using a sequence of Note objects.
    - parameter notes: one or or more Note objects that make up the phrase
@@ -20,10 +20,10 @@ public struct Phrase {
     self.notes = notes
     self.duration = notes.filter{ $0.duration > 0 }.reduce(0.0) { $0 + $1.duration }
   }
-  
+
   /**
    Hand the notes of a phrase to an optional recorder function.
-   
+
    - Parameters:
    - clock: the current clock value
    - recorder: the optional function to pass in each note

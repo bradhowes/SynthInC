@@ -5,9 +5,9 @@ import AVFoundation
 
 /**
  Helper function that simply sets the sample rate for a give AudioUnit to 44100
- 
+
  - parameter au: the AudioUnit to set
- 
+
  - returns: true if successful, false otherwise
  */
 internal func setAudioUnitSampleRate(_ au: AudioUnit) -> Bool {

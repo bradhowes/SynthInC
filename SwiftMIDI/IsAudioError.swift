@@ -5,10 +5,10 @@ import AVFoundation
 
 /**
  Interrogate an OSStatus value and if an error, report out a textual representation of it
- 
+
  - parameter method: description of the method that was called
  - parameter error: the OSStatus value to look at
- 
+
  - returns: true if there was an error
  */
 public func IsAudioError(_ method: String, _ error:OSStatus) -> Bool {
