@@ -1,10 +1,4 @@
-//
-//  Performance.swift
-//  SynthInC
-//
-//  Created by Brad Howes on 6/6/16.
-//  Copyright © 2016 Brad Howes. All rights reserved.
-//
+// Copyright © 2016 Brad Howes. All rights reserved.
 
 import Foundation
 import AVFoundation
@@ -36,15 +30,15 @@ public struct PerformerStats {
   }
   
   public func merge(other: PerformerStats) -> PerformerStats {
-    return PerformerStats(remainingBeats: min(remainingBeats, other.remainingBeats),
-                          minPhrase: min(minPhrase, other.minPhrase),
-                          maxPhrase: max(maxPhrase, other.maxPhrase))
+    PerformerStats(remainingBeats: min(remainingBeats, other.remainingBeats),
+                   minPhrase: min(minPhrase, other.minPhrase),
+                   maxPhrase: max(maxPhrase, other.maxPhrase))
   }
   
   public func merge(other: Performer) -> PerformerStats {
-    return PerformerStats(remainingBeats: min(remainingBeats, other.remainingBeats),
-                          minPhrase: min(minPhrase, other.currentPhrase),
-                          maxPhrase: max(maxPhrase, other.currentPhrase))
+    PerformerStats(remainingBeats: min(remainingBeats, other.remainingBeats),
+                   minPhrase: min(minPhrase, other.currentPhrase),
+                   maxPhrase: max(maxPhrase, other.currentPhrase))
   }
 }
 
@@ -120,7 +114,8 @@ public final class BasicPerformanceGenerator : PerformanceGenerator {
   public func generate() -> [Part] {
     var stats = performers.reduce(PerformerStats()) { $0.merge(other: $1) }
     while !stats.isDone {
-      stats = performers.map({$0.tick(elapsed: stats.remainingBeats, minPhrase: stats.minPhrase, maxPhrase: stats.maxPhrase)})
+      stats = performers.map({$0.tick(elapsed: stats.remainingBeats, minPhrase: stats.minPhrase, 
+                                      maxPhrase: stats.maxPhrase)})
         .reduce(PerformerStats()) { $0.merge(other: $1) }
     }
     
@@ -150,7 +145,11 @@ public class Part {
     guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { return nil }
     self.index = decoder.decodeInteger(forKey: "index")
     guard let playCounts = decoder.decodeObject(forKey: "playCounts") as? [Int] else { return nil }
-    guard let normalizedRunningDurations = decoder.decodeObject(forKey: "normalizedRunningDurations") as? [CGFloat] else { return nil }
+    guard 
+      let normalizedRunningDurations = decoder.decodeObject(forKey: "normalizedRunningDurations") as? [CGFloat]
+    else {
+      return nil
+    }
     self.playCounts = playCounts
     self.normalizedRunningDurations = normalizedRunningDurations
   }
@@ -165,8 +164,9 @@ public class Part {
   }
   
   public func timeline() -> String {
-    let scale = 1.0
-    return "\(index):" + playCounts.enumerated().map({"\($0.0)" + String(repeating: "-", count: Int(((MusicTimeStamp($0.1) * ScorePhrases[$0.0].duration) / scale).rounded(.up)))}).joined()
+    "\(index):" + playCounts.enumerated().map({"\($0.0)" +
+      String(repeating: "-", count: Int(((MusicTimeStamp($0.1) * ScorePhrases[$0.0].duration)).rounded(.up)))})
+    .joined()
   }
 }
 
@@ -178,11 +178,11 @@ extension Performer {
 
 public class Performance {
   public let parts: [Part]
-  
+
   public init(perfGen: PerformanceGenerator) {
     self.parts = perfGen.generate()
   }
-  
+
   public init?(data: Data) {
     guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { return nil }
     guard let configs = decoder.decodeObject(forKey: "parts") as? [Data] else { return nil }
@@ -190,20 +190,25 @@ public class Performance {
     guard configs.count == parts.count else { return nil }
     self.parts = parts
   }
-  
+
   public func encodePerformance() -> Data {
     let encoder = NSKeyedArchiver(requiringSecureCoding: false)
     encoder.encode(parts.map { $0.encodePerformance() }, forKey: "parts")
     encoder.finishEncoding()
     return encoder.encodedData
   }
-  
+
   public func playCounts() -> String {
-    return parts.map({$0.playCounts.map({String($0)}).joined(separator: " ")}).joined(separator: "\n")
+    parts.map {
+      $0.playCounts.map {
+        String($0)
+      }.joined(separator: " ")
+    }.joined(separator: "\n")
   }
-  
+
   public func timelines() -> String {
-    let lines = parts.map { $0.timeline() }
-    return lines.joined(separator: "\n")
+    parts.map { 
+      $0.timeline()
+    }.joined(separator: "\n")
   }
 }

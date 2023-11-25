@@ -1,39 +1,35 @@
-// Recording.swift
-// SynthInC
-//
-// Created by Brad Howes
-// Copyright (c) 2016 Brad Howes. All rights reserved.
+// Copyright © 2016 Brad Howes. All rights reserved.
 
 import Foundation
 import AudioToolbox
 import CoreAudio
 import AVFoundation
-import GameKit
 
 extension Part {
+
   func createMusicTrack(_ musicSequence: MusicSequence, rando: Rando) -> (MusicTrack, MusicTimeStamp)? {
-    var track: MusicTrack? = nil
+    var track: MusicTrack! = nil
     if IsAudioError("MusicSequenceNewTrack", MusicSequenceNewTrack(musicSequence, &track)) {
       return nil
     }
-    
-    let t = track!
+
     var clock = 120.scaled
     for (index, playCount) in playCounts.enumerated() {
       let phrase = ScorePhrases[index]
       for _ in 0..<playCount {
         clock = phrase.record(clock: clock) {
-          $1.addToTrack(t, clock: $0, slop: rando.noteOnSlop())
+          $1.addToTrack(track, clock: $0, slop: rando.noteOnSlop())
         }
       }
     }
-    
-    print("\(index) createMusicTrack - \(t) \(clock)")
-    return (t, clock)
+
+    print("\(index) createMusicTrack - \(track!) \(clock)")
+    return (track, clock)
   }
 }
 
 extension Note {
+
   func addToTrack(_ track: MusicTrack, clock: MusicTimeStamp, slop: MusicTimeStamp = 0.0) -> Void {
     let beatWhen = getStartTime(clock: clock, slop: slop)
     if note != .re {
@@ -54,21 +50,23 @@ public final class Recording {
   public let musicSequence: MusicSequence
   public let sequenceLength: MusicTimeStamp
   public let tracks: [MusicTrack]
-  
+
   public init?(performance: Performance, rando: Rando) {
-    var musicSequence: MusicSequence?
+
+    var musicSequence: MusicSequence!
     guard !IsAudioError("NewMusicSequence", NewMusicSequence(&musicSequence)) else { return nil }
-    
-    self.musicSequence = musicSequence!
-    let tracks = performance.parts.compactMap { $0.createMusicTrack(musicSequence!, rando: rando) }
+
+    self.musicSequence = musicSequence
+    let tracks = performance.parts.compactMap { $0.createMusicTrack(musicSequence, rando: rando) }
     self.sequenceLength = tracks.max(by: { $0.1 < $1.1 })?.1 ?? MusicTimeStamp(0.0)
     self.tracks = tracks.map { $0.0 }
-    
+
     print("sequenceLength: \(sequenceLength)")
   }
-  
+
   public init?(data: Data) {
     guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { return nil }
+    decoder.requiresSecureCoding = false
     guard let sequenceData = decoder.decodeObject(forKey: "sequenceData") as? Data else {
       print("** invalid NSData for sequence data")
       return nil
@@ -76,15 +74,15 @@ public final class Recording {
 
     var musicSequence: MusicSequence?
     if IsAudioError("NewMusicSequence", NewMusicSequence(&musicSequence)) { return nil }
-    
+
     self.musicSequence = musicSequence!
-    
+
     if IsAudioError("MusicSequenceFileLoadData",
                     MusicSequenceFileLoadData(musicSequence!, sequenceData as CFData, .anyType,
                                               MusicSequenceLoadFlags())) {
       return nil
     }
-    
+
     let trackCount = decoder.decodeInteger(forKey: "trackCount")
     self.tracks = (0..<trackCount).compactMap {
       var track: MusicTrack?
@@ -93,10 +91,10 @@ public final class Recording {
       }
       return track!
     }
-    
+
     self.sequenceLength = decoder.decodeDouble(forKey: "sequenceLength")
   }
-  
+
   deinit {
     DisposeMusicSequence(musicSequence)
   }
@@ -104,23 +102,23 @@ public final class Recording {
   public func activate(audioController: AudioController) -> Bool {
     guard let graph = audioController.graph else { return false }
     guard audioController.ensemble.count == tracks.count else { return false }
-    
+
     if IsAudioError("MusicSequenceSetAUGraph", MusicSequenceSetAUGraph(musicSequence, graph)) {
       return false
     }
-    
+
     for (track, instrument) in zip(tracks, audioController.ensemble) {
       if IsAudioError("MusicTrackSetDestNode", MusicTrackSetDestNode(track, instrument.samplerNode)) {
         return false
       }
     }
-    
+
     return true
   }
-  
+
   /**
    Save the current MusicSequence instance.
-   
+
    - returns: true if successful
    */
   public func saveMusicSequence() -> Data? {
@@ -130,7 +128,7 @@ public final class Recording {
     if IsAudioError("MusicSequenceFileCreateData", MusicSequenceFileCreateData(musicSequence, .midiType, .eraseFile, 480, &cfData)) {
       return nil
     }
-    
+
     let sequenceData: Data = cfData!.takeRetainedValue() as Data
     encoder.encode(sequenceData, forKey: "sequenceData")
     encoder.encode(tracks.count, forKey: "trackCount")

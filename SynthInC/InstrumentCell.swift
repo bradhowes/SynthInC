@@ -1,7 +1,3 @@
-// InstrumentsTableViewCell.swift
-// SynthInC
-//
-// Created by Brad Howes on 6/4/16.
 // Copyright © 2016 Brad Howes. All rights reserved.
 
 import UIKit

@@ -1,10 +1,4 @@
-//
-//  Player.swift
-//  SwiftMIDI
-//
-//  Created by Brad Howes on 7/24/18.
-//  Copyright © 2018 Brad Howes. All rights reserved.
-//
+// Copyright © 2018 Brad Howes. All rights reserved.
 
 import Foundation
 import AVFoundation

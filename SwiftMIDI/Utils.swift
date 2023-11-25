@@ -1,10 +1,4 @@
-//
-//  Utils.swift
-//  SynthInC
-//
-//  Created by Brad Howes on 6/6/16.
-//  Copyright © 2016 Brad Howes. All rights reserved.
-//
+// Copyright © 2016 Brad Howes. All rights reserved.
 
 import Foundation
 import AVFoundation
@@ -18,8 +12,13 @@ import AVFoundation
  */
 internal func setAudioUnitSampleRate(_ au: AudioUnit) -> Bool {
   var sampleRate: Float64 = 44100.0;
-  if IsAudioError("AudioUnitSetProperty(sampleRate)", AudioUnitSetProperty(au, kAudioUnitProperty_SampleRate,
-                                                                           kAudioUnitScope_Output, 0, &sampleRate, UInt32(MemoryLayout.size(ofValue: sampleRate)))) {
+  if IsAudioError("AudioUnitSetProperty(sampleRate)",
+                  AudioUnitSetProperty(au,
+                                       kAudioUnitProperty_SampleRate,
+                                       kAudioUnitScope_Output,
+                                       0,
+                                       &sampleRate,
+                                       UInt32(MemoryLayout.size(ofValue: sampleRate)))) {
     return false
   }
   return true

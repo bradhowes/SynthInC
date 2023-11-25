@@ -1,11 +1,6 @@
-// SoundFonts.swift
-// SynthInC
-//
-// Created by Brad Howes
-// Copyright (c) 2016 Brad Howes. All rights reserved.
+// Copyright © 2016 Brad Howes. All rights reserved.
 
 import UIKit
-import GameKit
 
 let systemFontAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]
 
@@ -13,7 +8,7 @@ let systemFontAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSiz
  Representation of a sound font library. NOTE: all sound font files must have 'sf2' extension.
  */
 public final class SoundFont {
-  
+
   /**
    Mapping of registered sound fonts. Add additional sound font entries here to make them available to the
    SoundFont code. NOTE: the value of this mapping is manipulated by the Python script `catalog.py` found in
@@ -27,29 +22,29 @@ public final class SoundFont {
     UserBankSoundFont.name: UserBankSoundFont,
     // -END-
   ]
-  
+
   /**
    Array of registered sound font names sorted in alphabetical order. Generated from `library` entries.
    */
   public static let keys: [String] = library.keys.sorted()
-  
+
   /**
    Maximium width of all library names.
    */
   public static let maxNameWidth: CGFloat = library.values.map { $0.nameWidth }.max() ?? 100.0
   public static let patchCount: Int = library.reduce(0) { $0 + $1.1.patches.count }
-  
+
   /**
    Obtain a random patch from all registered sound fonts.
    - returns: radom Patch object
    */
-  public static func randomPatch(randomSource: GKRandomDistribution) -> Patch {
-    let namePos = randomSource.nextInt(upperBound: keys.count)
+  public static func randomPatch(randomSource: Rando) -> Patch {
+    let namePos = randomSource.pick(from: 0...keys.count)
     let soundFont = getByIndex(namePos)
-    let patchPos = randomSource.nextInt(upperBound: soundFont.patches.count)
+    let patchPos = randomSource.pick(from: 0...soundFont.patches.count)
     return soundFont.patches[patchPos]
   }
-  
+
   /**
    Obtain a SoundFont using an index into the `keys` name array. If the index is out-of-bounds this will return the
    FreeFont sound font.
@@ -61,7 +56,7 @@ public final class SoundFont {
     let key = keys[index]
     return library[key]!
   }
-  
+
   /**
    Obtain the index in `keys` for the given sound font name. If not found, return 0
    - parameter name: the name to look for
@@ -70,31 +65,28 @@ public final class SoundFont {
   public static func indexForName(_ name: String) -> Int {
     return keys.firstIndex(of: name) ?? 0
   }
-  
+
   public let soundFontExtension = "sf2"
-  
+
   /// Presentation name of the sound font
   public let name: String
   /// Width of the sound font name
-  public lazy var nameWidth = {
-    return (name as NSString).size(withAttributes: systemFontAttributes).width
-  }()
-  
+  public lazy var nameWidth = { (name as NSString).size(withAttributes: systemFontAttributes).width }()
   /// The file name of the sound font (sans extension)
   public let fileName: String
   ///  The resolved URL for the sound font
   public let fileURL: URL
-  
+
   /// The collection of Patches found in the sound font
   public let patches: [Patch]
   /// The max width of all of the patch names in the sound font
   public lazy var maxPatchNameWidth = { patches.map { $0.nameWidth }.max() ?? 100.0 }()
   /// The gain to apply to a patch in the sound font
   public let dbGain: Float32
-  
+
   /**
    Initialize new SoundFont instance.
-   
+
    - parameter name: the display name for the sound font
    - parameter fileName: the file name of the sound font in the application bundle
    - parameter patches: the array of Patch objects for the sound font
@@ -108,28 +100,28 @@ public final class SoundFont {
     self.dbGain = min(max(dbGain, -90.0), 12.0)
     patches.forEach { $0.soundFont = self }
   }
-  
+
   /**
    Locate a patch in the SoundFont using a display name.
-   
+
    - parameter name: the display name to search for
-   
+
    - returns: found Patch or nil
    */
   public func findPatch(_ name: String) -> Patch? {
     guard let found = findPatchIndex(name) else { return nil }
     return patches[found]
   }
-  
+
   /**
    Obtain the index to a Patch with a given name.
-   
+
    - parameter name: the display name to search for
-   
+
    - returns: index of found object or nil if not found
    */
   public func findPatchIndex(_ name: String) -> Int? {
-    return patches.firstIndex(where: { return $0.name == name })
+    patches.firstIndex(where: { return $0.name == name })
   }
 }
 
@@ -137,24 +129,22 @@ public final class SoundFont {
  Representation of a patch in a sound font.
  */
 public final class Patch {
-  
+
   /// Display name for the patch
   public let name: String
   /// Width of the name in the system font
-  public lazy var nameWidth: CGFloat = {
-    return (name as NSString).size(withAttributes: systemFontAttributes).width
-  }()
-  
+  public lazy var nameWidth: CGFloat = { (name as NSString).size(withAttributes: systemFontAttributes).width }()
+
   /// Bank number where the patch resides in the sound font
   public let bank: Int
   /// Program patch number where the patch resides in the sound font
   public let patch: Int
   /// Reference to the SoundFont parent (set by the SoundFont itself)
   public weak var soundFont: SoundFont! = nil
-  
+
   /**
    Initialize Patch instance.
-   
+
    - parameter name: the diplay name for the patch
    - parameter bank: the bank where the patch resides
    - parameter patch: the program ID of the patch in the sound font

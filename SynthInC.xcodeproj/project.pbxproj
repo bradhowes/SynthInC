@@ -32,7 +32,6 @@
 		BD8433DF1D024BC800BD835C /* InstrumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8433DE1D024BC800BD835C /* InstrumentCell.swift */; };
 		BDB0E360210F24F5002492B5 /* CreateRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB0E35F210F24F5002492B5 /* CreateRecording.swift */; };
 		BDB6C5A21CFD6C550095E9CA /* InstrumentEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */; };
-		BDC621BB211330CF0097AEC4 /* SwiftyTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC621BA211330CF0097AEC4 /* SwiftyTimer.swift */; };
 		BDD090221D1498F1005E03B6 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDD090211D1498F1005E03B6 /* SpriteKit.framework */; };
 		BDDD0AE120F8BF2400AFB002 /* SwiftMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDDD0AD820F8BF2400AFB002 /* SwiftMIDI.framework */; };
 		BDDD0AE820F8BF2400AFB002 /* NoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDD0AE720F8BF2400AFB002 /* NoteTests.swift */; };
@@ -154,7 +153,6 @@
 		BD8433DE1D024BC800BD835C /* InstrumentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentCell.swift; sourceTree = "<group>"; };
 		BDB0E35F210F24F5002492B5 /* CreateRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecording.swift; sourceTree = "<group>"; };
 		BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentEditorViewController.swift; sourceTree = "<group>"; };
-		BDC621BA211330CF0097AEC4 /* SwiftyTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyTimer.swift; sourceTree = "<group>"; };
 		BDD090211D1498F1005E03B6 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
 		BDDD0AD820F8BF2400AFB002 /* SwiftMIDI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDDD0ADA20F8BF2400AFB002 /* SwiftMIDI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftMIDI.h; sourceTree = "<group>"; };
@@ -288,7 +286,6 @@
 			isa = PBXGroup;
 			children = (
 				BD1F14841CF6445C00E6B85F /* Parameters.swift */,
-				BDC621BA211330CF0097AEC4 /* SwiftyTimer.swift */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -382,8 +379,8 @@
 				BDFA66062102837000810712 /* Rando.swift */,
 				BDE166AE2101E1430097E5C4 /* Recording.swift */,
 				BD1F147E1CF5CF2900E6B85F /* SoundFont.swift */,
-				BDDD0ADA20F8BF2400AFB002 /* SwiftMIDI.h */,
 				BD07573F1D05FA7D00595332 /* Utils.swift */,
+				BDDD0ADA20F8BF2400AFB002 /* SwiftMIDI.h */,
 				BDDD0ADB20F8BF2400AFB002 /* Info.plist */,
 			);
 			path = SwiftMIDI;
@@ -666,7 +663,6 @@
 				BD0BBA301D0E2C42006F7F6A /* EnsembleViewController.swift in Sources */,
 				BD216F741D13B3C400436000 /* SettingsViewController.swift in Sources */,
 				BDB6C5A21CFD6C550095E9CA /* InstrumentEditorViewController.swift in Sources */,
-				BDC621BB211330CF0097AEC4 /* SwiftyTimer.swift in Sources */,
 				BD216F721D1374DC00436000 /* PhraseView.swift in Sources */,
 				BD8433DF1D024BC800BD835C /* InstrumentCell.swift in Sources */,
 				BD0BBA321D0E3A68006F7F6A /* VolumeBarView.swift in Sources */,

@@ -1,8 +1,4 @@
-//  VolumeBarView.swift
-//  SynthInC
-//
-//  Created by Brad Howes on 6/12/16.
-//  Copyright © 2016 Brad Howes. All rights reserved.
+// Copyright © 2016 Brad Howes. All rights reserved.
 
 import UIKit
 

@@ -1,13 +1,10 @@
-// Parameters.swift
-// SynthInC
-//
-// Created by Brad Howes
-// Copyright (c) 2016 Brad Howes. All rights reserved.
+// Copyright © 2016 Brad Howes. All rights reserved.
 
 import Foundation
 import SwiftyUserDefaults
 
 // MARK: - Key definitions
+
 extension DefaultsKeys {
   var randomSeed: DefaultsKey<Int> { .init("randomSeed", defaultValue: 123123) }
   var maxInstrumentCount: DefaultsKey<Int> { .init("maxInstrumentCount", defaultValue: 32) }

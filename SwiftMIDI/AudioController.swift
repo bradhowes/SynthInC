@@ -1,16 +1,9 @@
-// SoundGenerator.swift
-// SynthInC
-//
-// Created by Brad Howes
-// Copyright (c) 2016 Brad Howes. All rights reserved.
+// Copyright © 2016 Brad Howes. All rights reserved.
 
 import Foundation
 import AudioToolbox
 import CoreAudio
 import AVFoundation
-import GameKit
-
-// internal var audioController: AudioController = AudioController()
 
 /**
  Manages the audio components and instruments used to play the "In C" score. Holds a set of Instrument instances, each

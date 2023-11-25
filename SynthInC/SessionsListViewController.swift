@@ -1,8 +1,4 @@
-// SessionsListViewController.swift
-// SynthInC
-//
-// Created by Brad Howes
-// Copyright (c) 2016 Brad Howes. All rights reserved.
+// Copyright © 2016 Brad Howes. All rights reserved.
 
 import UIKit
 

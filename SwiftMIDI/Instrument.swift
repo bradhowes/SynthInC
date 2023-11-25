@@ -1,14 +1,7 @@
-//
-//  Instrument.swift
-//  SynthInC
-//
-//  Created by Brad Howes on 6/6/16.
-//  Copyright © 2016 Brad Howes. All rights reserved.
-//
+// Copyright © 2016 Brad Howes. All rights reserved.
 
 import Foundation
 import AVFoundation
-import GameKit
 
 /**
  Representation of a specific instrument in a performance. Each instrument has a SoundFont patch that
@@ -183,7 +176,12 @@ public final class Instrument: NSObject {
 
     let gain = patch.soundFont!.dbGain
     _ = IsAudioError("AudioUnitSetProperty(gain)",
-                     AudioUnitSetParameter(samplerUnit, kAUSamplerParam_Gain, kAudioUnitScope_Global, 0, gain, 0))
+                     AudioUnitSetParameter(samplerUnit,
+                                           kAUSamplerParam_Gain,
+                                           kAudioUnitScope_Global,
+                                           0,
+                                           gain,
+                                           0))
   }
 
   /**
@@ -194,7 +192,12 @@ public final class Instrument: NSObject {
     guard ready else { return }
     let result: Float = Float(min(2, max(octave, -2))) * 12.0
     _ = IsAudioError("AudioUnitSetParameter(Tuning)",
-                     AudioUnitSetParameter(samplerUnit, kAUSamplerParam_CoarseTuning, kAudioUnitScope_Global, 0, result, 0))
+                     AudioUnitSetParameter(samplerUnit, 
+                                           kAUSamplerParam_CoarseTuning,
+                                           kAudioUnitScope_Global,
+                                           0,
+                                           result,
+                                           0))
   }
 
   /**
@@ -204,7 +207,12 @@ public final class Instrument: NSObject {
     precondition(mixerUnit != nil)
     guard ready else { return }
     _ = IsAudioError("AudioUnitSetParameter(Volume)",
-                     AudioUnitSetParameter(mixerUnit, kMultiChannelMixerParam_Volume, kAudioUnitScope_Input, UInt32(index), volume, 0))
+                     AudioUnitSetParameter(mixerUnit,
+                                           kMultiChannelMixerParam_Volume,
+                                           kAudioUnitScope_Input,
+                                           UInt32(index),
+                                           volume,
+                                           0))
   }
 
   /**
@@ -214,7 +222,12 @@ public final class Instrument: NSObject {
     precondition(mixerUnit != nil)
     guard ready else { return }
     _ = IsAudioError("AudioUnitSetParameter(Pan)",
-                     AudioUnitSetParameter(mixerUnit, kMultiChannelMixerParam_Pan, kAudioUnitScope_Input, UInt32(index), pan, 0))
+                     AudioUnitSetParameter(mixerUnit,
+                                           kMultiChannelMixerParam_Pan,
+                                           kAudioUnitScope_Input,
+                                           UInt32(index),
+                                           pan,
+                                           0))
   }
 
   /**
@@ -225,7 +238,12 @@ public final class Instrument: NSObject {
     guard ready else { return }
     let result: Float = muted ? 0.0 : 1.0
     _ = IsAudioError("AudioUnitSetParameter(Enable)",
-                     AudioUnitSetParameter(mixerUnit, kMultiChannelMixerParam_Enable, kAudioUnitScope_Input, UInt32(index), result, 0))
+                     AudioUnitSetParameter(mixerUnit, 
+                                           kMultiChannelMixerParam_Enable,
+                                           kAudioUnitScope_Input,
+                                           UInt32(index),
+                                           result,
+                                           0))
   }
 
   /**
