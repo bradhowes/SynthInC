@@ -20,8 +20,11 @@ public final class AudioController  {
   deinit {
     print("*** AudioController.deinit")
   }
+}
 
-  // MARK: - AudioUnit Graph
+// MARK: - AudioUnit Graph
+
+public extension AudioController {
 
   /**
    Create the AudioUnit graph, populate with AUSamplers from Instrument instances, and create a multichannel mixer for
@@ -29,42 +32,45 @@ public final class AudioController  {
 
    - returns: true if successful, false otherwise
    */
-  public func createEnsemble(ensembleSize: Int, instrumentDoneCallback: @escaping (Int) -> Void, 
-                             finishedCallback: @escaping (Bool) -> Void) {
+  func createEnsemble(ensembleSize: Int, instrumentDoneCallback: @escaping (Int) -> Void,
+                      finishedCallback: @escaping (Bool) -> Void) {
     ensemble.removeAll()
     let workItem = DispatchWorkItem() {
-      if self.beginSetup() {
-        for index in 0..<ensembleSize {
-          let patch = FavoritePatches[index % FavoritePatches.count]
-          if let instrument = Instrument(graph: self.graph!, patch: patch) {
-            self.ensemble.append(instrument)
-          }
+      guard let graph = self.createAUGraph() else { 
+        finishedCallback(false)
+        return
+      }
+      for index in 0..<ensembleSize {
+        let patch = FavoritePatches[index % FavoritePatches.count]
+        if let instrument = Instrument(graph: graph, patch: patch) {
+          self.ensemble.append(instrument)
         }
       }
-
-      self.finishSetup(instrumentDoneCallback: instrumentDoneCallback, finishedCallback: finishedCallback)
+      self.startAUGraph(instrumentDoneCallback: instrumentDoneCallback, finishedCallback: finishedCallback)
     }
 
     DispatchQueue.global(qos: .utility).async(execute: workItem)
   }
 
-  public func restoreEnsemble(data: Data, instrumentDoneCallback: @escaping (Int) -> Void, 
-                              finishedCallback: @escaping (Bool) -> Void) {
+  func restoreEnsemble(data: Data, instrumentDoneCallback: @escaping (Int) -> Void,
+                       finishedCallback: @escaping (Bool) -> Void) {
     ensemble.removeAll()
     let workItem = DispatchWorkItem() {
-      if self.beginSetup() {
-        guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { return }
-        decoder.requiresSecureCoding = false
-        decoder.decodingFailurePolicy = .raiseException
-        let blob = decoder.decodeObject(forKey: "configs")
-        let configs = blob as! [Data]
-        for config in configs {
-          if let instrument = Instrument(graph: self.graph!, settings: config) {
-            self.ensemble.append(instrument)
-          }
+      guard let graph = self.createAUGraph(),
+            let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { 
+        finishedCallback(false)
+        return
+      }
+      decoder.requiresSecureCoding = false
+      decoder.decodingFailurePolicy = .raiseException
+      let blob = decoder.decodeObject(forKey: "configs")
+      let configs = blob as! [Data]
+      for config in configs {
+        if let instrument = Instrument(graph: graph, settings: config) {
+          self.ensemble.append(instrument)
         }
       }
-      self.finishSetup(instrumentDoneCallback: instrumentDoneCallback, finishedCallback: finishedCallback)
+      self.startAUGraph(instrumentDoneCallback: instrumentDoneCallback, finishedCallback: finishedCallback)
     }
     DispatchQueue.global(qos: .utility).async(execute: workItem)
   }
@@ -72,7 +78,7 @@ public final class AudioController  {
   /**
    Save the current instrument configuration.
    */
-  public func encodeEnsemble() -> Data {
+  func encodeEnsemble() -> Data {
     print("-- saving setup")
     let encoder = NSKeyedArchiver(requiringSecureCoding: false)
     encoder.outputFormat = .xml
@@ -81,19 +87,29 @@ public final class AudioController  {
     encoder.finishEncoding()
     return encoder.encodedData
   }
+}
 
-  fileprivate func disposeGraph() -> Bool {
-    guard let graph = self.graph else { return true }
-    return stopGraph() && !IsAudioError("AUGraphClose", AUGraphClose(graph)) && !IsAudioError("DisposeAUGraph", 
-                                                                                              DisposeAUGraph(graph))
+private extension AudioController {
+
+  func disposeGraph() {
+    guard let graph = self.graph else { return }
+    stopGraph()
+    if IsAudioError("AUGraphClose", AUGraphClose(graph)) { return }
+    if IsAudioError("DisposeAUGraph", DisposeAUGraph(graph)) { return }
   }
 
-  fileprivate func beginSetup() -> Bool {
-    return disposeGraph() && !IsAudioError("NewAUGraph", NewAUGraph(&graph))
+  func createAUGraph() -> AUGraph? {
+    disposeGraph()
+    var graph: AUGraph!
+    if IsAudioError("NewAUGraph",
+                    NewAUGraph(&graph)) {
+      return nil
+    }
+    self.graph = graph
+    return graph
   }
 
-  fileprivate func finishSetup(instrumentDoneCallback: @escaping (Int) -> Void,
-                               finishedCallback: @escaping (Bool) -> Void) {
+  func startAUGraph(instrumentDoneCallback: @escaping (Int) -> Void, finishedCallback: @escaping (Bool) -> Void) {
     var result = false
     defer { finishedCallback(result) }
 
@@ -187,13 +203,15 @@ public final class AudioController  {
 
    - returns: true if successful
    */
-  fileprivate func startGraph() -> Bool {
+  func startGraph() -> Bool {
     guard let graph = self.graph else { return false }
 
     // Check if graph is already initialized
     //
     var isInitialized: DarwinBoolean = false
-    if IsAudioError("AUGraphIsInitialized", AUGraphIsInitialized(graph, &isInitialized)) {
+    if IsAudioError("AUGraphIsInitialized", 
+                    AUGraphIsInitialized(graph,
+                                         &isInitialized)) {
       return false
     }
 
@@ -201,21 +219,25 @@ public final class AudioController  {
 
     // Initialize it if not already
     //
-    if IsAudioError("AUGraphInitialize", AUGraphInitialize(graph)) {
+    if IsAudioError("AUGraphInitialize", 
+                    AUGraphInitialize(graph)) {
       return false
     }
 
     // Check if graph is already running
     //
     var isRunning: DarwinBoolean = false
-    if IsAudioError("AUGraphIsRunning", AUGraphIsRunning(graph, &isRunning)) {
+    if IsAudioError("AUGraphIsRunning", 
+                    AUGraphIsRunning(graph,
+                                     &isRunning)) {
       return false
     }
 
     guard !isRunning.boolValue else { return true }
 
     print("-- starting AUGraph")
-    if IsAudioError("AUGraphStart", AUGraphStart(graph)) {
+    if IsAudioError("AUGraphStart", 
+                    AUGraphStart(graph)) {
       return false
     }
     print("-- AUGraph started")
@@ -228,23 +250,26 @@ public final class AudioController  {
 
    - returns: true if successful
    */
-  fileprivate func stopGraph() -> Bool {
-    guard let graph = self.graph else { return false }
+  func stopGraph() {
+    guard let graph = self.graph else { return }
 
     var isRunning: DarwinBoolean = false
-    if IsAudioError("AUGraphIsRunning", AUGraphIsRunning(graph, &isRunning)) {
-      return false
+    if IsAudioError("AUGraphIsRunning", 
+                    AUGraphIsRunning(graph,
+                                     &isRunning)) {
+      return
     }
 
-    guard isRunning.boolValue else { return true }
+    guard isRunning.boolValue else { return }
 
     print("-- stopping AUGraph")
-    if IsAudioError("AUGraphStop", AUGraphStop(graph)) {
-      return false
+    if IsAudioError("AUGraphStop", 
+                    AUGraphStop(graph)) {
+      return
     }
-    print("-- AUGraph stopped")
 
-    return true
+    print("-- AUGraph stopped")
+    return
   }
 
   /**

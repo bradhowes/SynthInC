@@ -50,6 +50,7 @@ final class EnsembleViewController: UIViewController {
   }
 
   var ensembleCount: Int { return performance?.parts.count ?? 0 }
+  var loadedCount: Int = 0
 
   var normalizedCurrentPostion: CGFloat {
     guard let recording = self.recording else { return 0.0 }
@@ -57,6 +58,9 @@ final class EnsembleViewController: UIViewController {
   }
 
   var playbackReady: Bool = false
+
+  @IBOutlet weak var loadingStackView: UIStackView!
+  @IBOutlet weak var loadingProgressBar: UIProgressView!
 
   @IBOutlet weak var addButton: UIBarButtonItem!
   @IBOutlet weak var deleteButton: UIBarButtonItem!
@@ -85,6 +89,10 @@ final class EnsembleViewController: UIViewController {
    Initialize and configure view after loading.
    */
   override func viewDidLoad() {
+
+    loadingStackView.isHidden = false
+    loadingProgressBar.progress = 0.0
+    loadedCount = 0
 
     ensemble.delegate = self
     ensemble.dataSource = self
@@ -118,6 +126,10 @@ final class EnsembleViewController: UIViewController {
 
   fileprivate func ensembleIsReady(_ successful: Bool) {
     precondition(Thread.isMainThread == false)
+
+    DispatchQueue.main.async {
+      self.loadingStackView.isHidden = true
+    }
 
     guard successful else { return }
     Parameters.ensemble = audioController.encodeEnsemble()
@@ -346,10 +358,16 @@ extension EnsembleViewController {
 }
 
 // MARK: UITableView
+
 extension EnsembleViewController: UITableViewDelegate, UITableViewDataSource {
 
   private func instrumentIsReady(_ index: Int) {
     precondition(Thread.isMainThread == false)
+    loadedCount += 1
+    DispatchQueue.main.async {
+      self.loadingProgressBar.progress = Float(self.loadedCount) / Float(self.audioController.ensemble.count)
+      print("progress:", self.loadedCount, self.loadingProgressBar.progress)
+    }
     let allReady = audioController.ensemble.filter({ !$0.ready }).isEmpty
     DispatchQueue.main.async {
       if allReady {
@@ -609,7 +627,7 @@ extension EnsembleViewController: InstrumentEditorViewControllerDelegate {
    */
   func instrumentEditorSoloChanged(_ row: Int, soloing state: Bool) {
     let instrument = audioController.ensemble[row]
-    audioController.ensemble.forEach { $0.solo(instrument, active: state) }
+    audioController.ensemble.forEach { $0.soloChanged(instrument, active: state) }
     ensemble.visibleCells.forEach { ($0 as! InstrumentCell).updateVolume() }
   }
 }

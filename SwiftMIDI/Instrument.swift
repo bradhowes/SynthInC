@@ -73,29 +73,16 @@ public final class Instrument: NSObject {
   deinit {
     NotificationCenter.default.removeObserver(self)
   }
+}
 
-  /**
-   Create a sampler AudioUnit to generate sounds for this instrument.
-
-   - returns: true if successful
-   */
-  fileprivate func createSampler(graph: AUGraph) -> Bool {
-    print("-- creating sampler")
-    precondition(samplerNode == 0)
-    var desc = AudioComponentDescription(
-      componentType: OSType(kAudioUnitType_MusicDevice),
-      componentSubType: OSType(kAudioUnitSubType_Sampler),
-      componentManufacturer: OSType(kAudioUnitManufacturer_Apple),
-      componentFlags: 0, componentFlagsMask: 0)
-    return !IsAudioError("AUGraphAddNode(sampler)", AUGraphAddNode(graph, &desc, &samplerNode))
-  }
+public extension Instrument {
 
   /**
    Connect the sampler to the app's multichannel mixer.
 
    - returns: true if successful
    */
-  public func wireSampler(index: Int, graph: AUGraph, mixerNode: AUNode, mixerUnit: AudioUnit) -> Bool {
+  func wireSampler(index: Int, graph: AUGraph, mixerNode: AUNode, mixerUnit: AudioUnit) -> Bool {
     print("-- wiring sampler \(index)")
 
     self.index = index
@@ -115,7 +102,7 @@ public final class Instrument: NSObject {
 
     // Connect the sampler output to a unique mixer input
     //
-    if IsAudioError("AUGraphConnectNodeInput(sampler)", 
+    if IsAudioError("AUGraphConnectNodeInput(sampler)",
                     AUGraphConnectNodeInput(graph,
                                             samplerNode,
                                             0,
@@ -127,7 +114,7 @@ public final class Instrument: NSObject {
     return true
   }
 
-  public func configureSampler(callback: @escaping (Int)->Void) {
+  func configureSampler(callback: @escaping (Int)->Void) {
     ready = true
     applyOctave()
     applyVolume()
@@ -137,7 +124,91 @@ public final class Instrument: NSObject {
     DispatchQueue.global(qos: .utility).async { callback(self.index) }
   }
 
-  fileprivate func applyPatch() {
+  /**
+   Obtain the instrument's configuration settings in an NSData object
+
+   - returns: NSData containing archived configuration values
+   */
+  func encodeConfiguration() -> Data {
+    let encoder = NSKeyedArchiver(requiringSecureCoding: false)
+    encoder.outputFormat = .xml
+    encoder.encode(patch.soundFont.name, forKey: "soundFontName")
+    encoder.encode(patch.name, forKey: "patchName")
+    encoder.encode(octave, forKey: "octave")
+    encoder.encode(volume, forKey: "volume")
+    encoder.encode(pan, forKey: "pan")
+    encoder.encode(muted, forKey: "muted")
+    encoder.finishEncoding()
+    return encoder.encodedData
+  }
+
+  /**
+   Restore instrument's configuration settings using values found in an NSData object
+
+   - parameter data: archived configuration data
+
+   - returns: true if successful
+   */
+  func configure(with data: Data) -> Bool {
+    let decoder = try! NSKeyedUnarchiver(forReadingFrom: data)
+    decoder.requiresSecureCoding = false
+    let soundFontName = decoder.decodeObject(forKey: "soundFontName") as! String
+    let patchName = decoder.decodeObject(forKey: "patchName") as! String
+    let soundFont = SoundFont.library[soundFontName]!
+    patch = soundFont.findPatch(patchName)!
+    octave = decoder.decodeInteger(forKey: "octave")
+    volume = decoder.decodeFloat(forKey: "volume")
+    pan = decoder.decodeFloat(forKey: "pan")
+    muted = decoder.decodeBool(forKey: "muted")
+    return true
+  }
+
+  /**
+   Change notification for solo state of an instrument.
+
+   - parameter instrument: the Instrument that is the solo instrument
+   - parameter active: true if solo is active
+   */
+  func soloChanged(_ instrument: Instrument, active: Bool) {
+    if active {
+      soloMutedState = muted
+      if self == instrument {
+        print("-- solo instrument \(index)")
+        muted = false
+        solo = true
+      }
+      else {
+        print("-- not solo instrument - muting \(index)")
+        muted = true
+      }
+    }
+    else {
+      print("-- restoring \(index) \(soloMutedState)")
+      muted = soloMutedState
+      solo = false
+    }
+  }
+}
+
+private extension Instrument {
+
+  /**
+   Create a sampler AudioUnit to generate sounds for this instrument.
+
+   - returns: true if successful
+   */
+  func createSampler(graph: AUGraph) -> Bool {
+    print("-- creating sampler")
+    precondition(samplerNode == 0)
+    var desc = AudioComponentDescription(
+      componentType: OSType(kAudioUnitType_MusicDevice),
+      componentSubType: OSType(kAudioUnitSubType_Sampler),
+      componentManufacturer: OSType(kAudioUnitManufacturer_Apple),
+      componentFlags: 0, componentFlagsMask: 0)
+    return !IsAudioError("AUGraphAddNode(sampler)", AUGraphAddNode(graph, &desc, &samplerNode))
+  }
+
+  func applyPatch() {
     precondition(samplerUnit != nil);
     guard ready else { return }
 
@@ -187,7 +258,7 @@ public final class Instrument: NSObject {
   /**
    Apply the current octave setting to the sampler AudioUnit
    */
-  fileprivate func applyOctave() {
+  func applyOctave() {
     precondition(samplerUnit != nil)
     guard ready else { return }
     let result: Float = Float(min(2, max(octave, -2))) * 12.0
@@ -203,7 +274,7 @@ public final class Instrument: NSObject {
   /**
    Apply the current volume setting to the mixer AudioUnit
    */
-  fileprivate func applyVolume() {
+  func applyVolume() {
     precondition(mixerUnit != nil)
     guard ready else { return }
     _ = IsAudioError("AudioUnitSetParameter(Volume)",
@@ -218,7 +289,7 @@ public final class Instrument: NSObject {
   /**
    Apply the current pan setting to the mixer AudioUnit
    */
-  fileprivate func applyPan() {
+  func applyPan() {
     precondition(mixerUnit != nil)
     guard ready else { return }
     _ = IsAudioError("AudioUnitSetParameter(Pan)",
@@ -233,7 +304,7 @@ public final class Instrument: NSObject {
   /**
    Apply the muted setting to the mixer AudioUnit
    */
-  fileprivate func applyMuted() {
+  func applyMuted() {
     precondition(mixerUnit != nil);
     guard ready else { return }
     let result: Float = muted ? 0.0 : 1.0
@@ -244,70 +315,5 @@ public final class Instrument: NSObject {
                                            UInt32(index),
                                            result,
                                            0))
-  }
-
-  /**
-   Change notification for solo state of an instrument.
-
-   - parameter instrument: the Instrument that is the solo instrument
-   - parameter active: true if solo is active
-   */
-  public func solo(_ instrument: Instrument, active: Bool) {
-    if active {
-      soloMutedState = muted
-      if self == instrument {
-        print("-- solo instrument \(index)")
-        muted = false
-        solo = true
-      }
-      else {
-        print("-- not solo instrument - muting \(index)")
-        muted = true
-      }
-    }
-    else {
-      print("-- restoring \(index) \(soloMutedState)")
-      muted = soloMutedState
-      solo = false
-    }
-  }
-
-  /**
-   Obtain the instrument's configuration settings in an NSData object
-
-   - returns: NSData containing archived configuration values
-   */
-  public func encodeConfiguration() -> Data {
-    let encoder = NSKeyedArchiver(requiringSecureCoding: false)
-    encoder.outputFormat = .xml
-    encoder.encode(patch.soundFont.name, forKey: "soundFontName")
-    encoder.encode(patch.name, forKey: "patchName")
-    encoder.encode(octave, forKey: "octave")
-    encoder.encode(volume, forKey: "volume")
-    encoder.encode(pan, forKey: "pan")
-    encoder.encode(muted, forKey: "muted")
-    encoder.finishEncoding()
-    return encoder.encodedData
-  }
-
-  /**
-   Restore instrument's configuration settings using values found in an NSData object
-
-   - parameter data: archived configuration data
-
-   - returns: true if successful
-   */
-  public func configure(with data: Data) -> Bool {
-    let decoder = try! NSKeyedUnarchiver(forReadingFrom: data)
-    decoder.requiresSecureCoding = false
-    let soundFontName = decoder.decodeObject(forKey: "soundFontName") as! String
-    let patchName = decoder.decodeObject(forKey: "patchName") as! String
-    let soundFont = SoundFont.library[soundFontName]!
-    patch = soundFont.findPatch(patchName)!
-    octave = decoder.decodeInteger(forKey: "octave")
-    volume = decoder.decodeFloat(forKey: "volume")
-    pan = decoder.decodeFloat(forKey: "pan")
-    muted = decoder.decodeBool(forKey: "muted")
-    return true
   }
 }
