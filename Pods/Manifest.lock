@@ -1,25 +1,16 @@
 PODS:
-  - ASValueTrackingSlider (0.12.1)
-  - InAppSettingsKit (3.3.6)
   - SwiftyUserDefaults (5.3.0)
 
 DEPENDENCIES:
-  - ASValueTrackingSlider (~> 0.12.1)
-  - InAppSettingsKit (~> 3.3.6)
   - SwiftyUserDefaults (~> 5.3.0)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - ASValueTrackingSlider
   trunk:
-    - InAppSettingsKit
     - SwiftyUserDefaults
 
 SPEC CHECKSUMS:
-  ASValueTrackingSlider: 5261de3fcf00adb339efc93885e8f0bc99e703cd
-  InAppSettingsKit: 37df0b44132380d4c7db6fc7cded92997e29873a
   SwiftyUserDefaults: 63f80248cf5bfb3458825d9a78f2eb7e1293a040
 
-PODFILE CHECKSUM: 93da5bf8e326ed4a4c6ecca3dce62b85bd6c0d3d
+PODFILE CHECKSUM: c58e70d544c163641bbe0e02330ce3177c6d2dd8
 
 COCOAPODS: 1.14.2

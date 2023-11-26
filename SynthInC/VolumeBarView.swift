@@ -38,8 +38,8 @@ final class VolumeBarView: UIView {
 
     // Draw a small indicator for the pan
     //
-    let px = bounds.minX + w * CGFloat((pan + 1.0) / 2.0)
+    let px = bounds.minX + (w - 4) * CGFloat((pan + 1.0) / 2.0)
     cgc.setFillColor(red: 1, green: 1, blue: 1, alpha: 0.90)
-    cgc.fill(CGRect(x: px - 2, y: bounds.minY, width: 4, height: bounds.height))
+    cgc.fill(CGRect(x: px, y: bounds.minY, width: 4, height: bounds.height))
   }
 }

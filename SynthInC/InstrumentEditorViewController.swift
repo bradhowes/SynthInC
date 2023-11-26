@@ -2,7 +2,6 @@
 
 import Foundation
 import UIKit
-import ASValueTrackingSlider
 import SwiftMIDI
 
 /**
@@ -41,8 +40,10 @@ final class InstrumentEditorViewController: UIViewController {
   @IBOutlet weak var doneButton: UIBarButtonItem!
   @IBOutlet weak var cancelButton: UIBarButtonItem!
   @IBOutlet weak var picker: UIPickerView!
-  @IBOutlet weak var panSlider: ASValueTrackingSlider!
-  @IBOutlet weak var volumeSlider: ASValueTrackingSlider!
+  @IBOutlet weak var volumeSlider: UISlider!
+  @IBOutlet weak var volumeLabel: UILabel!
+  @IBOutlet weak var panSlider: UISlider!
+  @IBOutlet weak var panLabel: UILabel!
   @IBOutlet weak var octaveChange: UIStepper!
   @IBOutlet weak var octaveLabel: UILabel!
   @IBOutlet weak var soloButton: UIButton!
@@ -84,20 +85,18 @@ final class InstrumentEditorViewController: UIViewController {
     octaveChange.value = 0.0
 
     volumeSlider.minimumValue = 0.0
-    volumeSlider.maximumValue = 100.0
+    volumeSlider.maximumValue = 1.0
 
     let thumb = UIImage(named: "Slider")
     volumeSlider.setThumbImage(thumb, for: UIControl.State())
     volumeSlider.setThumbImage(thumb, for: .selected)
     volumeSlider.setThumbImage(thumb, for: .highlighted)
-    volumeSlider.popUpViewColor = UIColor.init(red: 12/255.0, green: 102/255.0, blue: 223/255.0, alpha: 1.0)
 
     panSlider.minimumValue = -1.0
     panSlider.maximumValue = 1.0
     panSlider.setThumbImage(thumb, for: UIControl.State())
     panSlider.setThumbImage(thumb, for: .selected)
     panSlider.setThumbImage(thumb, for: .highlighted)
-    panSlider.popUpViewColor = UIColor.init(red: 12/255.0, green: 102/255.0, blue: 223/255.0, alpha: 1.0)
 
     muteButton.setImage(UIImage(named: "Mute On"), for: .highlighted)
     soloButton.setImage(UIImage(named: "Solo On"), for: .highlighted)
@@ -138,7 +137,9 @@ extension InstrumentEditorViewController {
     updateOctaveText()
 
     volumeSlider.value = instrument.volume * 100.0
+    volumeLabel.text = "\(volumeSlider.value)"
     panSlider.value = instrument.pan
+    panLabel.text = "\(panSlider.value)"
 
     updateSoloImage(false)
     updateMuteImage(instrument.muted)
@@ -350,8 +351,9 @@ extension InstrumentEditorViewController {
    - parameter sender: the volume slider
    */
   @IBAction func changeVolume(_ sender: UISlider) {
-    instrument?.volume = sender.value / 100.0
+    instrument?.volume = sender.value
     delegate?.instrumentEditorVolumeChanged(instrumentRow)
+    volumeLabel.text = String(format: "%.2f", sender.value)
   }
 
   /**
@@ -362,6 +364,7 @@ extension InstrumentEditorViewController {
   @IBAction func changePan(_ sender: UISlider) {
     instrument?.pan = sender.value
     delegate?.instrumentEditorPanChanged(instrumentRow)
+    panLabel.text = String(format: "%.2f", sender.value)
   }
 
   /**

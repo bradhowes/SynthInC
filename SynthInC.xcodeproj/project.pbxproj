@@ -18,7 +18,6 @@
 		BD1BD0461CFCAACE00C804A4 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BD1BD0451CFCAACE00C804A4 /* Settings.bundle */; };
 		BD1F14851CF6445C00E6B85F /* Parameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1F14841CF6445C00E6B85F /* Parameters.swift */; };
 		BD216F721D1374DC00436000 /* PhraseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD216F711D1374DC00436000 /* PhraseView.swift */; };
-		BD216F741D13B3C400436000 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD216F731D13B3C400436000 /* SettingsViewController.swift */; };
 		BD3E774E2107BBFE0051EEDC /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3E774D2107BBFE0051EEDC /* Player.swift */; };
 		BD3FB7B720E4FE35005CFBBF /* SessionsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3FB7B620E4FE35005CFBBF /* SessionsListViewController.swift */; };
 		BD3FB7B920E5004D005CFBBF /* SessionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3FB7B820E5004D005CFBBF /* SessionsTableViewCell.swift */; };
@@ -135,7 +134,6 @@
 		BD1F14801CF5D1AE00E6B85F /* Phrase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Phrase.swift; sourceTree = "<group>"; };
 		BD1F14841CF6445C00E6B85F /* Parameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parameters.swift; sourceTree = "<group>"; };
 		BD216F711D1374DC00436000 /* PhraseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhraseView.swift; sourceTree = "<group>"; };
-		BD216F731D13B3C400436000 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		BD3E774D2107BBFE0051EEDC /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		BD3FB7B620E4FE35005CFBBF /* SessionsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionsListViewController.swift; sourceTree = "<group>"; };
 		BD3FB7B820E5004D005CFBBF /* SessionsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionsTableViewCell.swift; sourceTree = "<group>"; };
@@ -296,7 +294,6 @@
 				BD0BBA2F1D0E2C42006F7F6A /* EnsembleViewController.swift */,
 				BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */,
 				BD3FB7B620E4FE35005CFBBF /* SessionsListViewController.swift */,
-				BD216F731D13B3C400436000 /* SettingsViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -620,14 +617,10 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-SynthInC/Pods-SynthInC-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/ASValueTrackingSlider/ASValueTrackingSlider.framework",
-				"${BUILT_PRODUCTS_DIR}/InAppSettingsKit/InAppSettingsKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyUserDefaults/SwiftyUserDefaults.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ASValueTrackingSlider.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/InAppSettingsKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyUserDefaults.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -661,7 +654,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BD0BBA301D0E2C42006F7F6A /* EnsembleViewController.swift in Sources */,
-				BD216F741D13B3C400436000 /* SettingsViewController.swift in Sources */,
 				BDB6C5A21CFD6C550095E9CA /* InstrumentEditorViewController.swift in Sources */,
 				BD216F721D1374DC00436000 /* PhraseView.swift in Sources */,
 				BD8433DF1D024BC800BD835C /* InstrumentCell.swift in Sources */,

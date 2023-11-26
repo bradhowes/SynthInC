@@ -2,7 +2,6 @@
 
 import UIKit
 import AVFoundation
-import ASValueTrackingSlider
 import SwiftMIDI
 
 /**
@@ -67,7 +66,8 @@ final class EnsembleViewController: UIViewController {
   @IBOutlet weak var saveButton: UIBarButtonItem!
   @IBOutlet weak var ensemble: UITableView!
   @IBOutlet weak var regenerateButton: UIButton!
-  @IBOutlet weak var playbackPosition: ASValueTrackingSlider!
+  @IBOutlet weak var playbackPosition: UISlider!
+  @IBOutlet weak var playbackLabel: UILabel!
   @IBOutlet weak var playbackPositionTapGestureRecognizer: UITapGestureRecognizer!
   @IBOutlet weak var playStopButton: UIButton!
 
@@ -100,9 +100,9 @@ final class EnsembleViewController: UIViewController {
     playbackPosition.setThumbImage(UIImage(named:"Slider"), for: UIControl.State())
     playbackPosition.setThumbImage(UIImage(named:"Slider"), for: .selected)
     playbackPosition.setThumbImage(UIImage(named:"Slider"), for: .highlighted)
+    playbackPosition.value = 0.0
 
-    playbackPosition.popUpViewColor = UIColor.init(red: 12/255.0, green: 102/255.0, blue: 223/255.0, alpha: 1.0)
-    playbackPosition.dataSource = self
+    playbackLabel.text = "00:00"
 
     setNeedsStatusBarAppearanceUpdate()
 
@@ -164,11 +164,35 @@ final class EnsembleViewController: UIViewController {
     print("*** memory pressure ***")
     super.didReceiveMemoryWarning()
   }
+
+  /**
+   Notification that the user is manipulating the playback slider. Just set flag that this is the case so we won't
+   change it during updates.
+
+   - parameter sender: the UISlider being manipulated
+   */
+  @IBAction func beginChangePlaybackPosition(_ sender: UISlider) {
+    sliderInUse = true
+    print("sliderInUse true")
+  }
+
+  /**
+   Notification that the user is no longer manipulating the playback slider. Clear the flag, and ask the current
+   MusicPlayer to move to the timestamp indicated by the slider position.
+
+   - parameter sender: playback slider
+   */
+  @IBAction func endChangePlaybackPosition(_ sender: UISlider) {
+    sliderInUse = false
+    print("sliderInUse false")
+    applyPlaybackPosition()
+    player.position = currentPosition
+  }
 }
 
 // MARK: Playback control
 
-extension EnsembleViewController: ASValueTrackingSliderDataSource {
+extension EnsembleViewController {
 
   @IBAction func playStop(_ sender: UIButton) {
     if player.playOrStop() == .play {
@@ -189,7 +213,6 @@ extension EnsembleViewController: ASValueTrackingSliderDataSource {
     playStopButton.setImage(image, for: .selected)
     startUpdateTimer()
     applyPlaybackPosition()
-    playbackPosition.showPopUpView(animated: true)
   }
 
   /**
@@ -200,7 +223,6 @@ extension EnsembleViewController: ASValueTrackingSliderDataSource {
     playStopButton.setImage(image, for: UIControl.State())
     playStopButton.setImage(image, for: .highlighted)
     playStopButton.setImage(image, for: .selected)
-    playbackPosition.hidePopUpView(animated: true)
     endUpdateTimer()
   }
 
@@ -242,6 +264,7 @@ extension EnsembleViewController: ASValueTrackingSliderDataSource {
         player.position = currentPosition
       }
     }
+    playbackLabel.text = formattedPlaybackPosition()
     updatePhrases()
   }
 
@@ -254,6 +277,7 @@ extension EnsembleViewController: ASValueTrackingSliderDataSource {
     playbackPosition.isEnabled = playbackReady && self.recording != nil
     updateBarButtons()
     currentPosition = MusicTimeStamp(playbackPosition.value) * (recording?.sequenceLength ?? 0.0)
+    playbackLabel.text = formattedPlaybackPosition()
     updatePhrases()
   }
 
@@ -266,19 +290,11 @@ extension EnsembleViewController: ASValueTrackingSliderDataSource {
     }
   }
 
-  /**
-   Delegate callback from playbackPosition slider to format the popup value text.
-
-   - parameter slider: the slider needing an update
-   - parameter value: the value of the slider to format
-
-   - returns: string value in MM:SS format
-   */
-  func slider(_ slider: ASValueTrackingSlider!, stringForValue value: Float) -> String {
+  func formattedPlaybackPosition() -> String {
     // currentPosition is the number of beats. Rate is ~120 BPM. Return HH:MM format
     guard let recording = self.recording else { return "" }
     let bpm = 120.0
-    let pos = Double(value) * recording.sequenceLength
+    let pos = Double(playbackPosition.value) * recording.sequenceLength
     let mins = pos / bpm
     let secs = mins * 60.0 - Double(Int(mins)) * 60.0
     return String(format:"%02ld:%02ld", Int(mins), Int(secs))
@@ -303,38 +319,6 @@ extension EnsembleViewController: ASValueTrackingSliderDataSource {
     let value = Float(x / width)
     playbackPosition.value = max(min(value, 1.0), 0.0)
 
-    // Briefly show the new time position, but only dismiss it if the value
-    // is the same as what we set it to
-    playbackPosition.showPopUpView(animated: true)
-    Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { _ in
-      if self.playbackPosition.value == value {
-        self.playbackPosition.hidePopUpView(animated: true)
-      }
-    }
-
-    applyPlaybackPosition()
-    player.position = currentPosition
-  }
-
-  /**
-   Notification that the user is manipulating the playback slider. Just set flag that this is the case so we won't
-   change it during updates.
-
-   - parameter sender: the UISlider being manipulated
-   */
-  @IBAction func beginChangePlaybackPosition(_ sender: UISlider) {
-    sliderInUse = true
-    print("sliderInUse true")
-  }
-
-  /**
-   Notification that the user is no longer manipulating the playback slider. Clear the flag, and ask the current
-   MusicPlayer to move to the timestamp indicated by the slider position.
-
-   - parameter sender: playback slider
-   */
-  @IBAction func endChangePlaybackPosition(_ sender: UISlider) {
-    sliderInUse = false
     applyPlaybackPosition()
     player.position = currentPosition
   }
