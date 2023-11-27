@@ -20,24 +20,24 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" allowsSelectionDuringEditing="YES" allowsMultipleSelectionDuringEditing="YES" rowHeight="62" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="MIh-YA-iwu">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" allowsMultipleSelectionDuringEditing="YES" rowHeight="62" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="MIh-YA-iwu">
                                 <rect key="frame" x="-4" y="64" width="328" height="384"/>
                                 <color key="backgroundColor" red="0.18823529410000001" green="0.0" blue="0.42745098040000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="separatorColor" red="0.92941176469999998" green="0.062745098040000002" blue="0.98823529409999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="InstrumentCell" id="iP2-T8-GTW" customClass="InstrumentCell" customModule="SynthInC" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="InstrumentCell" id="iP2-T8-GTW" customClass="InstrumentCell" customModule="SynthInC" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="328" height="62"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="iP2-T8-GTW" id="B30-Np-Rzx">
-                                            <rect key="frame" x="0.0" y="0.0" width="288" height="62"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="328" height="62"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view userInteractionEnabled="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7WW-Gi-1WK" userLabel="Phrases" customClass="PhraseView" customModule="SynthInC" customModuleProvider="target">
-                                                    <rect key="frame" x="8" y="8" width="272" height="46"/>
+                                                    <rect key="frame" x="8" y="8" width="312" height="46"/>
                                                     <color key="backgroundColor" red="0.92941176469999998" green="0.062745098040000002" blue="0.98823529409999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </view>
                                                 <view userInteractionEnabled="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="IcU-C0-gdn" customClass="VolumeBarView" customModule="SynthInC" customModuleProvider="target">
-                                                    <rect key="frame" x="122" y="29" width="150" height="4"/>
+                                                    <rect key="frame" x="154" y="29" width="150" height="4"/>
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.20080236486486486" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="4" id="lK0-z3-bXR"/>
@@ -45,13 +45,13 @@
                                                     </constraints>
                                                 </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Patch Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nw9-dp-fiA">
-                                                    <rect key="frame" x="24" y="11" width="248" height="20.5"/>
+                                                    <rect key="frame" x="24" y="11" width="280" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sound Font" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uV7-sw-OhY">
-                                                    <rect key="frame" x="24" y="33.5" width="248" height="14.5"/>
+                                                    <rect key="frame" x="24" y="33.5" width="280" height="14.5"/>
                                                     <fontDescription key="fontDescription" type="italicSystem" pointSize="12"/>
                                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -77,7 +77,7 @@
                                             <outlet property="phrases" destination="7WW-Gi-1WK" id="PMs-5v-2Zf"/>
                                             <outlet property="soundFontName" destination="uV7-sw-OhY" id="ji3-d8-dMl"/>
                                             <outlet property="volumeLevel" destination="IcU-C0-gdn" id="rlU-ar-45x"/>
-                                            <segue destination="dqx-Vl-CoK" kind="popoverPresentation" identifier="showDetail" trigger="accessoryAction" animates="NO" popoverAnchorBarButtonItem="cMw-8U-fdr" id="wpV-bI-D6k">
+                                            <segue destination="dqx-Vl-CoK" kind="popoverPresentation" identifier="showDetail" trigger="accessoryAction" popoverAnchorView="MIh-YA-iwu" id="wpV-bI-D6k">
                                                 <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                                             </segue>
                                         </connections>
@@ -104,7 +104,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="hjI-fb-CTd">
                                         <rect key="frame" x="40" y="0.0" width="191" height="55"/>
                                         <subviews>
-                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="TCa-t7-YsO" userLabel="Playback Position">
+                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="TCa-t7-YsO" userLabel="Playback Position" customClass="CustomSlider" customModule="SynthInC" customModuleProvider="target">
                                                 <rect key="frame" x="-2" y="0.0" width="195" height="31"/>
                                                 <connections>
                                                     <action selector="beginChangePlaybackPosition:" destination="BYZ-38-t0r" eventType="touchDown" id="jiv-f5-UPB"/>
@@ -350,6 +350,7 @@
                                         <variation key="heightClass=compact-widthClass=compact" axis="vertical" distribution="fill"/>
                                     </stackView>
                                 </subviews>
+                                <color key="backgroundColor" red="0.1725490093" green="0.01176470611" blue="0.40784314269999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <variation key="heightClass=compact-widthClass=compact" axis="horizontal" distribution="fill"/>
                             </stackView>
                         </subviews>
@@ -410,6 +411,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="vcr-xC-OAy">
                         <rect key="frame" x="0.0" y="20" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" red="0.1725490093" green="0.01176470611" blue="0.40784314269999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <color key="barTintColor" red="0.18823529410000001" green="0.0" blue="0.42745098040000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -506,6 +508,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="brj-Ma-ud5">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="56"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" red="0.1725490093" green="0.01176470611" blue="0.40784314269999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <color key="barTintColor" red="0.18823529410000001" green="0.0" blue="0.42745098040000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

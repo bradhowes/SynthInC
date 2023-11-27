@@ -20,8 +20,12 @@ extension UIApplication {
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
   
-  var window: UIWindow?
-  
+  var window: UIWindow? {
+    didSet {
+      window?.overrideUserInterfaceStyle = .dark
+    }
+  }
+
   
   func application(_ application: UIApplication, didFinishLaunchingWithOptions
                    launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

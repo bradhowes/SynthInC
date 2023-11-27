@@ -18,6 +18,7 @@
 		BD1BD0461CFCAACE00C804A4 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BD1BD0451CFCAACE00C804A4 /* Settings.bundle */; };
 		BD1F14851CF6445C00E6B85F /* Parameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1F14841CF6445C00E6B85F /* Parameters.swift */; };
 		BD216F721D1374DC00436000 /* PhraseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD216F711D1374DC00436000 /* PhraseView.swift */; };
+		BD2FFBA42B140ADB007F17DC /* CustomSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2FFBA32B140ADB007F17DC /* CustomSlider.swift */; };
 		BD3E774E2107BBFE0051EEDC /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3E774D2107BBFE0051EEDC /* Player.swift */; };
 		BD3FB7B720E4FE35005CFBBF /* SessionsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3FB7B620E4FE35005CFBBF /* SessionsListViewController.swift */; };
 		BD3FB7B920E5004D005CFBBF /* SessionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3FB7B820E5004D005CFBBF /* SessionsTableViewCell.swift */; };
@@ -134,6 +135,7 @@
 		BD1F14801CF5D1AE00E6B85F /* Phrase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Phrase.swift; sourceTree = "<group>"; };
 		BD1F14841CF6445C00E6B85F /* Parameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parameters.swift; sourceTree = "<group>"; };
 		BD216F711D1374DC00436000 /* PhraseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhraseView.swift; sourceTree = "<group>"; };
+		BD2FFBA32B140ADB007F17DC /* CustomSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomSlider.swift; sourceTree = "<group>"; };
 		BD3E774D2107BBFE0051EEDC /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		BD3FB7B620E4FE35005CFBBF /* SessionsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionsListViewController.swift; sourceTree = "<group>"; };
 		BD3FB7B820E5004D005CFBBF /* SessionsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionsTableViewCell.swift; sourceTree = "<group>"; };
@@ -328,6 +330,7 @@
 		BDAEC4211D11CE7C00201498 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				BD2FFBA32B140ADB007F17DC /* CustomSlider.swift */,
 				BD8433DE1D024BC800BD835C /* InstrumentCell.swift */,
 				BD3FB7B820E5004D005CFBBF /* SessionsTableViewCell.swift */,
 				BD216F711D1374DC00436000 /* PhraseView.swift */,
@@ -655,6 +658,7 @@
 			files = (
 				BD0BBA301D0E2C42006F7F6A /* EnsembleViewController.swift in Sources */,
 				BDB6C5A21CFD6C550095E9CA /* InstrumentEditorViewController.swift in Sources */,
+				BD2FFBA42B140ADB007F17DC /* CustomSlider.swift in Sources */,
 				BD216F721D1374DC00436000 /* PhraseView.swift in Sources */,
 				BD8433DF1D024BC800BD835C /* InstrumentCell.swift in Sources */,
 				BD0BBA321D0E3A68006F7F6A /* VolumeBarView.swift in Sources */,

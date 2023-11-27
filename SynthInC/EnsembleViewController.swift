@@ -60,7 +60,6 @@ final class EnsembleViewController: UIViewController {
 
   @IBOutlet weak var loadingStackView: UIStackView!
   @IBOutlet weak var loadingProgressBar: UIProgressView!
-
   @IBOutlet weak var addButton: UIBarButtonItem!
   @IBOutlet weak var deleteButton: UIBarButtonItem!
   @IBOutlet weak var saveButton: UIBarButtonItem!
@@ -97,11 +96,7 @@ final class EnsembleViewController: UIViewController {
     ensemble.delegate = self
     ensemble.dataSource = self
 
-    playbackPosition.setThumbImage(UIImage(named:"Slider"), for: UIControl.State())
-    playbackPosition.setThumbImage(UIImage(named:"Slider"), for: .selected)
-    playbackPosition.setThumbImage(UIImage(named:"Slider"), for: .highlighted)
     playbackPosition.value = 0.0
-
     playbackLabel.text = "00:00"
 
     setNeedsStatusBarAppearanceUpdate()
@@ -389,24 +384,6 @@ extension EnsembleViewController: UITableViewDelegate, UITableViewDataSource {
   }
 
   /**
-   Support deselection of a row. If a row is already selected, deselect the row.
-
-   - parameter tableView: the instruments view
-   - parameter indexPath: the index of the row that will be selected
-
-   - returns: indexPath if row should be selected, nil otherwise
-   */
-  func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-    guard let currentRow = (tableView.indexPathForSelectedRow as NSIndexPath?)?.row else { return indexPath }
-    let newRow = (indexPath as NSIndexPath).row
-    if currentRow == newRow {
-      tableView.deselectRow(at: indexPath, animated: true)
-      return nil
-    }
-    return indexPath
-  }
-
-  /**
    Obtain the number of rows to display in the instruments view
    - parameter tableView: the UITableView to work with
    - parameter numberOfRowsInSection: which section to report on (only one in our view)
@@ -417,11 +394,12 @@ extension EnsembleViewController: UITableViewDelegate, UITableViewDataSource {
   }
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    updateBarButtons()
+    let cell = ensemble.cellForRow(at: indexPath)
+    performSegue(withIdentifier: "showDetail", sender: cell)
+    tableView.deselectRow(at: indexPath, animated: true)
   }
 
   func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-    updateBarButtons()
   }
 
   /**
@@ -443,56 +421,14 @@ extension EnsembleViewController: UITableViewDelegate, UITableViewDataSource {
     cell.showsReorderControl = true
 
     cell.isUserInteractionEnabled = cell.instrument.ready
-
-    //        let button = UIButton(type:.infoLight)
-    //        button.isEnabled = cell.instrument.ready
-    //        button.addTarget(self, action: #selector(editInstrument), for: .touchUpInside)
-    //        cell.accessoryView = button
-
     cell.updateAll(normalizedCurrentPostion)
 
     return cell
   }
-
-  /**
-   User tapped on the accessory button of a row. Show the instrument editor.
-
-   - parameter tableView: the table view being edited
-   - parameter indexPath: the row index to edit
-   */
-  func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
-    print("accessorybuttonTappedForRowWith: \(indexPath.row)")
-
-    // NOTE: we don't need to do anything here.
-    // guard let cell = tableView.cellForRow(at: indexPath) as? InstrumentCell else { return }
-    // performSegue(withIdentifier: "showDetail", sender: cell)
-  }
-
 }
 
 // MARK: Instrument Editing
 extension EnsembleViewController: InstrumentEditorViewControllerDelegate {
-
-  /**
-   Present the instrument editor.
-
-   - parameter sender: the table view cell
-   - parameter event: description of the event that triggered this call
-   */
-  //    @objc func editInstrument(_ sender: UIButton, forEvent event: UIEvent) {
-  //
-  //        // Use the last touch event to locate the row we are to edit
-  //        //
-  //        guard let touch = event.allTouches?.first else { return }
-  //        let position = touch.location(in: ensemble)
-  //
-  //        guard let indexPath = ensemble.indexPathForRow(at: position) else { return }
-  //        let cell = ensemble.cellForRow(at: indexPath)
-  //
-  //        // Now present the editor
-  //        //
-  //        performSegue(withIdentifier: "showDetail", sender: cell)
-  //    }
 
   /**
    Setup position of the editor popover (if used). We want the popover to point to the right row.
@@ -525,11 +461,8 @@ extension EnsembleViewController: InstrumentEditorViewControllerDelegate {
       if let ppc = nc.popoverPresentationController {
         ppc.barButtonItem = nil // !!! Muy importante !!!
         ppc.sourceView = cell
-
-        // Focus on the indicator -- this may not be correct for all locales.
         let rect = cell.bounds
-        ppc.sourceRect = view.convert(CGRect(origin: rect.offsetBy(dx: rect.width - 32, dy: 0).origin, 
-                                             size: CGSize(width: 32.0, height: rect.height)), to: nil)
+        ppc.sourceRect = view.convert(rect, to: nil)
         vc.preferredContentSize.width = self.preferredContentSize.width
       }
     }
