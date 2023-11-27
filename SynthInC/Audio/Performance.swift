@@ -3,64 +3,65 @@
 import Foundation
 import AVFoundation
 
-public let phraseBeats = ScorePhrases.map { Int($0.duration * 4) }
+let phraseBeats = ScorePhrases.map { Int($0.duration * 4) }
 
-public struct PerformerStats {
+struct PerformerStats {
   let remainingBeats: Int
   let minPhrase: Int
   let maxPhrase: Int
-  public var isDone: Bool { return remainingBeats == Int.max }
 
-  public init() {
+  var isDone: Bool { return remainingBeats == Int.max }
+
+  init() {
     self.init(remainingBeats: Int.max, minPhrase: Int.max, maxPhrase: Int.min)
   }
 
-  public init(currentPhrase: Int) {
+  init(currentPhrase: Int) {
     self.init(remainingBeats: Int.max, minPhrase: currentPhrase, maxPhrase: currentPhrase)
   }
 
-  public init(remainingBeats: Int, currentPhrase: Int) {
+  init(remainingBeats: Int, currentPhrase: Int) {
     self.init(remainingBeats: remainingBeats, minPhrase: currentPhrase, maxPhrase: currentPhrase)
   }
 
-  public init(remainingBeats: Int, minPhrase: Int, maxPhrase: Int) {
+  init(remainingBeats: Int, minPhrase: Int, maxPhrase: Int) {
     self.remainingBeats = remainingBeats
     self.minPhrase = minPhrase
     self.maxPhrase = maxPhrase
   }
 
-  public func merge(other: PerformerStats) -> PerformerStats {
+  func merge(other: PerformerStats) -> PerformerStats {
     PerformerStats(remainingBeats: min(remainingBeats, other.remainingBeats),
                    minPhrase: min(minPhrase, other.minPhrase),
                    maxPhrase: max(maxPhrase, other.maxPhrase))
   }
 
-  public func merge(other: Performer) -> PerformerStats {
+  func merge(other: Performer) -> PerformerStats {
     PerformerStats(remainingBeats: min(remainingBeats, other.remainingBeats),
                    minPhrase: min(minPhrase, other.currentPhrase),
                    maxPhrase: max(maxPhrase, other.currentPhrase))
   }
 }
 
-public final class Performer {
+final class Performer {
   private let index: Int
   private let rando: Rando
 
-  public private(set) var currentPhrase = 0
-  public private(set) var remainingBeats: Int
-  public private(set) var played: Int = 0
-  public private(set) var desiredPlays: Int = 1
-  public private(set) var playCounts: [Int] = []
-  public private(set) var duration: MusicTimeStamp = 0.0
+  private(set) var currentPhrase = 0
+  private(set) var remainingBeats: Int
+  private(set) var played: Int = 0
+  private(set) var desiredPlays: Int = 1
+  private(set) var playCounts: [Int] = []
+  private(set) var duration: MusicTimeStamp = 0.0
 
-  public init(index: Int, rando: Rando) {
+  init(index: Int, rando: Rando) {
     self.index = index
     self.rando = rando
     self.remainingBeats = phraseBeats[0]
     self.playCounts.reserveCapacity(ScorePhrases.count)
   }
 
-  public func tick(elapsed: Int, minPhrase: Int, maxPhrase: Int) -> PerformerStats {
+  func tick(elapsed: Int, minPhrase: Int, maxPhrase: Int) -> PerformerStats {
     if currentPhrase == ScorePhrases.count {
       return PerformerStats(currentPhrase: currentPhrase)
     }
@@ -90,7 +91,7 @@ public final class Performer {
     return PerformerStats(remainingBeats: remainingBeats, currentPhrase: currentPhrase)
   }
 
-  public func finish(goal: MusicTimeStamp) {
+  func finish(goal: MusicTimeStamp) {
     precondition(playCounts.count == ScorePhrases.count)
     guard let lastPhrase = ScorePhrases.last else { return }
     while duration + lastPhrase.duration < goal {
@@ -100,18 +101,18 @@ public final class Performer {
   }
 }
 
-public protocol PerformanceGenerator {
+protocol PerformanceGenerator {
   func generate() -> [Part]
 }
 
-public final class BasicPerformanceGenerator : PerformanceGenerator {
+final class BasicPerformanceGenerator : PerformanceGenerator {
   var performers: [Performer]
 
-  public init(ensembleSize: Int, rando: Rando) {
+  init(ensembleSize: Int, rando: Rando) {
     performers = (0..<ensembleSize).map { Performer(index: $0, rando: rando) }
   }
 
-  public func generate() -> [Part] {
+  func generate() -> [Part] {
     var stats = performers.reduce(PerformerStats()) { $0.merge(other: $1) }
     while !stats.isDone {
       stats = performers.map({$0.tick(elapsed: stats.remainingBeats, minPhrase: stats.minPhrase, 
@@ -126,12 +127,12 @@ public final class BasicPerformanceGenerator : PerformanceGenerator {
   }
 }
 
-public class Part {
-  public let index: Int
-  public let playCounts: [Int]
-  public let normalizedRunningDurations: [CGFloat]
+class Part {
+  let index: Int
+  let playCounts: [Int]
+  let normalizedRunningDurations: [CGFloat]
 
-  public init(index: Int, playCounts: [Int], duration: MusicTimeStamp) {
+  init(index: Int, playCounts: [Int], duration: MusicTimeStamp) {
     self.index = index
     self.playCounts = playCounts
     let durations = zip(playCounts, ScorePhrases).map { MusicTimeStamp($0.0) * $0.1.duration }
@@ -141,7 +142,7 @@ public class Part {
     normalizedRunningDurations = elapsed.map { CGFloat($0 / duration) }
   }
 
-  public init?(data: Data) {
+  init?(data: Data) {
     guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { return nil }
     self.index = decoder.decodeInteger(forKey: "index")
     guard let playCounts = decoder.decodeObject(forKey: "playCounts") as? [Int] else { return nil }
@@ -154,7 +155,7 @@ public class Part {
     self.normalizedRunningDurations = normalizedRunningDurations
   }
 
-  public func encodePerformance() -> Data {
+  func encodePerformance() -> Data {
     let encoder = NSKeyedArchiver(requiringSecureCoding: false)
     encoder.encode(index, forKey: "index")
     encoder.encode(playCounts, forKey: "playCounts")
@@ -163,7 +164,7 @@ public class Part {
     return encoder.encodedData
   }
 
-  public func timeline() -> String {
+  func timeline() -> String {
     "\(index):" + playCounts.enumerated().map({"\($0.0)" +
       String(repeating: "-", count: Int(((MusicTimeStamp($0.1) * ScorePhrases[$0.0].duration)).rounded(.up)))})
     .joined()
@@ -176,14 +177,14 @@ extension Performer {
   }
 }
 
-public class Performance {
-  public let parts: [Part]
+class Performance {
+  let parts: [Part]
 
-  public init(perfGen: PerformanceGenerator) {
+  init(perfGen: PerformanceGenerator) {
     self.parts = perfGen.generate()
   }
 
-  public init?(data: Data) {
+  init?(data: Data) {
     guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { return nil }
     guard let configs = decoder.decodeObject(forKey: "parts") as? [Data] else { return nil }
     let parts = configs.compactMap{ Part(data: $0) }
@@ -191,14 +192,14 @@ public class Performance {
     self.parts = parts
   }
 
-  public func encodePerformance() -> Data {
+  func encodePerformance() -> Data {
     let encoder = NSKeyedArchiver(requiringSecureCoding: false)
     encoder.encode(parts.map { $0.encodePerformance() }, forKey: "parts")
     encoder.finishEncoding()
     return encoder.encodedData
   }
 
-  public func playCounts() -> String {
+  func playCounts() -> String {
     parts.map {
       $0.playCounts.map {
         String($0)
@@ -206,7 +207,7 @@ public class Performance {
     }.joined(separator: "\n")
   }
 
-  public func timelines() -> String {
+  func timelines() -> String {
     parts.map { 
       $0.timeline()
     }.joined(separator: "\n")

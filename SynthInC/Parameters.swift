@@ -6,7 +6,7 @@ import Foil
 /**
  Collection of static attributes that obtain/update application parameter settings from/in NSUserDefaults.
  */
-public final class Parameters {
+final class Parameters {
   static let shared = Parameters()
 
   /// Seed value for random number generator

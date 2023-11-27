@@ -11,7 +11,7 @@ import AVFoundation
 
  - returns: true if there was an error
  */
-public func IsAudioError(_ method: String, _ error:OSStatus) -> Bool {
+func IsAudioError(_ method: String, _ error:OSStatus) -> Bool {
   func printError(_ err: String) { print("*** \(method): error \(err)") }
   switch(error) {
   case 0: print("-- \(method): OK"); return false

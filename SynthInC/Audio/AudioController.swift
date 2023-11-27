@@ -9,13 +9,13 @@ import AVFoundation
  Manages the audio components and instruments used to play the "In C" score. Holds a set of Instrument instances, each
  of which holds an AUSampler element that will play a unique track.
  */
-public final class AudioController  {
-  public fileprivate(set) var graph: AUGraph? = nil
-  public fileprivate(set) var mixerUnit: AudioUnit? = nil
-  public fileprivate(set) var mixerNode: AUNode = 0
-  public fileprivate(set) var ensemble: [Instrument] = []
+final class AudioController  {
+  fileprivate(set) var graph: AUGraph? = nil
+  fileprivate(set) var mixerUnit: AudioUnit? = nil
+  fileprivate(set) var mixerNode: AUNode = 0
+  fileprivate(set) var ensemble: [Instrument] = []
 
-  public init() {}
+  init() {}
 
   deinit {
     print("*** AudioController.deinit")
@@ -24,7 +24,7 @@ public final class AudioController  {
 
 // MARK: - AudioUnit Graph
 
-public extension AudioController {
+extension AudioController {
 
   /**
    Create the AudioUnit graph, populate with AUSamplers from Instrument instances, and create a multichannel mixer for

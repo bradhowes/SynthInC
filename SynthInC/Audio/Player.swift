@@ -4,18 +4,18 @@ import Foundation
 import AVFoundation
 import MediaPlayer
 
-public final class Player : NSObject {
+final class Player : NSObject {
   private let musicPlayer : MusicPlayer?
   private var remotePlayTarget: Any? = nil
   private var remotePauseTarget: Any? = nil
 
-  public var isPlaying : Bool {
+  var isPlaying : Bool {
     guard let mp = musicPlayer else { return false }
     var playing: DarwinBoolean = false
     return MusicPlayerIsPlaying(mp, &playing) == 0 && playing.boolValue
   }
 
-  public var position : MusicTimeStamp {
+  var position : MusicTimeStamp {
     get {
       var position: MusicTimeStamp = 0
       guard let mp = musicPlayer else { return position }
@@ -27,7 +27,7 @@ public final class Player : NSObject {
     }
   }
 
-  public override init() {
+  override init() {
     var mp : MusicPlayer?
     NewMusicPlayer(&mp)
     musicPlayer = mp
@@ -46,7 +46,7 @@ public final class Player : NSObject {
    - Play: indication that the MusicPlayer is playing
    - Stop: indication that the MusicPlayer is **not** playing
    */
-  public enum PlayOrStop {
+  enum PlayOrStop {
     case play, stop
   }
 
@@ -55,21 +55,21 @@ public final class Player : NSObject {
 
    - Returns: new state of the player
    */
-  public func playOrStop() -> PlayOrStop {
+  func playOrStop() -> PlayOrStop {
     return isPlaying ? (stop() ? .stop : .stop) : (play() ? .play : .stop)
   }
 
-  public func play() -> Bool {
+  func play() -> Bool {
     guard let mp = musicPlayer else { return false }
     return MusicPlayerStart(mp) == 0
   }
 
-  public func stop() -> Bool {
+  func stop() -> Bool {
     guard let mp = musicPlayer else { return false }
     return MusicPlayerStop(mp) == 0
   }
 
-  public func load(recording: Recording) {
+  func load(recording: Recording) {
     guard let mp = musicPlayer else { return }
     _ = IsAudioError("MusicPlayerSetSequence", MusicPlayerSetSequence(mp, recording.musicSequence))
     _ = IsAudioError("MusicPlayerPreroll", MusicPlayerPreroll(mp))

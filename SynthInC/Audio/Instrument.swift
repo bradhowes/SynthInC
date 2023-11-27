@@ -8,26 +8,28 @@ import AVFoundation
  defines the instrument's sound. There are also volume, panning parameters that will affect the sound
  the instrument generates.
  */
-public final class Instrument: NSObject {
+final class Instrument: NSObject {
+  typealias InstrumentDoneCallback = @Sendable (Int) -> Void
+
   var index: Int = -1
   fileprivate(set) var samplerNode: AUNode = 0
   fileprivate(set) var samplerUnit: AudioUnit!
   fileprivate(set) var mixerUnit: AudioUnit!
   fileprivate var soloMutedState: Bool = false
-  public fileprivate(set) var ready: Bool = false
+  fileprivate(set) var ready: Bool = false
 
   /// The current SoundFont patch being used by the instrument
-  public var patch: Patch { didSet { if (oldValue !== patch) { applyPatch() } } }
+  var patch: Patch { didSet { if (oldValue !== patch) { applyPatch() } } }
   /// The current octave the instrument plays in (0 being the default)
-  public var octave: Int = 0 { didSet { if (oldValue != octave) { applyOctave() } } }
+  var octave: Int = 0 { didSet { if (oldValue != octave) { applyOctave() } } }
   /// The current volume the instrument plays at (0.75 being the default)
-  public var volume: Float = 0.75 { didSet { if (oldValue != volume) { applyVolume() } } }
+  var volume: Float = 0.75 { didSet { if (oldValue != volume) { applyVolume() } } }
   /// The current stereo pan value, where -1 means all left channel, +1 means all right channel, and 0 is in the middle
-  public var pan: Float = 0.0 { didSet { if (oldValue != pan) { applyPan() } } }
+  var pan: Float = 0.0 { didSet { if (oldValue != pan) { applyPan() } } }
   /// If true, the instrument is muted and not generating any output audio
-  public var muted: Bool = false { didSet { if (oldValue != muted) { applyMuted() } } }
+  var muted: Bool = false { didSet { if (oldValue != muted) { applyMuted() } } }
   /// If true, this instrument is the only one playing. All others will be muted.
-  public var solo: Bool = false
+  var solo: Bool = false
 
   /**
    Initialize new instance.
@@ -75,7 +77,7 @@ public final class Instrument: NSObject {
   }
 }
 
-public extension Instrument {
+extension Instrument {
 
   /**
    Connect the sampler to the app's multichannel mixer.
@@ -114,14 +116,15 @@ public extension Instrument {
     return true
   }
 
-  func configureSampler(callback: @escaping (Int)->Void) {
+  func configureSampler(callback: @escaping InstrumentDoneCallback) {
     ready = true
     applyOctave()
     applyVolume()
     applyPan()
     applyMuted()
     applyPatch()
-    DispatchQueue.global(qos: .utility).async { callback(self.index) }
+    let index = self.index
+    DispatchQueue.global(qos: .utility).async { callback(index) }
   }
 
   /**

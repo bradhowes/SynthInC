@@ -10,7 +10,7 @@ import Foundation
 
  - returns: the note textual representation
  */
-public func noteText(_ note: Int) -> String {
+func noteText(_ note: Int) -> String {
   let notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
   let octave = (note / 12) - 1
   let index = note % 12
@@ -22,11 +22,11 @@ public func noteText(_ note: Int) -> String {
 // Duration.quarter == 480
 // Duration.quarter == MusicTimeStamp(1.0)
 
-public typealias Duration = Int
+typealias Duration = Int
 
 
 /// Additional functions for Duration values.
-public extension Duration {
+extension Duration {
 
   /// Calculate a dotted note duration
   var dotted: Duration { return self + self / 2 }
@@ -44,7 +44,7 @@ public extension Duration {
 }
 
 /// Enumeration of all of the notes in the "In C" score. The assigned integers are the MIDI note values.
-public enum NoteValue : Int {
+enum NoteValue : Int {
   case re = 0
   case G3 = 55
   case C4 = 60
@@ -77,7 +77,7 @@ public enum NoteValue : Int {
 /**
  A note has a pitch and a duration (sustain). Notes make up a `Phrase`.
  */
-public struct Note {
+struct Note {
   let note: NoteValue
   let isGraceNote: Bool
   let duration: MusicTimeStamp
@@ -88,7 +88,7 @@ public struct Note {
    - parameter note: the pitch of the note (a value of zero (0) indicates a rest)
    - parameter duration: how long the note plays (120 is a sixteenth note)
    */
-  public init(_ note: NoteValue, _ duration: Duration) {
+  init(_ note: NoteValue, _ duration: Duration) {
     self.note = note
     self.isGraceNote = duration < 0
     self.duration = abs(duration.scaled)
@@ -101,7 +101,7 @@ public struct Note {
    - parameter slop: random variation to apply to the time
    - returns: start time
    */
-  public func getStartTime(clock: MusicTimeStamp, slop: MusicTimeStamp) -> MusicTimeStamp {
+  func getStartTime(clock: MusicTimeStamp, slop: MusicTimeStamp) -> MusicTimeStamp {
     return clock + (isGraceNote ? -duration : slop)
   }
 
@@ -111,7 +111,7 @@ public struct Note {
    - parameter clock: the current clock time
    - returns: end time
    */
-  public func getEndTime(clock: MusicTimeStamp) -> MusicTimeStamp {
+  func getEndTime(clock: MusicTimeStamp) -> MusicTimeStamp {
     return isGraceNote ? clock : clock + duration
   }
 }

@@ -46,12 +46,12 @@ extension Note {
   }
 }
 
-public final class Recording {
-  public let musicSequence: MusicSequence
-  public let sequenceLength: MusicTimeStamp
-  public let tracks: [MusicTrack]
+final class Recording {
+  let musicSequence: MusicSequence
+  let sequenceLength: MusicTimeStamp
+  let tracks: [MusicTrack]
 
-  public init?(performance: Performance, rando: Rando) {
+  init?(performance: Performance, rando: Rando) {
 
     var musicSequence: MusicSequence!
     guard !IsAudioError("NewMusicSequence", NewMusicSequence(&musicSequence)) else { return nil }
@@ -64,7 +64,7 @@ public final class Recording {
     print("sequenceLength: \(sequenceLength)")
   }
 
-  public init?(data: Data) {
+  init?(data: Data) {
     guard let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { return nil }
     decoder.requiresSecureCoding = false
     guard let sequenceData = decoder.decodeObject(forKey: "sequenceData") as? Data else {
@@ -99,7 +99,7 @@ public final class Recording {
     DisposeMusicSequence(musicSequence)
   }
 
-  public func activate(audioController: AudioController) -> Bool {
+  func activate(audioController: AudioController) -> Bool {
     guard let graph = audioController.graph else { return false }
     guard audioController.ensemble.count == tracks.count else { return false }
 
@@ -121,7 +121,7 @@ public final class Recording {
 
    - returns: true if successful
    */
-  public func saveMusicSequence() -> Data? {
+  func saveMusicSequence() -> Data? {
     print("-- saving music sequence")
     let encoder = NSKeyedArchiver(requiringSecureCoding: false)
     var cfData: Unmanaged<CFData>?
