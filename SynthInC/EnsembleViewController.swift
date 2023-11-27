@@ -2,7 +2,6 @@
 
 import UIKit
 import AVFoundation
-import SwiftMIDI
 
 /**
  Main view controller for the application.

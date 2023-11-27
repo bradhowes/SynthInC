@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "foil",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jessesquires/Foil",
+      "state" : {
+        "revision" : "977201c9cab14cb09158005698eeaee58e85efb4",
+        "version" : "4.0.1"
+      }
+    }
+  ],
+  "version" : 2
+}

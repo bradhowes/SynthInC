@@ -1,7 +1,6 @@
 // Copyright © 2018 Brad Howes. All rights reserved.
 
-import Foundation
-import SwiftMIDI
+import UIKit
 
 /**
  Custom UISlider that allows for taps on the track to jump to a value rather than having to always drag the

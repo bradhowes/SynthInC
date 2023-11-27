@@ -2,7 +2,6 @@
 
 import UIKit
 import AVFoundation
-import SwiftMIDI
 
 /// Simple derivation of UITableViewCell for the instruments view.
 final class InstrumentCell: UITableViewCell {

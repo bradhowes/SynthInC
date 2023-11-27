@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,42 +18,37 @@
 		BD1F14851CF6445C00E6B85F /* Parameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1F14841CF6445C00E6B85F /* Parameters.swift */; };
 		BD216F721D1374DC00436000 /* PhraseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD216F711D1374DC00436000 /* PhraseView.swift */; };
 		BD2FFBA42B140ADB007F17DC /* CustomSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2FFBA32B140ADB007F17DC /* CustomSlider.swift */; };
-		BD3E774E2107BBFE0051EEDC /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3E774D2107BBFE0051EEDC /* Player.swift */; };
+		BD2FFBA72B14C9E2007F17DC /* Foil in Frameworks */ = {isa = PBXBuildFile; productRef = BD2FFBA62B14C9E2007F17DC /* Foil */; };
+		BD2FFBB32B14D44D007F17DC /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0757411D05FAD200595332 /* Instrument.swift */; };
+		BD2FFBB42B14D44D007F17DC /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7C336D20FFC88C0042B762 /* Note.swift */; };
+		BD2FFBB52B14D44D007F17DC /* Performance.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE166AC2101DB690097E5C4 /* Performance.swift */; };
+		BD2FFBB62B14D44D007F17DC /* Rando.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFA66062102837000810712 /* Rando.swift */; };
+		BD2FFBB72B14D44D007F17DC /* Phrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1F14801CF5D1AE00E6B85F /* Phrase.swift */; };
+		BD2FFBB82B14D44D007F17DC /* SoundFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1F147E1CF5CF2900E6B85F /* SoundFont.swift */; };
+		BD2FFBB92B14D44D007F17DC /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD07573F1D05FA7D00595332 /* Utils.swift */; };
+		BD2FFBBA2B14D44D007F17DC /* IsAudioError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1F14761CF582A400E6B85F /* IsAudioError.swift */; };
+		BD2FFBBB2B14D44D007F17DC /* Recording.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE166AE2101E1430097E5C4 /* Recording.swift */; };
+		BD2FFBBC2B14D44D007F17DC /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3E774D2107BBFE0051EEDC /* Player.swift */; };
+		BD2FFBBD2B14D44D007F17DC /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06746F819BF591200DCF4E3 /* AudioController.swift */; };
+		BD2FFBBF2B14D632007F17DC /* FreeFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0C1D087844000ECC3C /* FreeFont.swift */; };
+		BD2FFBC02B14D632007F17DC /* FluidR3_GM.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0B1D087844000ECC3C /* FluidR3_GM.swift */; };
+		BD2FFBC12B14D632007F17DC /* RolandNicePiano.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */; };
+		BD2FFBC22B14D632007F17DC /* GeneralUser GS MuseScore v1.442.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0D1D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift */; };
+		BD2FFBC32B150F32007F17DC /* FluidR3_GM.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = BD1F14781CF5CDA400E6B85F /* FluidR3_GM.sf2 */; };
+		BD2FFBC42B150F32007F17DC /* RolandNicePiano.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = BD1F147A1CF5CDA400E6B85F /* RolandNicePiano.sf2 */; };
+		BD2FFBC52B150F32007F17DC /* FreeFont.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = BD1F14791CF5CDA400E6B85F /* FreeFont.sf2 */; };
+		BD2FFBC62B150F32007F17DC /* GeneralUser GS MuseScore v1.442.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = BD1F14721CF4E98000E6B85F /* GeneralUser GS MuseScore v1.442.sf2 */; };
 		BD3FB7B720E4FE35005CFBBF /* SessionsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3FB7B620E4FE35005CFBBF /* SessionsListViewController.swift */; };
 		BD3FB7B920E5004D005CFBBF /* SessionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3FB7B820E5004D005CFBBF /* SessionsTableViewCell.swift */; };
 		BD4DBD3D2111E917005DD658 /* InstrumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4DBD3C2111E917005DD658 /* InstrumentTests.swift */; };
 		BD4DBD3F21121162005DD658 /* AudioControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4DBD3E21121162005DD658 /* AudioControllerTests.swift */; };
-		BD6B4FFB215D474D00BC1345 /* catalog.py in Resources */ = {isa = PBXBuildFile; fileRef = BD6B4FF9215D474D00BC1345 /* catalog.py */; };
-		BD6B4FFC215D474D00BC1345 /* FluidR3_GM.sh in Resources */ = {isa = PBXBuildFile; fileRef = BD6B4FFA215D474D00BC1345 /* FluidR3_GM.sh */; };
 		BD7C336C20FFBA960042B762 /* SoundFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7C336B20FFBA960042B762 /* SoundFontTests.swift */; };
-		BD7C336E20FFC88C0042B762 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7C336D20FFC88C0042B762 /* Note.swift */; };
 		BD7C337020FFD9B40042B762 /* PhraseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7C336F20FFD9B40042B762 /* PhraseTests.swift */; };
 		BD8433DF1D024BC800BD835C /* InstrumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8433DE1D024BC800BD835C /* InstrumentCell.swift */; };
 		BDB0E360210F24F5002492B5 /* CreateRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB0E35F210F24F5002492B5 /* CreateRecording.swift */; };
 		BDB6C5A21CFD6C550095E9CA /* InstrumentEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */; };
 		BDD090221D1498F1005E03B6 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDD090211D1498F1005E03B6 /* SpriteKit.framework */; };
-		BDDD0AE120F8BF2400AFB002 /* SwiftMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDDD0AD820F8BF2400AFB002 /* SwiftMIDI.framework */; };
 		BDDD0AE820F8BF2400AFB002 /* NoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDD0AE720F8BF2400AFB002 /* NoteTests.swift */; };
-		BDDD0AEA20F8BF2400AFB002 /* SwiftMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = BDDD0ADA20F8BF2400AFB002 /* SwiftMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BDDD0AED20F8BF2400AFB002 /* SwiftMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDDD0AD820F8BF2400AFB002 /* SwiftMIDI.framework */; };
-		BDDD0AEE20F8BF2400AFB002 /* SwiftMIDI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BDDD0AD820F8BF2400AFB002 /* SwiftMIDI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BDDD0AF620F8BF9B00AFB002 /* SoundFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1F147E1CF5CF2900E6B85F /* SoundFont.swift */; };
-		BDDD0AF720F8BF9B00AFB002 /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0757411D05FAD200595332 /* Instrument.swift */; };
-		BDDD0AF820F8BF9B00AFB002 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06746F819BF591200DCF4E3 /* AudioController.swift */; };
-		BDDD0AF920F8BF9B00AFB002 /* Phrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1F14801CF5D1AE00E6B85F /* Phrase.swift */; };
-		BDDD0AFE20F8BFCF00AFB002 /* FluidR3_GM.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0B1D087844000ECC3C /* FluidR3_GM.swift */; };
-		BDDD0AFF20F8BFCF00AFB002 /* FreeFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0C1D087844000ECC3C /* FreeFont.swift */; };
-		BDDD0B0020F8BFCF00AFB002 /* GeneralUser GS MuseScore v1.442.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0D1D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift */; };
-		BDDD0B0120F8BFCF00AFB002 /* RolandNicePiano.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */; };
-		BDDD0B2420F8C17B00AFB002 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD07573F1D05FA7D00595332 /* Utils.swift */; };
-		BDDD0B2620F8C1BC00AFB002 /* IsAudioError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1F14761CF582A400E6B85F /* IsAudioError.swift */; };
-		BDDD0B2920F9131D00AFB002 /* GeneralUser GS MuseScore v1.442.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = BD1F14721CF4E98000E6B85F /* GeneralUser GS MuseScore v1.442.sf2 */; };
-		BDDD0B2A20F9132500AFB002 /* FluidR3_GM.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = BD1F14781CF5CDA400E6B85F /* FluidR3_GM.sf2 */; };
-		BDDD0B2B20F9132500AFB002 /* FreeFont.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = BD1F14791CF5CDA400E6B85F /* FreeFont.sf2 */; };
-		BDDD0B2C20F9132500AFB002 /* RolandNicePiano.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = BD1F147A1CF5CDA400E6B85F /* RolandNicePiano.sf2 */; };
-		BDE166AD2101DB690097E5C4 /* Performance.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE166AC2101DB690097E5C4 /* Performance.swift */; };
-		BDE166AF2101E1430097E5C4 /* Recording.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE166AE2101E1430097E5C4 /* Recording.swift */; };
-		BDFA66072102837000810712 /* Rando.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFA66062102837000810712 /* Rando.swift */; };
 		BDFA660921031FF800810712 /* RandoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFA660821031FF800810712 /* RandoTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -65,13 +60,6 @@
 			remoteGlobalIDString = B06746D519BF58F700DCF4E3;
 			remoteInfo = SynthInC;
 		};
-		BDDD0AE220F8BF2400AFB002 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B06746CE19BF58F700DCF4E3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BDDD0AD720F8BF2400AFB002;
-			remoteInfo = SwiftMIDI;
-		};
 		BDDD0AE420F8BF2400AFB002 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B06746CE19BF58F700DCF4E3 /* Project object */;
@@ -79,36 +67,15 @@
 			remoteGlobalIDString = B06746D519BF58F700DCF4E3;
 			remoteInfo = SynthInC;
 		};
-		BDDD0AEB20F8BF2400AFB002 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B06746CE19BF58F700DCF4E3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BDDD0AD720F8BF2400AFB002;
-			remoteInfo = SwiftMIDI;
-		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		BDDD0AF220F8BF2400AFB002 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				BDDD0AEE20F8BF2400AFB002 /* SwiftMIDI.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		B01161BE1B149C2A005A90F7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "Launch Screen.xib"; path = "../Launch Screen.xib"; sourceTree = "<group>"; };
+		B01161BE1B149C2A005A90F7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "Launch Screen.xib"; path = "UI/Launch Screen.xib"; sourceTree = "<group>"; };
 		B06746D619BF58F700DCF4E3 /* SynthInC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SynthInC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B06746DA19BF58F700DCF4E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B06746DB19BF58F700DCF4E3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B06746E019BF58F700DCF4E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		B06746E219BF58F700DCF4E3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = SynthInC/Images.xcassets; sourceTree = "<group>"; };
+		B06746E219BF58F700DCF4E3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		B06746E819BF58F700DCF4E3 /* SynthInC.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SynthInC.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B06746ED19BF58F700DCF4E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B06746EE19BF58F700DCF4E3 /* SynthInCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynthInCTests.swift; sourceTree = "<group>"; };
@@ -132,10 +99,10 @@
 		BD3E774D2107BBFE0051EEDC /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		BD3FB7B620E4FE35005CFBBF /* SessionsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionsListViewController.swift; sourceTree = "<group>"; };
 		BD3FB7B820E5004D005CFBBF /* SessionsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionsTableViewCell.swift; sourceTree = "<group>"; };
-		BD435E0B1D087844000ECC3C /* FluidR3_GM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FluidR3_GM.swift; path = SwiftMIDI/SoundFonts/FluidR3_GM.swift; sourceTree = SOURCE_ROOT; };
-		BD435E0C1D087844000ECC3C /* FreeFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FreeFont.swift; path = SwiftMIDI/SoundFonts/FreeFont.swift; sourceTree = SOURCE_ROOT; };
-		BD435E0D1D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "GeneralUser GS MuseScore v1.442.swift"; path = "SwiftMIDI/SoundFonts/GeneralUser GS MuseScore v1.442.swift"; sourceTree = SOURCE_ROOT; };
-		BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RolandNicePiano.swift; path = SwiftMIDI/SoundFonts/RolandNicePiano.swift; sourceTree = SOURCE_ROOT; };
+		BD435E0B1D087844000ECC3C /* FluidR3_GM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FluidR3_GM.swift; path = Resources/SoundFonts/FluidR3_GM.swift; sourceTree = SOURCE_ROOT; };
+		BD435E0C1D087844000ECC3C /* FreeFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FreeFont.swift; path = Resources/SoundFonts/FreeFont.swift; sourceTree = SOURCE_ROOT; };
+		BD435E0D1D087844000ECC3C /* GeneralUser GS MuseScore v1.442.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "GeneralUser GS MuseScore v1.442.swift"; path = "Resources/SoundFonts/GeneralUser GS MuseScore v1.442.swift"; sourceTree = SOURCE_ROOT; };
+		BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RolandNicePiano.swift; path = Resources/SoundFonts/RolandNicePiano.swift; sourceTree = SOURCE_ROOT; };
 		BD4DBD3C2111E917005DD658 /* InstrumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentTests.swift; sourceTree = "<group>"; };
 		BD4DBD3E21121162005DD658 /* AudioControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioControllerTests.swift; sourceTree = "<group>"; };
 		BD6B4FF9215D474D00BC1345 /* catalog.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = catalog.py; sourceTree = "<group>"; };
@@ -147,8 +114,6 @@
 		BDB0E35F210F24F5002492B5 /* CreateRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecording.swift; sourceTree = "<group>"; };
 		BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentEditorViewController.swift; sourceTree = "<group>"; };
 		BDD090211D1498F1005E03B6 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
-		BDDD0AD820F8BF2400AFB002 /* SwiftMIDI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		BDDD0ADA20F8BF2400AFB002 /* SwiftMIDI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftMIDI.h; sourceTree = "<group>"; };
 		BDDD0ADB20F8BF2400AFB002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BDDD0AE020F8BF2400AFB002 /* SwiftMIDITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftMIDITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDDD0AE720F8BF2400AFB002 /* NoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTests.swift; sourceTree = "<group>"; };
@@ -164,7 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDDD0AED20F8BF2400AFB002 /* SwiftMIDI.framework in Frameworks */,
+				BD2FFBA72B14C9E2007F17DC /* Foil in Frameworks */,
 				BDD090221D1498F1005E03B6 /* SpriteKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -176,18 +141,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BDDD0AD420F8BF2400AFB002 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		BDDD0ADD20F8BF2400AFB002 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BDDD0AE120F8BF2400AFB002 /* SwiftMIDI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,10 +155,9 @@
 			isa = PBXGroup;
 			children = (
 				B06746FE19BF673300DCF4E3 /* README.md */,
-				BDD8B4B91D0039C200CC8698 /* Resources */,
 				B06746D819BF58F700DCF4E3 /* Source */,
 				B06746EB19BF58F700DCF4E3 /* Tests */,
-				BDDD0AD920F8BF2400AFB002 /* SwiftMIDI */,
+				BDD8B4B91D0039C200CC8698 /* Resources */,
 				BDDD0AE620F8BF2400AFB002 /* SwiftMIDITests */,
 				BD1BD0371CF778BE00C804A4 /* Frameworks */,
 				B06746D719BF58F700DCF4E3 /* Products */,
@@ -213,7 +169,6 @@
 			children = (
 				B06746D619BF58F700DCF4E3 /* SynthInC.app */,
 				B06746E819BF58F700DCF4E3 /* SynthInC.xctest */,
-				BDDD0AD820F8BF2400AFB002 /* SwiftMIDI.framework */,
 				BDDD0AE020F8BF2400AFB002 /* SwiftMIDITests.xctest */,
 			);
 			name = Products;
@@ -223,6 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				B06746DB19BF58F700DCF4E3 /* AppDelegate.swift */,
+				BDDD0AD920F8BF2400AFB002 /* Audio */,
 				BDD8B4BA1D0039F700CC8698 /* Layouts */,
 				BD0757451D05FE8300595332 /* Controllers */,
 				BDAEC4211D11CE7C00201498 /* Views */,
@@ -326,10 +282,11 @@
 		BDD8B4B91D0039C200CC8698 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				BD4957261D1135A1000324ED /* SoundFonts */,
 				B06746E219BF58F700DCF4E3 /* Images.xcassets */,
 				BD1BD0451CFCAACE00C804A4 /* Settings.bundle */,
 			);
-			name = Resources;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		BDD8B4BA1D0039F700CC8698 /* Layouts */ = {
@@ -341,10 +298,9 @@
 			name = Layouts;
 			sourceTree = "<group>";
 		};
-		BDDD0AD920F8BF2400AFB002 /* SwiftMIDI */ = {
+		BDDD0AD920F8BF2400AFB002 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
-				BD4957261D1135A1000324ED /* SoundFonts */,
 				B06746F819BF591200DCF4E3 /* AudioController.swift */,
 				BD0757411D05FAD200595332 /* Instrument.swift */,
 				BD1F14761CF582A400E6B85F /* IsAudioError.swift */,
@@ -356,10 +312,9 @@
 				BDE166AE2101E1430097E5C4 /* Recording.swift */,
 				BD1F147E1CF5CF2900E6B85F /* SoundFont.swift */,
 				BD07573F1D05FA7D00595332 /* Utils.swift */,
-				BDDD0ADA20F8BF2400AFB002 /* SwiftMIDI.h */,
 				BDDD0ADB20F8BF2400AFB002 /* Info.plist */,
 			);
-			path = SwiftMIDI;
+			path = Audio;
 			sourceTree = "<group>";
 		};
 		BDDD0AE620F8BF2400AFB002 /* SwiftMIDITests */ = {
@@ -378,17 +333,6 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		BDDD0AD520F8BF2400AFB002 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BDDD0AEA20F8BF2400AFB002 /* SwiftMIDI.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
 		B06746D519BF58F700DCF4E3 /* SynthInC */ = {
 			isa = PBXNativeTarget;
@@ -397,14 +341,15 @@
 				B06746D219BF58F700DCF4E3 /* Sources */,
 				B06746D319BF58F700DCF4E3 /* Frameworks */,
 				B06746D419BF58F700DCF4E3 /* Resources */,
-				BDDD0AF220F8BF2400AFB002 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				BDDD0AEC20F8BF2400AFB002 /* PBXTargetDependency */,
 			);
 			name = SynthInC;
+			packageProductDependencies = (
+				BD2FFBA62B14C9E2007F17DC /* Foil */,
+			);
 			productName = SynthInC;
 			productReference = B06746D619BF58F700DCF4E3 /* SynthInC.app */;
 			productType = "com.apple.product-type.application";
@@ -427,24 +372,6 @@
 			productReference = B06746E819BF58F700DCF4E3 /* SynthInC.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		BDDD0AD720F8BF2400AFB002 /* SwiftMIDI */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BDDD0AEF20F8BF2400AFB002 /* Build configuration list for PBXNativeTarget "SwiftMIDI" */;
-			buildPhases = (
-				BDDD0AD320F8BF2400AFB002 /* Sources */,
-				BDDD0AD420F8BF2400AFB002 /* Frameworks */,
-				BDDD0AD520F8BF2400AFB002 /* Headers */,
-				BDDD0AD620F8BF2400AFB002 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SwiftMIDI;
-			productName = SwiftMIDI;
-			productReference = BDDD0AD820F8BF2400AFB002 /* SwiftMIDI.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		BDDD0ADF20F8BF2400AFB002 /* SwiftMIDITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BDDD0AF320F8BF2400AFB002 /* Build configuration list for PBXNativeTarget "SwiftMIDITests" */;
@@ -456,7 +383,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				BDDD0AE320F8BF2400AFB002 /* PBXTargetDependency */,
 				BDDD0AE520F8BF2400AFB002 /* PBXTargetDependency */,
 			);
 			name = SwiftMIDITests;
@@ -492,11 +418,6 @@
 						LastSwiftMigration = 1000;
 						TestTargetID = B06746D519BF58F700DCF4E3;
 					};
-					BDDD0AD720F8BF2400AFB002 = {
-						CreatedOnToolsVersion = 9.4.1;
-						LastSwiftMigration = 1000;
-						ProvisioningStyle = Automatic;
-					};
 					BDDD0ADF20F8BF2400AFB002 = {
 						CreatedOnToolsVersion = 9.4.1;
 						LastSwiftMigration = 1000;
@@ -514,13 +435,15 @@
 				Base,
 			);
 			mainGroup = B06746CD19BF58F700DCF4E3;
+			packageReferences = (
+				BD2FFBA52B14C9AF007F17DC /* XCRemoteSwiftPackageReference "Foil" */,
+			);
 			productRefGroup = B06746D719BF58F700DCF4E3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				B06746D519BF58F700DCF4E3 /* SynthInC */,
 				B06746E719BF58F700DCF4E3 /* SynthInCTests */,
-				BDDD0AD720F8BF2400AFB002 /* SwiftMIDI */,
 				BDDD0ADF20F8BF2400AFB002 /* SwiftMIDITests */,
 			);
 		};
@@ -531,8 +454,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD2FFBC62B150F32007F17DC /* GeneralUser GS MuseScore v1.442.sf2 in Resources */,
+				BD2FFBC32B150F32007F17DC /* FluidR3_GM.sf2 in Resources */,
 				B01161BF1B149C2A005A90F7 /* Launch Screen.xib in Resources */,
+				BD2FFBC42B150F32007F17DC /* RolandNicePiano.sf2 in Resources */,
 				B06746E119BF58F700DCF4E3 /* Main.storyboard in Resources */,
+				BD2FFBC52B150F32007F17DC /* FreeFont.sf2 in Resources */,
 				BD1BD0461CFCAACE00C804A4 /* Settings.bundle in Resources */,
 				B06746E319BF58F700DCF4E3 /* Images.xcassets in Resources */,
 			);
@@ -542,19 +469,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BDDD0AD620F8BF2400AFB002 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BDDD0B2920F9131D00AFB002 /* GeneralUser GS MuseScore v1.442.sf2 in Resources */,
-				BDDD0B2A20F9132500AFB002 /* FluidR3_GM.sf2 in Resources */,
-				BD6B4FFC215D474D00BC1345 /* FluidR3_GM.sh in Resources */,
-				BDDD0B2C20F9132500AFB002 /* RolandNicePiano.sf2 in Resources */,
-				BD6B4FFB215D474D00BC1345 /* catalog.py in Resources */,
-				BDDD0B2B20F9132500AFB002 /* FreeFont.sf2 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -572,17 +486,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD2FFBBD2B14D44D007F17DC /* AudioController.swift in Sources */,
 				BD0BBA301D0E2C42006F7F6A /* EnsembleViewController.swift in Sources */,
+				BD2FFBC22B14D632007F17DC /* GeneralUser GS MuseScore v1.442.swift in Sources */,
+				BD2FFBB82B14D44D007F17DC /* SoundFont.swift in Sources */,
 				BDB6C5A21CFD6C550095E9CA /* InstrumentEditorViewController.swift in Sources */,
+				BD2FFBB52B14D44D007F17DC /* Performance.swift in Sources */,
+				BD2FFBBC2B14D44D007F17DC /* Player.swift in Sources */,
 				BD2FFBA42B140ADB007F17DC /* CustomSlider.swift in Sources */,
+				BD2FFBC02B14D632007F17DC /* FluidR3_GM.swift in Sources */,
 				BD216F721D1374DC00436000 /* PhraseView.swift in Sources */,
+				BD2FFBB32B14D44D007F17DC /* Instrument.swift in Sources */,
+				BD2FFBBA2B14D44D007F17DC /* IsAudioError.swift in Sources */,
+				BD2FFBB42B14D44D007F17DC /* Note.swift in Sources */,
 				BD8433DF1D024BC800BD835C /* InstrumentCell.swift in Sources */,
 				BD0BBA321D0E3A68006F7F6A /* VolumeBarView.swift in Sources */,
+				BD2FFBB62B14D44D007F17DC /* Rando.swift in Sources */,
+				BD2FFBB92B14D44D007F17DC /* Utils.swift in Sources */,
+				BD2FFBB72B14D44D007F17DC /* Phrase.swift in Sources */,
+				BD2FFBC12B14D632007F17DC /* RolandNicePiano.swift in Sources */,
 				BD3FB7B720E4FE35005CFBBF /* SessionsListViewController.swift in Sources */,
+				BD2FFBBF2B14D632007F17DC /* FreeFont.swift in Sources */,
 				B06746DC19BF58F700DCF4E3 /* AppDelegate.swift in Sources */,
 				BDB0E360210F24F5002492B5 /* CreateRecording.swift in Sources */,
 				BD3FB7B920E5004D005CFBBF /* SessionsTableViewCell.swift in Sources */,
 				BD1F14851CF6445C00E6B85F /* Parameters.swift in Sources */,
+				BD2FFBBB2B14D44D007F17DC /* Recording.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -591,28 +520,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B06746EF19BF58F700DCF4E3 /* SynthInCTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BDDD0AD320F8BF2400AFB002 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BDDD0AF720F8BF9B00AFB002 /* Instrument.swift in Sources */,
-				BDDD0AF820F8BF9B00AFB002 /* AudioController.swift in Sources */,
-				BDDD0B2420F8C17B00AFB002 /* Utils.swift in Sources */,
-				BDDD0AFE20F8BFCF00AFB002 /* FluidR3_GM.swift in Sources */,
-				BDDD0AF920F8BF9B00AFB002 /* Phrase.swift in Sources */,
-				BDDD0AFF20F8BFCF00AFB002 /* FreeFont.swift in Sources */,
-				BDE166AD2101DB690097E5C4 /* Performance.swift in Sources */,
-				BDDD0B0020F8BFCF00AFB002 /* GeneralUser GS MuseScore v1.442.swift in Sources */,
-				BD7C336E20FFC88C0042B762 /* Note.swift in Sources */,
-				BDDD0B0120F8BFCF00AFB002 /* RolandNicePiano.swift in Sources */,
-				BDDD0AF620F8BF9B00AFB002 /* SoundFont.swift in Sources */,
-				BDDD0B2620F8C1BC00AFB002 /* IsAudioError.swift in Sources */,
-				BDFA66072102837000810712 /* Rando.swift in Sources */,
-				BD3E774E2107BBFE0051EEDC /* Player.swift in Sources */,
-				BDE166AF2101E1430097E5C4 /* Recording.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -637,20 +544,10 @@
 			target = B06746D519BF58F700DCF4E3 /* SynthInC */;
 			targetProxy = BDD8B4BB1D003BEC00CC8698 /* PBXContainerItemProxy */;
 		};
-		BDDD0AE320F8BF2400AFB002 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BDDD0AD720F8BF2400AFB002 /* SwiftMIDI */;
-			targetProxy = BDDD0AE220F8BF2400AFB002 /* PBXContainerItemProxy */;
-		};
 		BDDD0AE520F8BF2400AFB002 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B06746D519BF58F700DCF4E3 /* SynthInC */;
 			targetProxy = BDDD0AE420F8BF2400AFB002 /* PBXContainerItemProxy */;
-		};
-		BDDD0AEC20F8BF2400AFB002 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BDDD0AD720F8BF2400AFB002 /* SwiftMIDI */;
-			targetProxy = BDDD0AEB20F8BF2400AFB002 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -661,6 +558,7 @@
 				B06746E019BF58F700DCF4E3 /* Base */,
 			);
 			name = Main.storyboard;
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -770,8 +668,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -782,15 +681,18 @@
 		B06746F319BF58F700DCF4E3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				INFOPLIST_FILE = SynthInC/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				INFOPLIST_KEY_CFBundleDisplayName = SynthInC;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.brhcode.SynthInC;
 				PRODUCT_NAME = SynthInC;
 				PROVISIONING_PROFILE = "";
@@ -803,15 +705,18 @@
 		B06746F419BF58F700DCF4E3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = UP6SS5ES7E;
 				INFOPLIST_FILE = SynthInC/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				INFOPLIST_KEY_CFBundleDisplayName = SynthInC;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.brhcode.SynthInC;
 				PRODUCT_NAME = SynthInC;
 				PROVISIONING_PROFILE = "";
@@ -834,7 +739,11 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SynthInCTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.rockhoppertech.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SynthInC;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
@@ -853,7 +762,11 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SynthInCTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.rockhoppertech.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SynthInC;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
@@ -862,82 +775,9 @@
 			};
 			name = Release;
 		};
-		BDDD0AF020F8BF2400AFB002 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SwiftMIDI/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.braysoft.SwiftMIDI;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		BDDD0AF120F8BF2400AFB002 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SwiftMIDI/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.braysoft.SwiftMIDI;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 		BDDD0AF420F8BF2400AFB002 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -951,7 +791,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SwiftMIDITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.braysoft.SwiftMIDITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -964,7 +808,6 @@
 		BDDD0AF520F8BF2400AFB002 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -979,7 +822,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SwiftMIDITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.braysoft.SwiftMIDITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
@@ -1018,15 +865,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BDDD0AEF20F8BF2400AFB002 /* Build configuration list for PBXNativeTarget "SwiftMIDI" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BDDD0AF020F8BF2400AFB002 /* Debug */,
-				BDDD0AF120F8BF2400AFB002 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		BDDD0AF320F8BF2400AFB002 /* Build configuration list for PBXNativeTarget "SwiftMIDITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1037,6 +875,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BD2FFBA52B14C9AF007F17DC /* XCRemoteSwiftPackageReference "Foil" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jessesquires/Foil";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BD2FFBA62B14C9E2007F17DC /* Foil */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BD2FFBA52B14C9AF007F17DC /* XCRemoteSwiftPackageReference "Foil" */;
+			productName = Foil;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B06746CE19BF58F700DCF4E3 /* Project object */;
 }

@@ -2,7 +2,6 @@
 
 import AVFoundation
 import UIKit
-import SwiftMIDI
 
 /// Graphical depiction of what phrases have been played by an instrument.
 final class PhraseView : UIView {
