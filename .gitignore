@@ -69,4 +69,4 @@ fastlane/test_output
 .~/
 
 # Ignore the *big* Fluid soundfont file
-FluidR3_GM.sf2
+Resources/SoundFonts/FluidR3_GM.sf2

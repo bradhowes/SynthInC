@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,7 +11,6 @@
 		B06746DC19BF58F700DCF4E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06746DB19BF58F700DCF4E3 /* AppDelegate.swift */; };
 		B06746E119BF58F700DCF4E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B06746DF19BF58F700DCF4E3 /* Main.storyboard */; };
 		B06746E319BF58F700DCF4E3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B06746E219BF58F700DCF4E3 /* Images.xcassets */; };
-		B06746EF19BF58F700DCF4E3 /* SynthInCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06746EE19BF58F700DCF4E3 /* SynthInCTests.swift */; };
 		BD0BBA301D0E2C42006F7F6A /* EnsembleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0BBA2F1D0E2C42006F7F6A /* EnsembleViewController.swift */; };
 		BD0BBA321D0E3A68006F7F6A /* VolumeBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0BBA311D0E3A68006F7F6A /* VolumeBarView.swift */; };
 		BD1BD0461CFCAACE00C804A4 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BD1BD0451CFCAACE00C804A4 /* Settings.bundle */; };
@@ -40,27 +39,21 @@
 		BD2FFBC62B150F32007F17DC /* GeneralUser GS MuseScore v1.442.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = BD1F14721CF4E98000E6B85F /* GeneralUser GS MuseScore v1.442.sf2 */; };
 		BD3FB7B720E4FE35005CFBBF /* SessionsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3FB7B620E4FE35005CFBBF /* SessionsListViewController.swift */; };
 		BD3FB7B920E5004D005CFBBF /* SessionsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD3FB7B820E5004D005CFBBF /* SessionsTableViewCell.swift */; };
-		BD4DBD3D2111E917005DD658 /* InstrumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4DBD3C2111E917005DD658 /* InstrumentTests.swift */; };
-		BD4DBD3F21121162005DD658 /* AudioControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4DBD3E21121162005DD658 /* AudioControllerTests.swift */; };
-		BD7C336C20FFBA960042B762 /* SoundFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7C336B20FFBA960042B762 /* SoundFontTests.swift */; };
-		BD7C337020FFD9B40042B762 /* PhraseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7C336F20FFD9B40042B762 /* PhraseTests.swift */; };
+		BD7F284A2B1540460096761B /* SynthInCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7F28492B1540460096761B /* SynthInCTests.swift */; };
+		BD7F28502B15405C0096761B /* PhraseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7C336F20FFD9B40042B762 /* PhraseTests.swift */; };
+		BD7F28512B15405C0096761B /* SoundFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7C336B20FFBA960042B762 /* SoundFontTests.swift */; };
+		BD7F28532B15405C0096761B /* RandoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFA660821031FF800810712 /* RandoTests.swift */; };
+		BD7F28542B15405C0096761B /* AudioControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4DBD3E21121162005DD658 /* AudioControllerTests.swift */; };
+		BD7F28552B15405C0096761B /* NoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDD0AE720F8BF2400AFB002 /* NoteTests.swift */; };
+		BD7F28562B15405C0096761B /* InstrumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4DBD3C2111E917005DD658 /* InstrumentTests.swift */; };
 		BD8433DF1D024BC800BD835C /* InstrumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD8433DE1D024BC800BD835C /* InstrumentCell.swift */; };
 		BDB0E360210F24F5002492B5 /* CreateRecording.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB0E35F210F24F5002492B5 /* CreateRecording.swift */; };
 		BDB6C5A21CFD6C550095E9CA /* InstrumentEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */; };
 		BDD090221D1498F1005E03B6 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDD090211D1498F1005E03B6 /* SpriteKit.framework */; };
-		BDDD0AE820F8BF2400AFB002 /* NoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDD0AE720F8BF2400AFB002 /* NoteTests.swift */; };
-		BDFA660921031FF800810712 /* RandoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDFA660821031FF800810712 /* RandoTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		BDD8B4BB1D003BEC00CC8698 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B06746CE19BF58F700DCF4E3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B06746D519BF58F700DCF4E3;
-			remoteInfo = SynthInC;
-		};
-		BDDD0AE420F8BF2400AFB002 /* PBXContainerItemProxy */ = {
+		BD7F284B2B1540460096761B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B06746CE19BF58F700DCF4E3 /* Project object */;
 			proxyType = 1;
@@ -76,9 +69,6 @@
 		B06746DB19BF58F700DCF4E3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B06746E019BF58F700DCF4E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B06746E219BF58F700DCF4E3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		B06746E819BF58F700DCF4E3 /* SynthInC.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SynthInC.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B06746ED19BF58F700DCF4E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B06746EE19BF58F700DCF4E3 /* SynthInCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynthInCTests.swift; sourceTree = "<group>"; };
 		B06746F819BF591200DCF4E3 /* AudioController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
 		B06746FE19BF673300DCF4E3 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BD07573F1D05FA7D00595332 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
@@ -110,14 +100,14 @@
 		BD7C336B20FFBA960042B762 /* SoundFontTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundFontTests.swift; sourceTree = "<group>"; };
 		BD7C336D20FFC88C0042B762 /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		BD7C336F20FFD9B40042B762 /* PhraseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhraseTests.swift; sourceTree = "<group>"; };
+		BD7F28472B1540460096761B /* SynthInCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SynthInCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD7F28492B1540460096761B /* SynthInCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynthInCTests.swift; sourceTree = "<group>"; };
+		BD7F28572B1542290096761B /* SynthInCTests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SynthInCTests; sourceTree = "<group>"; };
 		BD8433DE1D024BC800BD835C /* InstrumentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentCell.swift; sourceTree = "<group>"; };
 		BDB0E35F210F24F5002492B5 /* CreateRecording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateRecording.swift; sourceTree = "<group>"; };
 		BDB6C5A11CFD6C550095E9CA /* InstrumentEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentEditorViewController.swift; sourceTree = "<group>"; };
 		BDD090211D1498F1005E03B6 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
-		BDDD0ADB20F8BF2400AFB002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BDDD0AE020F8BF2400AFB002 /* SwiftMIDITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftMIDITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDDD0AE720F8BF2400AFB002 /* NoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTests.swift; sourceTree = "<group>"; };
-		BDDD0AE920F8BF2400AFB002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BDE166AC2101DB690097E5C4 /* Performance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Performance.swift; sourceTree = "<group>"; };
 		BDE166AE2101E1430097E5C4 /* Recording.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Recording.swift; sourceTree = "<group>"; };
 		BDFA66062102837000810712 /* Rando.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rando.swift; sourceTree = "<group>"; };
@@ -134,14 +124,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B06746E519BF58F700DCF4E3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BDDD0ADD20F8BF2400AFB002 /* Frameworks */ = {
+		BD7F28442B1540460096761B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -154,11 +137,11 @@
 		B06746CD19BF58F700DCF4E3 = {
 			isa = PBXGroup;
 			children = (
+				BD7F28572B1542290096761B /* SynthInCTests */,
 				B06746FE19BF673300DCF4E3 /* README.md */,
 				B06746D819BF58F700DCF4E3 /* Source */,
-				B06746EB19BF58F700DCF4E3 /* Tests */,
 				BDD8B4B91D0039C200CC8698 /* Resources */,
-				BDDD0AE620F8BF2400AFB002 /* SwiftMIDITests */,
+				BD7F28482B1540460096761B /* SynthInCTests */,
 				BD1BD0371CF778BE00C804A4 /* Frameworks */,
 				B06746D719BF58F700DCF4E3 /* Products */,
 			);
@@ -168,8 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				B06746D619BF58F700DCF4E3 /* SynthInC.app */,
-				B06746E819BF58F700DCF4E3 /* SynthInC.xctest */,
-				BDDD0AE020F8BF2400AFB002 /* SwiftMIDITests.xctest */,
+				BD7F28472B1540460096761B /* SynthInCTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -194,24 +176,6 @@
 			isa = PBXGroup;
 			children = (
 				B06746DA19BF58F700DCF4E3 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		B06746EB19BF58F700DCF4E3 /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				B06746EE19BF58F700DCF4E3 /* SynthInCTests.swift */,
-				B06746EC19BF58F700DCF4E3 /* Supporting Files */,
-			);
-			name = Tests;
-			path = SynthInCTests;
-			sourceTree = "<group>";
-		};
-		B06746EC19BF58F700DCF4E3 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				B06746ED19BF58F700DCF4E3 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -257,6 +221,20 @@
 				BD435E0E1D087844000ECC3C /* RolandNicePiano.swift */,
 			);
 			path = SoundFonts;
+			sourceTree = "<group>";
+		};
+		BD7F28482B1540460096761B /* SynthInCTests */ = {
+			isa = PBXGroup;
+			children = (
+				BD4DBD3E21121162005DD658 /* AudioControllerTests.swift */,
+				BD4DBD3C2111E917005DD658 /* InstrumentTests.swift */,
+				BDDD0AE720F8BF2400AFB002 /* NoteTests.swift */,
+				BD7C336F20FFD9B40042B762 /* PhraseTests.swift */,
+				BDFA660821031FF800810712 /* RandoTests.swift */,
+				BD7C336B20FFBA960042B762 /* SoundFontTests.swift */,
+				BD7F28492B1540460096761B /* SynthInCTests.swift */,
+			);
+			path = SynthInCTests;
 			sourceTree = "<group>";
 		};
 		BDAEC4211D11CE7C00201498 /* Views */ = {
@@ -312,23 +290,8 @@
 				BDE166AE2101E1430097E5C4 /* Recording.swift */,
 				BD1F147E1CF5CF2900E6B85F /* SoundFont.swift */,
 				BD07573F1D05FA7D00595332 /* Utils.swift */,
-				BDDD0ADB20F8BF2400AFB002 /* Info.plist */,
 			);
 			path = Audio;
-			sourceTree = "<group>";
-		};
-		BDDD0AE620F8BF2400AFB002 /* SwiftMIDITests */ = {
-			isa = PBXGroup;
-			children = (
-				BD4DBD3E21121162005DD658 /* AudioControllerTests.swift */,
-				BD4DBD3C2111E917005DD658 /* InstrumentTests.swift */,
-				BDDD0AE720F8BF2400AFB002 /* NoteTests.swift */,
-				BD7C336F20FFD9B40042B762 /* PhraseTests.swift */,
-				BDFA660821031FF800810712 /* RandoTests.swift */,
-				BD7C336B20FFBA960042B762 /* SoundFontTests.swift */,
-				BDDD0AE920F8BF2400AFB002 /* Info.plist */,
-			);
-			path = SwiftMIDITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -354,40 +317,22 @@
 			productReference = B06746D619BF58F700DCF4E3 /* SynthInC.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B06746E719BF58F700DCF4E3 /* SynthInCTests */ = {
+		BD7F28462B1540460096761B /* SynthInCTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B06746F519BF58F700DCF4E3 /* Build configuration list for PBXNativeTarget "SynthInCTests" */;
+			buildConfigurationList = BD7F284D2B1540460096761B /* Build configuration list for PBXNativeTarget "SynthInCTests" */;
 			buildPhases = (
-				B06746E419BF58F700DCF4E3 /* Sources */,
-				B06746E519BF58F700DCF4E3 /* Frameworks */,
-				B06746E619BF58F700DCF4E3 /* Resources */,
+				BD7F28432B1540460096761B /* Sources */,
+				BD7F28442B1540460096761B /* Frameworks */,
+				BD7F28452B1540460096761B /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				B06746EA19BF58F700DCF4E3 /* PBXTargetDependency */,
+				BD7F284C2B1540460096761B /* PBXTargetDependency */,
 			);
 			name = SynthInCTests;
 			productName = SynthInCTests;
-			productReference = B06746E819BF58F700DCF4E3 /* SynthInC.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		BDDD0ADF20F8BF2400AFB002 /* SwiftMIDITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BDDD0AF320F8BF2400AFB002 /* Build configuration list for PBXNativeTarget "SwiftMIDITests" */;
-			buildPhases = (
-				BDDD0ADC20F8BF2400AFB002 /* Sources */,
-				BDDD0ADD20F8BF2400AFB002 /* Frameworks */,
-				BDDD0ADE20F8BF2400AFB002 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				BDDD0AE520F8BF2400AFB002 /* PBXTargetDependency */,
-			);
-			name = SwiftMIDITests;
-			productName = SwiftMIDITests;
-			productReference = BDDD0AE020F8BF2400AFB002 /* SwiftMIDITests.xctest */;
+			productReference = BD7F28472B1540460096761B /* SynthInCTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -397,13 +342,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0940;
+				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1320;
 				ORGANIZATIONNAME = "Brad Howes";
 				TargetAttributes = {
 					B06746D519BF58F700DCF4E3 = {
 						CreatedOnToolsVersion = 6.0;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = "";
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -413,21 +358,14 @@
 							};
 						};
 					};
-					B06746E719BF58F700DCF4E3 = {
-						CreatedOnToolsVersion = 6.0;
-						LastSwiftMigration = 1000;
-						TestTargetID = B06746D519BF58F700DCF4E3;
-					};
-					BDDD0ADF20F8BF2400AFB002 = {
-						CreatedOnToolsVersion = 9.4.1;
-						LastSwiftMigration = 1000;
-						ProvisioningStyle = Automatic;
+					BD7F28462B1540460096761B = {
+						CreatedOnToolsVersion = 15.0.1;
 						TestTargetID = B06746D519BF58F700DCF4E3;
 					};
 				};
 			};
 			buildConfigurationList = B06746D119BF58F700DCF4E3 /* Build configuration list for PBXProject "SynthInC" */;
-			compatibilityVersion = "Xcode 8.0";
+			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -443,8 +381,7 @@
 			projectRoot = "";
 			targets = (
 				B06746D519BF58F700DCF4E3 /* SynthInC */,
-				B06746E719BF58F700DCF4E3 /* SynthInCTests */,
-				BDDD0ADF20F8BF2400AFB002 /* SwiftMIDITests */,
+				BD7F28462B1540460096761B /* SynthInCTests */,
 			);
 		};
 /* End PBXProject section */
@@ -465,14 +402,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B06746E619BF58F700DCF4E3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BDDD0ADE20F8BF2400AFB002 /* Resources */ = {
+		BD7F28452B1540460096761B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -515,39 +445,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B06746E419BF58F700DCF4E3 /* Sources */ = {
+		BD7F28432B1540460096761B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B06746EF19BF58F700DCF4E3 /* SynthInCTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BDDD0ADC20F8BF2400AFB002 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BD7C336C20FFBA960042B762 /* SoundFontTests.swift in Sources */,
-				BD7C337020FFD9B40042B762 /* PhraseTests.swift in Sources */,
-				BD4DBD3F21121162005DD658 /* AudioControllerTests.swift in Sources */,
-				BDFA660921031FF800810712 /* RandoTests.swift in Sources */,
-				BDDD0AE820F8BF2400AFB002 /* NoteTests.swift in Sources */,
-				BD4DBD3D2111E917005DD658 /* InstrumentTests.swift in Sources */,
+				BD7F28502B15405C0096761B /* PhraseTests.swift in Sources */,
+				BD7F28532B15405C0096761B /* RandoTests.swift in Sources */,
+				BD7F28542B15405C0096761B /* AudioControllerTests.swift in Sources */,
+				BD7F28562B15405C0096761B /* InstrumentTests.swift in Sources */,
+				BD7F284A2B1540460096761B /* SynthInCTests.swift in Sources */,
+				BD7F28552B15405C0096761B /* NoteTests.swift in Sources */,
+				BD7F28512B15405C0096761B /* SoundFontTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		B06746EA19BF58F700DCF4E3 /* PBXTargetDependency */ = {
+		BD7F284C2B1540460096761B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B06746D519BF58F700DCF4E3 /* SynthInC */;
-			targetProxy = BDD8B4BB1D003BEC00CC8698 /* PBXContainerItemProxy */;
-		};
-		BDDD0AE520F8BF2400AFB002 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B06746D519BF58F700DCF4E3 /* SynthInC */;
-			targetProxy = BDDD0AE420F8BF2400AFB002 /* PBXContainerItemProxy */;
+			targetProxy = BD7F284B2B1540460096761B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -725,113 +643,66 @@
 			};
 			name = Release;
 		};
-		B06746F619BF58F700DCF4E3 /* Debug */ = {
+		BD7F284E2B1540460096761B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = SynthInCTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.rockhoppertech.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = SynthInC;
-				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.2;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SynthInC.app/SynthInC";
-			};
-			name = Debug;
-		};
-		B06746F719BF58F700DCF4E3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = UP6SS5ES7E;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = SynthInCTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.rockhoppertech.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = SynthInC;
-				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.2;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SynthInC.app/SynthInC";
-			};
-			name = Release;
-		};
-		BDDD0AF420F8BF2400AFB002 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = UP6SS5ES7E;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SwiftMIDITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.braysoft.SwiftMIDITests;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.braysoftware.SynthInCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 4.2;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SynthInC.app/SynthInC";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SynthInC.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SynthInC";
 			};
 			name = Debug;
 		};
-		BDDD0AF520F8BF2400AFB002 /* Release */ = {
+		BD7F284F2B1540460096761B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = UP6SS5ES7E;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SwiftMIDITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.braysoft.SwiftMIDITests;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.braysoftware.SynthInCTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SynthInC.app/SynthInC";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SynthInC.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SynthInC";
 			};
 			name = Release;
 		};
@@ -856,20 +727,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B06746F519BF58F700DCF4E3 /* Build configuration list for PBXNativeTarget "SynthInCTests" */ = {
+		BD7F284D2B1540460096761B /* Build configuration list for PBXNativeTarget "SynthInCTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B06746F619BF58F700DCF4E3 /* Debug */,
-				B06746F719BF58F700DCF4E3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		BDDD0AF320F8BF2400AFB002 /* Build configuration list for PBXNativeTarget "SwiftMIDITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BDDD0AF420F8BF2400AFB002 /* Debug */,
-				BDDD0AF520F8BF2400AFB002 /* Release */,
+				BD7F284E2B1540460096761B /* Debug */,
+				BD7F284F2B1540460096761B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
