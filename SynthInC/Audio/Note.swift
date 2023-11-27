@@ -1,6 +1,7 @@
 // Copyright © 2016 Brad Howes. All rights reserved.
 
 import AVFoundation
+import Foundation
 
 /**
  Generate a textual representation of a MIDI note. For instance, MIDI note 60 is "C4" and 73 is "C#5"

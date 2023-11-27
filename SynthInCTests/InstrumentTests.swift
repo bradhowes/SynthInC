@@ -10,6 +10,7 @@ import XCTest
 import AVFoundation
 @testable import SynthInC
 
+@MainActor
 class InstrumentTests: XCTestCase {
 
     var audioController: AudioController?
