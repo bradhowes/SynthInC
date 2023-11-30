@@ -13,76 +13,73 @@ import AVFoundation
 @MainActor
 class AudioControllerTests: XCTestCase {
 
-    var audioController: AudioController?
+  var audioController: AudioController?
 
-    override func setUp() {
-        super.setUp()
- 
-        audioController = AudioController()
-//
-//        let exp = expectation(description: "\(#function)\(#line)")
-//        audioController?.createEnsemble(ensembleSize: 1, instrumentDoneCallback: { index in }) {
-//            exp.fulfill()
-//        }
-//
-//        waitForExpectations(timeout: 40, handler: nil)
+  override func setUp() {
+    super.setUp()
+    audioController = AudioController()
+  }
+
+  override func tearDown() {
+    super.tearDown()
+    audioController = nil
+  }
+
+  func testCreateEnsemble() {
+    let instrumentDone = expectation(description: "instrumentDone")
+    instrumentDone.expectedFulfillmentCount = 2
+    let finished = expectation(description: "finished")
+    var obsToken1: NSObjectProtocol! = nil
+    obsToken1 = NotificationCenter.default.addObserver(forName: .ensembleReady, object: nil, queue: nil) { _ in
+      finished.fulfill()
     }
 
-    override func tearDown() {
-        super.tearDown()
-        audioController = nil
+    var obsToken2: NSObjectProtocol! = nil
+    obsToken2 = NotificationCenter.default.addObserver(forName: .instrumentReady, object: nil, queue: nil) { _ in
+      instrumentDone.fulfill()
     }
 
-    func testCreateEnsemble() {
-        
-        let instrumentDone = expectation(description: "instrumentDone")
-        let finished = expectation(description: "finished")
-        audioController?.createEnsemble(ensembleSize: 1, instrumentDoneCallback: { index in
-            XCTAssertEqual(index, 0)
-            instrumentDone.fulfill()
-        }) { done in
-            XCTAssertTrue(done)
-            finished.fulfill()
-        }
+    audioController?.createEnsemble(ensembleSize: 2)
+    waitForExpectations(timeout: 40, handler: nil)
 
-        waitForExpectations(timeout: 40, handler: nil)
+    NotificationCenter.default.removeObserver(obsToken1!)
+    NotificationCenter.default.removeObserver(obsToken2!)
+  }
+
+  func testRestoreEnsemble() {
+    let finished1 = expectation(description: "finished1")
+    var obsToken1: NSObjectProtocol? = nil
+    obsToken1 = NotificationCenter.default.addObserver(forName: .ensembleReady, object: nil, queue: nil) { _ in
+      finished1.fulfill()
     }
-    
-    func testRestoreEnsemble() {
-        let finished1 = expectation(description: "finished1")
-        audioController?.createEnsemble(ensembleSize: 2, instrumentDoneCallback: { index in
-        }) { done in
-            XCTAssertTrue(done)
-            finished1.fulfill()
-        }
+    audioController?.createEnsemble(ensembleSize: 2)
+    wait(for: [finished1], timeout: 10)
+    NotificationCenter.default.removeObserver(obsToken1!)
 
-        waitForExpectations(timeout: 40, handler: nil)
-
-        var instrument = audioController!.ensemble[0]
-        let oldPatch = instrument.patch
-        let newPatch = SoundFont.library[SoundFont.keys[0]]!.patches[10]
-        XCTAssertFalse(oldPatch === newPatch)
-
-        instrument.patch = newPatch
-
-        let data = audioController!.encodeEnsemble()
-        XCTAssertNotNil(data)
-
-        instrument.patch = oldPatch
-
-        let finished2 = expectation(description: "finished2")
-
-        audioController?.restoreEnsemble(data: data, instrumentDoneCallback: { index in
-        }) { done in
-            XCTAssertTrue(done)
-            finished2.fulfill()
-        }
-
-        waitForExpectations(timeout: 40, handler: nil)
-
-        XCTAssertEqual(audioController!.ensemble.count, 2)
-
-        instrument = audioController!.ensemble[0]
-        XCTAssertTrue(instrument.patch === newPatch)
+    let finished2 = expectation(description: "finished2")
+    var obsToken2: NSObjectProtocol? = nil
+    obsToken2 = NotificationCenter.default.addObserver(forName: .ensembleReady, object: nil, queue: nil) { _ in
+      finished2.fulfill()
     }
+
+    var instrument = audioController!.ensemble[0]
+    let oldPatch = instrument.patch
+    let newPatch = SoundFont.library[SoundFont.keys[0]]!.patches[10]
+    XCTAssertFalse(oldPatch === newPatch)
+
+    instrument.patch = newPatch
+    let data = audioController!.encodeEnsemble()
+    XCTAssertNotNil(data)
+
+    instrument.patch = oldPatch
+
+    audioController?.restoreEnsemble(data: data)
+
+    wait(for: [finished2], timeout: 40)
+    NotificationCenter.default.removeObserver(obsToken2!)
+
+    XCTAssertEqual(audioController!.ensemble.count, 2)
+    instrument = audioController!.ensemble[0]
+    XCTAssertTrue(instrument.patch === newPatch)
+  }
 }

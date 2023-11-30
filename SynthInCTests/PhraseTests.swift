@@ -26,7 +26,7 @@ class PhraseTests: XCTestCase {
         XCTAssertEqual(MusicSequenceNewTrack(musicSequence!, &musicTrack), 0)
         
         let c1 = 0.0
-        let c2 = phrase.record(clock: c1) { $1.addToTrack(musicTrack!, clock: $0) }
+        let c2 = phrase.advance(clock: c1) { $1.addToTrack(musicTrack!, clock: $0) }
         XCTAssertEqual(c2, c1 + phrase.duration)
     }
 }

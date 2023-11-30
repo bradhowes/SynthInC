@@ -13,7 +13,7 @@ protocol Rando {
   func pick(from range: Range<Int>) -> Int
 }
 
-final class RandomSources : Rando {
+struct RandomSources : Rando {
   private let config: Config
   private let randomSource: GKARC4RandomSource
   private let d100: GKRandomDistribution
@@ -39,11 +39,7 @@ final class RandomSources : Rando {
     }
   }
 
-  convenience init() {
-    self.init(config: Config())
-  }
-
-  init(config: Config) {
+  init(config: Config = Config()) {
     self.config = config
     if config.seed > 0 {
       var randomSeed = config.seed
@@ -68,7 +64,7 @@ final class RandomSources : Rando {
   }
 
   func phraseRepetitions(phraseIndex: Int) -> Int {
-    Int((MusicTimeStamp(phraseDurationGen.nextInt()) / ScorePhrases[phraseIndex].duration).rounded(.up))
+    Int((MusicTimeStamp(phraseDurationGen.nextInt()) / Score.phrases[phraseIndex].duration).rounded(.up))
   }
 
   func noteOnSlop() -> MusicTimeStamp {

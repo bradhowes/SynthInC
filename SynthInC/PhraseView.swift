@@ -20,11 +20,11 @@ final class PhraseView : UIView {
       return nextValue
     }()
 
-    return ScorePhrases.map { ($0, UIColor(hue: hueGenerator(), saturation: phraseColorSaturation, 
-                                           brightness: phraseColorBrightness, alpha: phraseColorAlpha).cgColor).1 }
+    return Score.phrases.map { ($0, UIColor(hue: hueGenerator(), saturation: phraseColorSaturation,
+                                            brightness: phraseColorBrightness, alpha: phraseColorAlpha).cgColor).1 }
   }()
 
-  weak var part: Part! = nil
+  var part: Part! = nil
   var normalizedCurrentPosition: CGFloat = 0.0
 
   /**

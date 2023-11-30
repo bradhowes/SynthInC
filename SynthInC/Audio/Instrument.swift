@@ -116,15 +116,16 @@ extension Instrument {
     return true
   }
 
-  func configureSampler(callback: @escaping InstrumentDoneCallback) {
+  func configureSampler() {
     ready = true
     applyOctave()
     applyVolume()
     applyPan()
     applyMuted()
     applyPatch()
-    let index = self.index
-    DispatchQueue.global(qos: .utility).async { callback(index) }
+
+    let userInfo: [String: Any] = ["index": index, "success": true]
+    NotificationCenter.default.post(name: .instrumentReady, object: nil, userInfo: userInfo)
   }
 
   /**

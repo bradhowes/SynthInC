@@ -17,35 +17,8 @@ final class EnsembleViewController: UIViewController {
 
   var audioController: AudioController = AudioController()
 
-  var performance: Performance? {
-    didSet {
-      self.recording = nil
-      self.ensemble.reloadData()
-      guard let p = self.performance else { return }
-      DispatchQueue.global(qos: .utility).async {
-        self.recording = Recording(performance: p, rando: self.rando)
-      }
-    }
-  }
-
-  var recording: Recording? {
-    didSet {
-      guard let r = recording else {
-        DispatchQueue.main.async {
-          self.applyPlaybackPosition()
-        }
-        return
-      }
-
-      DispatchQueue.global(qos: .utility).async {
-        _ = r.activate(audioController: self.audioController)
-        self.player.load(recording: r)
-        DispatchQueue.main.async {
-          self.applyPlaybackPosition()
-        }
-      }
-    }
-  }
+  var performance: Performance?
+  var recording: Recording?
 
   var ensembleCount: Int { return performance?.parts.count ?? 0 }
   var loadedCount: Int = 0
@@ -88,6 +61,11 @@ final class EnsembleViewController: UIViewController {
    */
   override func viewDidLoad() {
 
+    NotificationCenter.default.addObserver(self, selector: #selector(ensembleReady), name: .ensembleReady,
+                                           object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(instrumentReady), name: .instrumentReady,
+                                           object: nil)
+
     loadingStackView.isHidden = false
     loadingProgressBar.progress = 0.0
     loadedCount = 0
@@ -104,18 +82,57 @@ final class EnsembleViewController: UIViewController {
 
     if !UIApplication.beingTested {
       if let config = Parameters.ensemble {
-        audioController.restoreEnsemble(data: config, 
-                                        instrumentDoneCallback: self.instrumentIsReady,
-                                        finishedCallback: ensembleIsReady)
+        audioController.restoreEnsemble(data: config)
       }
       else {
-        audioController.createEnsemble(ensembleSize: 8, 
-                                       instrumentDoneCallback:  self.instrumentIsReady,
-                                       finishedCallback: ensembleIsReady)
+        audioController.createEnsemble(ensembleSize: 8)
       }
     }
 
     super.viewDidLoad()
+  }
+
+  @objc func ensembleReady(notification: NSNotification) {
+    Parameters.ensemble = audioController.encodeEnsemble()
+
+    let performance: Performance
+    if let data = Parameters.performance,
+       let p = Performance(data: data) {
+      performance = p
+    } else {
+      performance = Performance(perfGen: BasicPerformanceGenerator(ensembleSize: self.audioController.ensemble.count,
+                                                                   rando: self.rando))
+      Parameters.performance = performance.encodePerformance()
+    }
+
+    guard let recording = Recording(performance: performance, rando: self.rando) else { return }
+    _ = recording.activate(audioController: self.audioController)
+
+    DispatchQueue.main.async {
+      self.loadingStackView.isHidden = true
+      self.performance = performance
+      self.recording = recording
+      self.ensemble.reloadData()
+      self.applyPlaybackPosition()
+      self.player.load(recording: recording)
+      self.applyPlaybackPosition()
+    }
+  }
+
+  @objc func instrumentReady(notification: NSNotification) {
+    loadedCount += 1
+    DispatchQueue.main.async {
+      self.loadingProgressBar.progress = Float(self.loadedCount) / Float(self.audioController.ensemble.count)
+      print("progress:", self.loadedCount, self.loadingProgressBar.progress)
+    }
+
+    let allReady = audioController.ensemble.filter({ !$0.ready }).isEmpty
+    if allReady {
+      DispatchQueue.main.async {
+        self.playbackReady = true
+        self.applyPlaybackPosition()
+      }
+    }
   }
 
   fileprivate func ensembleIsReady(_ successful: Bool) {
@@ -128,19 +145,26 @@ final class EnsembleViewController: UIViewController {
     guard successful else { return }
     Parameters.ensemble = audioController.encodeEnsemble()
 
-    var performance: Performance? = nil
-    if let data = Parameters.performance {
-      performance = Performance(data: data)
-    }
-
-    if performance == nil {
+    let performance: Performance
+    if let data = Parameters.performance,
+       let p = Performance(data: data) {
+      performance = p
+    } else {
       performance = Performance(perfGen: BasicPerformanceGenerator(ensembleSize: self.audioController.ensemble.count,
                                                                    rando: self.rando))
-      Parameters.performance = performance!.encodePerformance()
+      Parameters.performance = performance.encodePerformance()
     }
+
+    guard let recording = Recording(performance: performance, rando: self.rando) else { return }
+    _ = recording.activate(audioController: self.audioController)
 
     DispatchQueue.main.async {
       self.performance = performance
+      self.recording = recording
+      self.ensemble.reloadData()
+      self.applyPlaybackPosition()
+      self.player.load(recording: recording)
+      self.applyPlaybackPosition()
     }
   }
 
@@ -338,22 +362,6 @@ extension EnsembleViewController {
 // MARK: UITableView
 
 extension EnsembleViewController: UITableViewDelegate, UITableViewDataSource {
-
-  private func instrumentIsReady(_ index: Int) {
-    precondition(Thread.isMainThread == false)
-    loadedCount += 1
-    DispatchQueue.main.async {
-      self.loadingProgressBar.progress = Float(self.loadedCount) / Float(self.audioController.ensemble.count)
-      print("progress:", self.loadedCount, self.loadingProgressBar.progress)
-    }
-    let allReady = audioController.ensemble.filter({ !$0.ready }).isEmpty
-    DispatchQueue.main.async {
-      if allReady {
-        self.playbackReady = true
-        self.applyPlaybackPosition()
-      }
-    }
-  }
 
   private func updateBarButtons() {
     let reallyReady = playbackReady && recording != nil
@@ -558,7 +566,7 @@ extension EnsembleViewController {
    - parameter commitEditingStyle: the editing style that is coming to an end
    - parameter indexPath: the index of the row being edited
    */
-  func tableView(_ tableView: UITableView, commit commitEditingStyle: UITableViewCell.EditingStyle, 
+  func tableView(_ tableView: UITableView, commit commitEditingStyle: UITableViewCell.EditingStyle,
                  forRowAt indexPath: IndexPath) {
     guard commitEditingStyle == .delete else { return }
 

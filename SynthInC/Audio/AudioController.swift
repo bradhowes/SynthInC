@@ -32,33 +32,32 @@ extension AudioController {
 
    - returns: true if successful, false otherwise
    */
-  func createEnsemble(ensembleSize: Int, instrumentDoneCallback: @escaping (Int) -> Void,
-                      finishedCallback: @escaping (Bool) -> Void) {
+  func createEnsemble(ensembleSize: Int) {
     ensemble.removeAll()
     let workItem = DispatchWorkItem() {
-      guard let graph = self.createAUGraph() else { 
-        finishedCallback(false)
+      guard let graph = self.createAUGraph() else {
+        self.postEnsembleReady(success: false)
         return
       }
+
       for index in 0..<ensembleSize {
         let patch = FavoritePatches[index % FavoritePatches.count]
         if let instrument = Instrument(graph: graph, patch: patch) {
           self.ensemble.append(instrument)
         }
       }
-      self.startAUGraph(instrumentDoneCallback: instrumentDoneCallback, finishedCallback: finishedCallback)
+      self.startAUGraph()
     }
 
     DispatchQueue.global(qos: .utility).async(execute: workItem)
   }
 
-  func restoreEnsemble(data: Data, instrumentDoneCallback: @escaping (Int) -> Void,
-                       finishedCallback: @escaping (Bool) -> Void) {
+  func restoreEnsemble(data: Data) {
     ensemble.removeAll()
     let workItem = DispatchWorkItem() {
       guard let graph = self.createAUGraph(),
             let decoder = try? NSKeyedUnarchiver(forReadingFrom: data) else { 
-        finishedCallback(false)
+        self.postEnsembleReady(success: false)
         return
       }
       decoder.requiresSecureCoding = false
@@ -70,7 +69,7 @@ extension AudioController {
           self.ensemble.append(instrument)
         }
       }
-      self.startAUGraph(instrumentDoneCallback: instrumentDoneCallback, finishedCallback: finishedCallback)
+      self.startAUGraph()
     }
     DispatchQueue.global(qos: .utility).async(execute: workItem)
   }
@@ -109,9 +108,9 @@ private extension AudioController {
     return graph
   }
 
-  func startAUGraph(instrumentDoneCallback: @escaping (Int) -> Void, finishedCallback: @escaping (Bool) -> Void) {
+  func startAUGraph() {
     var result = false
-    defer { finishedCallback(result) }
+    defer { self.postEnsembleReady(success: result) }
 
     // Create mixer node for all samplers
     //
@@ -192,7 +191,7 @@ private extension AudioController {
     // supported in AU.
     //
     ensemble.forEach { instrument in
-      instrument.configureSampler(callback: instrumentDoneCallback)
+      instrument.configureSampler()
     }
 
     result = true
@@ -317,4 +316,9 @@ private extension AudioController {
   //        return true
   //    }
 
+  func postEnsembleReady(success: Bool) {
+    let userInfo: [String: Any] = ["success": success]
+    NotificationCenter.default.post(name: .ensembleReady, object: nil, userInfo: userInfo)
+  }
 }
+

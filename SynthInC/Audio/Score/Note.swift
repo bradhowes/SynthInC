@@ -31,7 +31,7 @@ extension Duration {
   /// Calculate a dotted note duration
   var dotted: Duration { return self + self / 2 }
   /// Obtain a scaled note duration, where 1.0 is a 1/4 note (why?)
-  var scaled: MusicTimeStamp { return MusicTimeStamp(self) / MusicTimeStamp(480.0) }
+  var scaled: MusicTimeStamp { return Double(self) / 480.0 }
   /// Obtain a grace note duration
   var grace: Duration { return -abs(self / 2) }
 
@@ -45,7 +45,7 @@ extension Duration {
 
 /// Enumeration of all of the notes in the "In C" score. The assigned integers are the MIDI note values.
 enum NoteValue : Int {
-  case re = 0
+  case rest = 0
   case G3 = 55
   case C4 = 60
   case C4s = 61
@@ -113,5 +113,22 @@ struct Note {
    */
   func getEndTime(clock: MusicTimeStamp) -> MusicTimeStamp {
     return isGraceNote ? clock : clock + duration
+  }
+}
+
+extension Note {
+
+  func addToTrack(_ track: MusicTrack, clock: MusicTimeStamp, slop: MusicTimeStamp = 0.0,
+                  velocity: UInt8 = 64) {
+    guard note != .rest else { return }
+    var msg = MIDINoteMessage(channel: 0,
+                              note: UInt8(note.rawValue),
+                              velocity: isGraceNote ? 32 : velocity,
+                              releaseVelocity: 0,
+                              duration: Float32(duration - slop))
+    let status = MusicTrackNewMIDINoteEvent(track, getStartTime(clock: clock, slop: slop), &msg)
+    if status != OSStatus(noErr) {
+      print("*** failed creating note event: \(status)")
+    }
   }
 }

@@ -7,7 +7,7 @@ import AVFoundation
 final class InstrumentCell: UITableViewCell {
 
   weak var instrument: Instrument!
-  weak var part: Part! {
+  var part: Part! {
     didSet {
       self.phrases.part = part
     }

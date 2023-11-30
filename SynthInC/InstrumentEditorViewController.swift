@@ -16,6 +16,7 @@ enum InstrumentEditorDismissedReason {
 /**
  @brief Delegate protocol for the InstrumentEditorViewController.
  */
+@MainActor
 protocol InstrumentEditorViewControllerDelegate : NSObjectProtocol {
 
   /**
@@ -47,6 +48,17 @@ final class InstrumentEditorViewController: UIViewController {
   @IBOutlet weak var octaveLabel: UILabel!
   @IBOutlet weak var soloButton: UIButton!
   @IBOutlet weak var muteButton: UIButton!
+
+  var keyWindow: UIWindow? {
+    let allScenes = UIApplication.shared.connectedScenes
+    for scene in allScenes {
+      guard let windowScene = scene as? UIWindowScene else { continue }
+      for window in windowScene.windows where window.isKeyWindow {
+        return window
+      }
+    }
+    return nil
+  }
 
   weak var delegate: InstrumentEditorViewControllerDelegate?
   var instrument: Instrument? {
@@ -100,8 +112,10 @@ final class InstrumentEditorViewController: UIViewController {
     muteButton.setImage(UIImage(named: "Mute On"), for: .highlighted)
     soloButton.setImage(UIImage(named: "Solo On"), for: .highlighted)
 
-    let maxNameWidth = SoundFont.maxNameWidth * 2.0 + 40.0 // Gah! Why this?!
-    preferredContentSize.width = min(UIApplication.shared.windows.first!.frame.width, maxNameWidth)
+    // Size the view so that the UIPicker does not have to truncate the names too much. There are two picker wheels,
+    // and we add some margin.
+    let minWidth = SoundFont.maxNameWidth * 2.0 + 40.0
+    preferredContentSize.width = min(keyWindow?.frame.width ?? minWidth, minWidth)
 
     super.viewDidLoad()
   }
